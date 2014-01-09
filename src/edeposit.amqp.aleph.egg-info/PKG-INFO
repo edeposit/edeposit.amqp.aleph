@@ -1,0 +1,35 @@
+Metadata-Version: 1.1
+Name: edeposit.amqp.aleph
+Version: 0.1
+Summary: E-Deposit AMQP module for communication with Aleph
+Home-page: http://svn.plone.org/svn/collective/
+Author: UNKNOWN
+Author-email: UNKNOWN
+License: gpl
+Description: .. contents::
+        
+        Introduction
+        ============
+        
+        
+        Contributors
+        ============
+        
+        Note:  place names and roles of the people who contribute to this package
+               in this file, one to a line, like so:
+        
+        - Joe Schmoe, Original Author
+        - Bob Slob, contributed monkey patches
+        - Jane Main, wrote flibberty module
+        
+        Changelog
+        =========
+        
+        0.1-dev (unreleased)
+        --------------------
+        
+        - Package created using templer
+          []
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python

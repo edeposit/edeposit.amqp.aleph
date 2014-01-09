@@ -1,0 +1,55 @@
+*** Settings ***
+Metadata    name  "Použití knihovny"
+Library     inspector.PythonModule  "../__init__.py"
+Variables   variables.py
+Library     XML
+
+*** Variables ***
+${ISBN-10-valid-01}                80-7380-055-1
+${ISBN-10-valid-02}                807033245X
+
+${ISBN-13-valid-01}                978-80-7380-055-0
+${ISBN-13-valid-02}                9788085389609
+
+${ISBN-10-nonvalid-01}             81-7380-055-1
+${ISBN-13-nonvalid-01}             978-80-7380-055-1
+
+*** Test Cases ***
+Validace správného ISBN-10
+    ${result}=         Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-10-valid-01}
+    Is type of         ${result}        ${edeposit.amqp.isbn.Result}
+
+    ${result}=         Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-10-valid-02}
+    Is type of         ${result}        ${edeposit.amqp.isbn.Result}
+    ISBN is valid      ${result}       
+
+Validace chybného ISBN-10
+    ${result}=          Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-10-nonvalid-01}
+    Is type of          ${result}        ${edeposit.amqp.isbn.Result}
+    ISBN is not valid   ${result}
+
+Validace správného ISBN-13
+    ${result}=          Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-13-valid-01}
+    Is type of          ${result}        ${edeposit.amqp.isbn.Result}
+    ISBN is valid       ${result}
+    ${result}=          Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-13-valid-02}
+    Is type of          ${result}        ${edeposit.amqp.isbn.Result}
+    ISBN is valid       ${result}
+
+Validace chybného ISBN-13
+    ${result}=          Call method      ${edeposit.amqp.isbn}    process_isbn  ${ISBN-13-nonvalid-01}
+    Is type of          ${result}        ${edeposit.amqp.isbn.Result}
+    ISBN is not valid   ${result}
+
+Informace o producentovi v ISBN
+    ${result}=             Call method       ${edeposit.amqp.isbn}       process_isbn  ${ISBN-10-valid-01}
+    ${producent_info}=     Call method       ${edeposit.amqp.isbn}       producent_info   ${result}
+    Is type of             ${producent_info}                             ${edeposit.amqp.isbn.Producent}
+    
+
+Informace o publikaci
+    ${result}=             Call method       ${edeposit.amqp.isbn}       process_isbn  ${ISBN-10-valid-01}
+    ${publication_info}=   Call method       ${edeposit.amqp.isbn}       publication_info   ${result}
+    Is type of             ${publication_info}                           ${edeposit.amqp.isbn.Publication}
+
+    ${root}=               Parse XML    ${publication_info}

@@ -1,0 +1,13 @@
+*** Settings ***
+Library       HttpLibrary.HTTP
+
+*** Variables ***
+${PACKAGE_NAME}   edeposit.amqp.isbn
+${PACKAGE_URL}    https://pypi.python.org/pypi/edeposit.amqp.isbn/
+
+*** Test Cases ***
+PYPI repozitář
+    [Documentation]    Existuje repozitář s balíčkem na adrese ${PACKAGE_URL}
+    GET      ${PACKAGE_URL}
+    Response Status Code Should Equal   200
+

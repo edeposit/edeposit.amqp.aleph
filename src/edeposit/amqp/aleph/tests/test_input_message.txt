@@ -1,0 +1,20 @@
+*** Settings ***
+Metadata    name  "vstupní AMQP zprávy"
+Library     inspector.PythonModule  "../__init__.py"
+
+*** Variables ***
+${ALEPH_URL}               http://aleph.nkp.cz/
+${ALEPH_URL_PRODUCENTS}    https://pypi.python.org/pypi/edeposit.amqp.isbn/
+
+*** Test Cases ***
+Konfigurace k alephu
+    [Documentation]    Konfigurace cesty k Alephu
+    Has variable       aleph_url 
+
+Konfigurace pro vstupní exchange v RabbitMQ
+    [Documentation]    Jméno exchange, kam se budou posílat žádosti na validaci
+    Has variable       input_exchange
+
+Konfigurace pro exchange v RabbitMQ pro odpovědi
+    [Documentation]    Jméno exchange ve které se budou objevovat odpovědi
+    Has variable       result_exchange
