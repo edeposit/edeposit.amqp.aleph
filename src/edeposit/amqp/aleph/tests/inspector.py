@@ -27,12 +27,3 @@ class PythonModule(object):
         if type(element) != reference:
             raise AssertionError("wrong type")
 
-    def isbn_is_valid(self,result):
-        if not result.valid:
-            raise AssertionError("attribute 'valid' must be True")
-        pass
-
-    def isbn_is_not_valid(self,result):
-        if result.valid:
-            raise AssertionError("attribute 'valid' must be False")
-

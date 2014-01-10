@@ -1,23 +1,19 @@
 *** Settings ***
 
-Library     inspector.PythonModule  src/edeposit/amqp/isbn/settings.py
+Library     inspector.PythonModule  src/edeposit/amqp/aleph/settings.py
 Library     OperatingSystem
 
 *** Variables ***
 ${ALEPH_URL}               http://aleph.nkp.cz/
-${ALEPH_URL_PRODUCENTS}    https://pypi.python.org/pypi/edeposit.amqp.isbn/
+${ALEPH_URL_PRODUCENTS}    https://pypi.python.org/pypi/edeposit.amqp.aleph/
 
 *** Test Cases ***
 Konfigurační soubor
-    Should Exist       src/edeposit/amqp/isbn/settings.py        
+    Should Exist       src/edeposit/amqp/aleph/settings.py        
 
 Cesta k alephu
     Variable presented     aleph_url 
 
-Vstupní exchange v RabbitMQ
-    [Documentation]     Jméno exchange, kam se posílají žádosti o validaci
-    Variable presented     input_exchange
+Adresář pro export do Alephu
+    Variable presented     export_directory_path
 
-Exchange v RabbitMQ pro odpovědi
-    [Documentation]    Jméno exchange, kde se objevují výsledky validace
-    Variable presented    result_exchange

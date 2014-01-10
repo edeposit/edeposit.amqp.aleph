@@ -1,30 +1,51 @@
 # This package may contain traces of nuts
 from collections import namedtuple
 
-class Result(namedtuple("Result",['valid','producent','publication'])):
-    """
-    valid: [True | False]
-    producent: type Producent
-    publication: type Publication
-    """
-    pass
-
 class Producent(namedtuple("Producent",['title','phone','fax','email','url','identificator','ico'])):
     pass
 
-class Publication(namedtuple("Publication",['stream',])):
+class EPublication(namedtuple("EPublication",
+                              ['title',
+                               'subtitle',
+                               'bookBinding',
+                               'price',
+                               'volume',
+                               'volumeTitle',
+                               'volumeNumber',
+                               'edition',
+                               'editionNumber',
+                               'subedition',
+                               'subeditionNumber',
+                               'placeOfPublishing',
+                               'publisher',
+                               'dateOfPublishing',
+                               'publishedWithCoedition',
+                               'publishedAtOrder',
+                               'personWhoProcessedThis',
+                               'librariesThatCanAccessAtLibraryTerminal',
+                               'librariesThatCanAccessAtPublic',
+                               'alephDocNumber',
+                               'generateISBN',
+                               'categoryForRIV',
+                               'placeOfDistribution',
+                               'distributor',
+                               'dateOfDistribution',
+                               'producer',
+                               'dateOfProduction',
+                               'dateOfCopyright',
+                               'development',
+                               'mediaType',
+                               'authors',
+                               'isbns',
+                           ])):
     """
-    stream: string v MARCXML xml format
+    see https://e-deposit.readthedocs.org/cs/latest/dm01.html
     """
     pass
 
-def process_isbn(isbn):
-    return Result(valid=None, 
-                  producent=None,
-                  publication=Publication(stream=""))
+class ISBN(namedtuple("ISBN",['ISBN',])):
+    def isValid():
+        return True
 
-def producent_info(result):
-    return result.producent
-
-def publication_info(result):
-    return result.publication
+class Author(namedtuple("Author",['firstName','lastName'])):
+    pass

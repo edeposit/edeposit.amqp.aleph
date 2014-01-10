@@ -1,17 +1,21 @@
-.. E-Deposit AMQP module for Aleph documentation master file, created by
-   sphinx-quickstart on Thu Jan  9 16:05:42 2014.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. _index:
 
 Welcome to E-Deposit AMQP module for Aleph's documentation!
 ===========================================================
 
-Contents:
+Modul zajištuje export údajů o epublikacích do systém **Aleph**.
 
 .. toctree::
    :maxdepth: 2
 
+   requirements
+   installation
+   configuration
+   usage
+   
+:download:`test report <../report.html>`
 
+:download:`test log <../log.html>`
 
 Indices and tables
 ==================
