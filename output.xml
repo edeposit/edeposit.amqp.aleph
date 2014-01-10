@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generated="20140110 14:18:34.704" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
+<robot generated="20140110 14:50:24.618" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests" id="s1" name="Tests">
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_configuration.txt" id="s1-s1" name="Test Configuration">
 <test id="s1-s1-t1" name="Konfigurační soubor">
@@ -8,13 +8,13 @@
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.750" html="yes" level="INFO">Path '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py&lt;/a&gt;' exists</msg>
-<status status="PASS" endtime="20140110 14:18:34.750" starttime="20140110 14:18:34.750"></status>
+<msg timestamp="20140110 14:50:24.674" html="yes" level="INFO">Path '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py&lt;/a&gt;' exists</msg>
+<status status="PASS" endtime="20140110 14:50:24.674" starttime="20140110 14:50:24.674"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140110 14:18:34.751" critical="yes" starttime="20140110 14:18:34.749"></status>
+<status status="PASS" endtime="20140110 14:50:24.674" critical="yes" starttime="20140110 14:50:24.673"></status>
 </test>
 <test id="s1-s1-t2" name="Cesta k alephu">
 <kw type="kw" name="inspector.PythonModule.Variable Presented">
@@ -22,12 +22,12 @@
 <arguments>
 <arg>aleph_url</arg>
 </arguments>
-<status status="PASS" endtime="20140110 14:18:34.752" starttime="20140110 14:18:34.751"></status>
+<status status="PASS" endtime="20140110 14:50:24.676" starttime="20140110 14:50:24.675"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140110 14:18:34.752" critical="yes" starttime="20140110 14:18:34.751"></status>
+<status status="PASS" endtime="20140110 14:50:24.676" critical="yes" starttime="20140110 14:50:24.675"></status>
 </test>
 <test id="s1-s1-t3" name="Adresář pro export do Alephu">
 <kw type="kw" name="inspector.PythonModule.Variable Presented">
@@ -35,18 +35,18 @@
 <arguments>
 <arg>export_directory_path</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.753" level="FAIL">AttributeError: 'module' object has no attribute 'export_directory_path'</msg>
-<status status="FAIL" endtime="20140110 14:18:34.753" starttime="20140110 14:18:34.752"></status>
+<msg timestamp="20140110 14:50:24.678" level="FAIL">AttributeError: 'module' object has no attribute 'export_directory_path'</msg>
+<status status="FAIL" endtime="20140110 14:50:24.678" starttime="20140110 14:50:24.677"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:34.753" critical="yes" starttime="20140110 14:18:34.752">AttributeError: 'module' object has no attribute 'export_directory_path'</status>
+<status status="FAIL" endtime="20140110 14:50:24.678" critical="yes" starttime="20140110 14:50:24.676">AttributeError: 'module' object has no attribute 'export_directory_path'</status>
 </test>
 <doc></doc>
 <metadata>
 </metadata>
-<status status="FAIL" endtime="20140110 14:18:34.753" starttime="20140110 14:18:34.726"></status>
+<status status="FAIL" endtime="20140110 14:50:24.679" starttime="20140110 14:50:24.650"></status>
 </suite>
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_input_message.txt" id="s1-s2" name="Test Input Message">
 <test id="s1-s2-t1" name="Konfigurace k alephu">
@@ -55,13 +55,13 @@
 <arguments>
 <arg>aleph_url</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.757" level="FAIL">No keyword with name 'Has variable' found.</msg>
-<status status="FAIL" endtime="20140110 14:18:34.757" starttime="20140110 14:18:34.757"></status>
+<msg timestamp="20140110 14:50:24.684" level="FAIL">No keyword with name 'Has variable' found.</msg>
+<status status="FAIL" endtime="20140110 14:50:24.685" starttime="20140110 14:50:24.684"></status>
 </kw>
 <doc>Konfigurace cesty k Alephu</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:34.757" critical="yes" starttime="20140110 14:18:34.757">No keyword with name 'Has variable' found.</status>
+<status status="FAIL" endtime="20140110 14:50:24.685" critical="yes" starttime="20140110 14:50:24.684">No keyword with name 'Has variable' found.</status>
 </test>
 <test id="s1-s2-t2" name="Konfigurace pro vstupní exchange v RabbitMQ">
 <kw type="kw" name="Has variable">
@@ -69,13 +69,13 @@
 <arguments>
 <arg>input_exchange</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.758" level="FAIL">No keyword with name 'Has variable' found.</msg>
-<status status="FAIL" endtime="20140110 14:18:34.758" starttime="20140110 14:18:34.758"></status>
+<msg timestamp="20140110 14:50:24.686" level="FAIL">No keyword with name 'Has variable' found.</msg>
+<status status="FAIL" endtime="20140110 14:50:24.686" starttime="20140110 14:50:24.686"></status>
 </kw>
 <doc>Jméno exchange, kam se budou posílat žádosti na validaci</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:34.759" critical="yes" starttime="20140110 14:18:34.758">No keyword with name 'Has variable' found.</status>
+<status status="FAIL" endtime="20140110 14:50:24.687" critical="yes" starttime="20140110 14:50:24.685">No keyword with name 'Has variable' found.</status>
 </test>
 <test id="s1-s2-t3" name="Konfigurace pro exchange v RabbitMQ pro odpovědi">
 <kw type="kw" name="Has variable">
@@ -83,19 +83,19 @@
 <arguments>
 <arg>result_exchange</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.760" level="FAIL">No keyword with name 'Has variable' found.</msg>
-<status status="FAIL" endtime="20140110 14:18:34.760" starttime="20140110 14:18:34.760"></status>
+<msg timestamp="20140110 14:50:24.688" level="FAIL">No keyword with name 'Has variable' found.</msg>
+<status status="FAIL" endtime="20140110 14:50:24.688" starttime="20140110 14:50:24.688"></status>
 </kw>
 <doc>Jméno exchange ve které se budou objevovat odpovědi</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:34.761" critical="yes" starttime="20140110 14:18:34.759">No keyword with name 'Has variable' found.</status>
+<status status="FAIL" endtime="20140110 14:50:24.688" critical="yes" starttime="20140110 14:50:24.687">No keyword with name 'Has variable' found.</status>
 </test>
 <doc></doc>
 <metadata>
 <item name="name">"vstupní AMQP zprávy"</item>
 </metadata>
-<status status="FAIL" endtime="20140110 14:18:34.761" starttime="20140110 14:18:34.754"></status>
+<status status="FAIL" endtime="20140110 14:50:24.689" starttime="20140110 14:50:24.680"></status>
 </suite>
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_installation.txt" id="s1-s3" name="Test Installation">
 <test id="s1-s3-t1" name="PYPI repozitář">
@@ -104,20 +104,20 @@
 <arguments>
 <arg>${PACKAGE_URL}</arg>
 </arguments>
-<msg timestamp="20140110 14:18:34.850" level="INFO">Host for next HTTP request set to 'pypi.python.org'</msg>
-<msg timestamp="20140110 14:18:34.850" level="INFO">Scheme for next HTTP request set to 'https'</msg>
-<msg timestamp="20140110 14:18:35.011" level="FAIL">Request should have succeeded, but was "404 Not Found ()".</msg>
-<status status="FAIL" endtime="20140110 14:18:35.011" starttime="20140110 14:18:34.850"></status>
+<msg timestamp="20140110 14:50:24.786" level="INFO">Host for next HTTP request set to 'pypi.python.org'</msg>
+<msg timestamp="20140110 14:50:24.786" level="INFO">Scheme for next HTTP request set to 'https'</msg>
+<msg timestamp="20140110 14:50:24.943" level="FAIL">Request should have succeeded, but was "404 Not Found ()".</msg>
+<status status="FAIL" endtime="20140110 14:50:24.943" starttime="20140110 14:50:24.785"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:35.011" critical="yes" starttime="20140110 14:18:34.849">Request should have succeeded, but was "404 Not Found ()".</status>
+<status status="FAIL" endtime="20140110 14:50:24.943" critical="yes" starttime="20140110 14:50:24.785">Request should have succeeded, but was "404 Not Found ()".</status>
 </test>
 <doc></doc>
 <metadata>
 </metadata>
-<status status="FAIL" endtime="20140110 14:18:35.012" starttime="20140110 14:18:34.762"></status>
+<status status="FAIL" endtime="20140110 14:50:24.943" starttime="20140110 14:50:24.690"></status>
 </suite>
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_usage.txt" id="s1-s4" name="Test Usage">
 <test id="s1-s4-t1" name="Export dat ePublikace">
@@ -126,51 +126,61 @@
 <arguments>
 <arg>${EXPORT_DIRECTORY}</arg>
 </arguments>
-<msg timestamp="20140110 14:18:35.090" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
-<msg timestamp="20140110 14:18:35.090" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
-<status status="PASS" endtime="20140110 14:18:35.091" starttime="20140110 14:18:35.090"></status>
+<msg timestamp="20140110 14:50:25.014" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
+<msg timestamp="20140110 14:50:25.014" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20140110 14:50:25.014" starttime="20140110 14:50:25.014"></status>
+</kw>
+<kw type="kw" name="BuiltIn.Call Method">
+<doc>Calls the named method of the given object with the provided arguments.</doc>
+<arguments>
+<arg>${edeposit.amqp.aleph}</arg>
+<arg>send_to_aleph</arg>
+<arg>${epublication}</arg>
+</arguments>
+<msg timestamp="20140110 14:50:25.016" level="FAIL">Object '&lt;module 'edeposit.amqp.aleph' from '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/__init__.pyc'&gt;' does not have a method 'send_to_aleph'</msg>
+<status status="FAIL" endtime="20140110 14:50:25.016" starttime="20140110 14:50:25.015"></status>
 </kw>
 <doc>Uloží data do adresáře. Pod správným podadresářem.</doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140110 14:18:35.091" critical="yes" starttime="20140110 14:18:35.089"></status>
+<status status="FAIL" endtime="20140110 14:50:25.016" critical="yes" starttime="20140110 14:50:25.013">Object '&lt;module 'edeposit.amqp.aleph' from '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/__init__.pyc'&gt;' does not have a method 'send_to_aleph'</status>
 </test>
 <test id="s1-s4-t2" name="Zpracování správné odpovědi z Alephu">
 <doc>Odešle zprávu do RabbitMQ a po odeslání ji přesune do adresáře s vyřízenými odpovědmi.</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:35.091" critical="yes" starttime="20140110 14:18:35.091">Test case contains no keywords.</status>
+<status status="FAIL" endtime="20140110 14:50:25.018" critical="yes" starttime="20140110 14:50:25.017">Test case contains no keywords.</status>
 </test>
 <test id="s1-s4-t3" name="Zpracování chyby z Alephu">
 <doc>Odešle zprávu do RabbitMQ a po odeslání ji přesune do adresáře s vyřízenými odpovědmi.</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140110 14:18:35.092" critical="yes" starttime="20140110 14:18:35.092">Test case contains no keywords.</status>
+<status status="FAIL" endtime="20140110 14:50:25.019" critical="yes" starttime="20140110 14:50:25.018">Test case contains no keywords.</status>
 </test>
 <doc></doc>
 <metadata>
 <item name="name">"Použití knihovny"</item>
 </metadata>
-<status status="FAIL" endtime="20140110 14:18:35.093" starttime="20140110 14:18:35.013"></status>
+<status status="FAIL" endtime="20140110 14:50:25.020" starttime="20140110 14:50:24.944"></status>
 </suite>
 <doc></doc>
 <metadata>
 </metadata>
-<status status="FAIL" endtime="20140110 14:18:35.093" starttime="20140110 14:18:34.704"></status>
+<status status="FAIL" endtime="20140110 14:50:25.021" starttime="20140110 14:50:24.618"></status>
 </suite>
 <statistics>
 <total>
-<stat fail="7" pass="3">Critical Tests</stat>
-<stat fail="7" pass="3">All Tests</stat>
+<stat fail="8" pass="2">Critical Tests</stat>
+<stat fail="8" pass="2">All Tests</stat>
 </total>
 <tag>
 </tag>
 <suite>
-<stat fail="7" pass="3" id="s1" name="Tests">Tests</stat>
+<stat fail="8" pass="2" id="s1" name="Tests">Tests</stat>
 <stat fail="1" pass="2" id="s1-s1" name="Test Configuration">Tests.Test Configuration</stat>
 <stat fail="3" pass="0" id="s1-s2" name="Test Input Message">Tests.Test Input Message</stat>
 <stat fail="1" pass="0" id="s1-s3" name="Test Installation">Tests.Test Installation</stat>
-<stat fail="2" pass="1" id="s1-s4" name="Test Usage">Tests.Test Usage</stat>
+<stat fail="3" pass="0" id="s1-s4" name="Test Usage">Tests.Test Usage</stat>
 </suite>
 </statistics>
 <errors>

@@ -13,6 +13,8 @@ ${EXPORT_DIRECTORY}       ./src/edeposit/amqp/aleph/tests/var/export
 Export dat ePublikace
        [Documentation]     Uloží data do adresáře. Pod správným  podadresářem.
        Empty Directory     ${EXPORT_DIRECTORY}
+       Call method         ${edeposit.amqp.aleph}       send_to_aleph     ${epublication}
+              
 
 Zpracování správné odpovědi z Alephu
        [Documentation]    Odešle zprávu do RabbitMQ a po odeslání ji přesune do adresáře s vyřízenými odpovědmi.           
