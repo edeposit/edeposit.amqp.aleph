@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 import edeposit.amqp.aleph
+from datetime import date
+from edeposit.amqp.aleph.settings import export_directory_path
+
+today = date.today()
+epublication_directory = "%s-*" % (str(today),)
 
 producent = edeposit.amqp.aleph.Producent(
     title='Návrat',
@@ -18,6 +23,13 @@ author = edeposit.amqp.aleph.Author(
 
 isbn = edeposit.amqp.aleph.ISBN(
     ISBN="80-7174-091-8"
+)
+
+originalFile = edeposit.amqp.aleph.OriginalFile(
+    isbns = [isbn],
+    url = "",
+    file = None,
+    format = None
 )
 
 epublication = edeposit.amqp.aleph.EPublication(
@@ -52,5 +64,5 @@ epublication = edeposit.amqp.aleph.EPublication(
     development='',
     mediaType='',
     authors=[author],
-    isbns=[isbn],
+    originalFiles=[],
 )

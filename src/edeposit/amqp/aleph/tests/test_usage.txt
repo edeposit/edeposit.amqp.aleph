@@ -1,23 +1,59 @@
 *** Settings ***
 Metadata    name  "Použití knihovny"
-Library     inspector.PythonModule  "../__init__.py"
+Library     inspector.Inspector
 Library     OperatingSystem
 Variables   variables.py
 Library     XML
 
 *** Variables ***
 ${ISBN-10}                80-7174-091-8
-${EXPORT_DIRECTORY}       ./src/edeposit/amqp/aleph/tests/var/export
 
 *** Test Cases ***
-Export dat ePublikace
-       [Documentation]     Uloží data do adresáře. Pod správným  podadresářem.
-       Empty Directory     ${EXPORT_DIRECTORY}
-       Call method         ${edeposit.amqp.aleph}       send_to_aleph     ${epublication}
-              
+Příprava exportu EPublikace
+       [Documentation]     Uloží data do adresáře. Vrátí jméno vzniklého adresáře: TODAY-......
+       Empty Directory     ${export_directory_path}
+       ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+       ${path}=            Join Path    ${export_directory_path}        ${export_id}
+       ${edeposit_epublication-link_path}=           Join Path    ${path}    edeposit-link.txt
+       Directory Should Exist           ${path}
+       TestedLibrary id conforms naming way   ${export_id}
+       File Should Exist     ${edeposit_epublication-link_path}
+
+Aleph načte data a do adresáře vloží odpověď
+       [Documentation]     Pokud Aleph data přijal, vloží soubory *aleph-success* a *aleph-record.xml*
+       ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+       Aleph AcceptedEPublication     ${export_id}
+       ${path}=            Join Path    ${export_directory_path}     ${export_id}
+       ${aleph_record_path}=    Join Path    ${path}   aleph-record.xml
+       ${success_path}=         Join Path    ${path}   aleph-success
+       File Should Exist            ${aleph_record_path}
+       File Should Exist            ${success_path}
+
+Anebo Aleph data odmítne do adresáře vloží zprávu o chybě
+       [Documentation]     Aleph vloží soubory *aleph-error* a *aleph-error-message.txt*
+       ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+       Aleph RejectedEPublication     ${export_id}
+       ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+       ${error_path}=            Join Path    ${path}   aleph-error
+       ${error_message_path}=    Join Path    ${path}   aleph-error-message.txt
+       File Should Exist            ${error_path}
+       File Should Exist            ${error_message_path}
 
 Zpracování správné odpovědi z Alephu
-       [Documentation]    Odešle zprávu do RabbitMQ a po odeslání ji přesune do adresáře s vyřízenými odpovědmi.           
-
+       [Documentation]    Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*
+       ${export_id}=   TestedLibrary send_to_aleph      ${epublication}
+       ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+       ${queue_name}=  aleph-success
+       Aleph AcceptedEPublication   ${export_id}
+       TestedLibrary handle_aleph_success  ${export_id}
+       RabbitMQ Message Exists at Queue
+     
 Zpracování chyby z Alephu
-       [Documentation]    Odešle zprávu do RabbitMQ a po odeslání ji přesune do adresáře s vyřízenými odpovědmi.           
+       [Documentation]    Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*
+       ${export_id}=   TestedLibrary send_to_aleph      ${epublication}
+       ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+       ${queue_name}=  aleph-errors
+       Aleph AcceptedEPublication   ${export_id}
+       TestedLibrary handle_aleph_error  ${export_id}
+       RabbitMQ Message Exists at Queue
+       

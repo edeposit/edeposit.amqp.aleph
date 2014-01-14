@@ -40,6 +40,7 @@ setup(name='edeposit.amqp.aleph',
       extras_require={"test": [
           "unittest2",
           "robotsuite",
+          "mock",
       ], "docs": [
           "sphinxcontrib-robotdoc",
           "sphinx",

@@ -20,7 +20,7 @@ You can run them manually
 
 ... or continuously running using nosier:
 
-    jan@jan-XPS-L421X:~/work/edeposit.amqp.aleph$ nosier -p src "pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
+    jan@jan-XPS-L421X:~/work/edeposit.amqp.aleph$ nosier -p src -b 'export' "pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
 
 
 Status of acceptance tests

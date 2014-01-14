@@ -3,7 +3,6 @@
 Použití
 --------------------
 
-
 .. robot_variables::
    :source: ../src/edeposit/amqp/aleph/tests/test_usage.txt
 

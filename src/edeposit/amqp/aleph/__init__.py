@@ -1,5 +1,6 @@
 # This package may contain traces of nuts
 from collections import namedtuple
+from datetime import datetime
 
 class Producent(namedtuple("Producent",['title','phone','fax','email','url','identificator','ico'])):
     pass
@@ -36,11 +37,15 @@ class EPublication(namedtuple("EPublication",
                                'development',
                                'mediaType',
                                'authors',
-                               'isbns',
+                               'originalFiles',
                            ])):
     """
     see https://e-deposit.readthedocs.org/cs/latest/dm01.html
     """
+    pass
+
+class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbns'])):
+    """ type of isbn: ISBN"""
     pass
 
 class ISBN(namedtuple("ISBN",['ISBN',])):
@@ -48,4 +53,7 @@ class ISBN(namedtuple("ISBN",['ISBN',])):
         return True
 
 class Author(namedtuple("Author",['firstName','lastName'])):
+    pass
+
+def send_to_aleph(epublication):
     pass

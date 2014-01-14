@@ -6,19 +6,17 @@
 
 import inspect
 import imp
+import edeposit.amqp.aleph
 
-class PythonModule(object):
+class Inspector(object):
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
-
-    def __init__(self, modulePath):
-        self.modulePath = modulePath
 
     def get_module_variables(self):
         pass
 
-    def variable_presented(self,name):
+    def variable_presented(self,modulePath,name):
         #import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
-        module = imp.load_source("module", self.modulePath)
+        module = imp.load_source("module",modulePath)
         value = getattr(module,name)
         if not value:
             raise AssertionError("module: %s has no variable '%s'" % (self.modulePath, name))
@@ -27,3 +25,24 @@ class PythonModule(object):
         if type(element) != reference:
             raise AssertionError("wrong type")
 
+    def testedlibrary_send_to_aleph(self,epublication):
+        return edeposit.amqp.aleph.send_to_aleph(epublication)
+
+    def testedlibrary_handle_aleph_response(self,epublication):
+        return edeposit.amqp.aleph.handle_aleph_response(epublication)
+
+    def testedLibrary_id_conforms_naming_way(self,epublicationDirectory):
+        """ id je ve tvaru: 2014-01-01-agafdsX. A je to zaroven adresar. """
+        if not re.search("[0-9]{4}-[0-9]{2}-[0-9]{2}-.+",epublicationDirectory):
+            AssertionError("epublication directory doesnot conform naming way")
+
+    def aleph_AcceptedEPublication(self,directory):
+        """ created responses the same way as Aleph creates it """
+        pass
+
+    def aleph_RejectedEPublication(self,directory):
+        """ created responses the same way as Aleph creates it """
+        pass
+
+    def rabbitmq_message_exists_at_queue(self, queueName):
+        pass
