@@ -1,23 +1,124 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generated="20140114 09:40:13.976" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
-<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_usage.txt" id="s1" name="Test Usage">
-<test id="s1-t1" name="Příprava exportu EPublikace">
+<robot generated="20140114 10:19:05.263" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests" id="s1" name="Tests">
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_configuration.txt" id="s1-s1" name="Test Configuration">
+<test id="s1-s1-t1" name="Konfigurační soubor">
+<kw type="kw" name="OperatingSystem.Should Exist">
+<doc>Fails unless the given path (file or directory) exists.</doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+</arguments>
+<msg timestamp="20140114 10:19:05.353" html="yes" level="INFO">Path '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py&lt;/a&gt;' exists</msg>
+<status status="PASS" endtime="20140114 10:19:05.353" starttime="20140114 10:19:05.353"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="PASS" endtime="20140114 10:19:05.353" critical="yes" starttime="20140114 10:19:05.352"></status>
+</test>
+<test id="s1-s1-t2" name="Cesta k alephu">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
+<doc></doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>aleph_url</arg>
+</arguments>
+<status status="PASS" endtime="20140114 10:19:05.354" starttime="20140114 10:19:05.354"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="PASS" endtime="20140114 10:19:05.354" critical="yes" starttime="20140114 10:19:05.354"></status>
+</test>
+<test id="s1-s1-t3" name="Adresář pro export do Alephu">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
+<doc></doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>export_directory_path</arg>
+</arguments>
+<status status="PASS" endtime="20140114 10:19:05.355" starttime="20140114 10:19:05.355"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="PASS" endtime="20140114 10:19:05.355" critical="yes" starttime="20140114 10:19:05.355"></status>
+</test>
+<test id="s1-s1-t4" name="Konfigurace pro vstupní exchange v RabbitMQ">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
+<doc></doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>input_exchange</arg>
+</arguments>
+<msg timestamp="20140114 10:19:05.358" level="FAIL">AttributeError: 'module' object has no attribute 'input_exchange'</msg>
+<status status="FAIL" endtime="20140114 10:19:05.358" starttime="20140114 10:19:05.357"></status>
+</kw>
+<doc>Jméno exchange, kam se budou posílat žádosti na export do Alephu</doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140114 10:19:05.358" critical="yes" starttime="20140114 10:19:05.356">AttributeError: 'module' object has no attribute 'input_exchange'</status>
+</test>
+<test id="s1-s1-t5" name="Konfigurace pro exchange v RabbitMQ pro odpovědi">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
+<doc></doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>result_exchange</arg>
+</arguments>
+<msg timestamp="20140114 10:19:05.359" level="FAIL">AttributeError: 'module' object has no attribute 'result_exchange'</msg>
+<status status="FAIL" endtime="20140114 10:19:05.360" starttime="20140114 10:19:05.359"></status>
+</kw>
+<doc>Jméno exchange ve které se budou objevovat odpovědi z Alephu</doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140114 10:19:05.360" critical="yes" starttime="20140114 10:19:05.358">AttributeError: 'module' object has no attribute 'result_exchange'</status>
+</test>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20140114 10:19:05.360" starttime="20140114 10:19:05.286"></status>
+</suite>
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_installation.txt" id="s1-s2" name="Test Installation">
+<test id="s1-s2-t1" name="PYPI repozitář">
+<kw type="kw" name="HttpLibrary.HTTP.GET">
+<doc>Issues a HTTP GET request.</doc>
+<arguments>
+<arg>${PACKAGE_URL}</arg>
+</arguments>
+<msg timestamp="20140114 10:19:05.422" level="INFO">Host for next HTTP request set to 'pypi.python.org'</msg>
+<msg timestamp="20140114 10:19:05.422" level="INFO">Scheme for next HTTP request set to 'https'</msg>
+<msg timestamp="20140114 10:19:05.732" level="FAIL">Request should have succeeded, but was "404 Not Found ()".</msg>
+<status status="FAIL" endtime="20140114 10:19:05.733" starttime="20140114 10:19:05.422"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140114 10:19:05.733" critical="yes" starttime="20140114 10:19:05.422">Request should have succeeded, but was "404 Not Found ()".</status>
+</test>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20140114 10:19:05.734" starttime="20140114 10:19:05.361"></status>
+</suite>
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_usage.txt" id="s1-s3" name="Test Usage">
+<test id="s1-s3-t1" name="Příprava exportu EPublikace">
 <kw type="kw" name="OperatingSystem.Empty Directory">
 <doc>Deletes all the content (incl. subdirectories) from the given directory.</doc>
 <arguments>
 <arg>${export_directory_path}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.113" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
-<msg timestamp="20140114 09:40:14.113" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
-<status status="PASS" endtime="20140114 09:40:14.114" starttime="20140114 09:40:14.113"></status>
+<msg timestamp="20140114 10:19:05.760" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
+<msg timestamp="20140114 10:19:05.760" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20140114 10:19:05.760" starttime="20140114 10:19:05.760"></status>
 </kw>
 <kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.114" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 09:40:14.114" starttime="20140114 09:40:14.114"></status>
+<msg timestamp="20140114 10:19:05.761" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140114 10:19:05.761" starttime="20140114 10:19:05.761"></status>
 </kw>
 <kw type="kw" name="${path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -25,29 +126,29 @@
 <arg>${export_directory_path}</arg>
 <arg>${export_id}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.116" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
-<status status="FAIL" endtime="20140114 09:40:14.116" starttime="20140114 09:40:14.115"></status>
+<msg timestamp="20140114 10:19:05.763" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
+<status status="FAIL" endtime="20140114 10:19:05.763" starttime="20140114 10:19:05.761"></status>
 </kw>
 <doc>Uloží data do adresáře. Vrátí jméno vzniklého adresáře: TODAY-......</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 09:40:14.116" critical="yes" starttime="20140114 09:40:14.112">AttributeError: 'NoneType' object has no attribute 'replace'</status>
+<status status="FAIL" endtime="20140114 10:19:05.763" critical="yes" starttime="20140114 10:19:05.759">AttributeError: 'NoneType' object has no attribute 'replace'</status>
 </test>
-<test id="s1-t2" name="Aleph načte data a do adresáře vloží odpověď">
+<test id="s1-s3-t2" name="Aleph načte data a do adresáře vloží odpověď">
 <kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.118" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 09:40:14.118" starttime="20140114 09:40:14.118"></status>
+<msg timestamp="20140114 10:19:05.765" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140114 10:19:05.765" starttime="20140114 10:19:05.764"></status>
 </kw>
 <kw type="kw" name="inspector.Inspector.Aleph AcceptedEPublication">
 <doc>created responses the same way as Aleph creates it </doc>
 <arguments>
 <arg>${export_id}</arg>
 </arguments>
-<status status="PASS" endtime="20140114 09:40:14.119" starttime="20140114 09:40:14.118"></status>
+<status status="PASS" endtime="20140114 10:19:05.765" starttime="20140114 10:19:05.765"></status>
 </kw>
 <kw type="kw" name="${path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -55,29 +156,29 @@
 <arg>${export_directory_path}</arg>
 <arg>${export_id}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.119" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
-<status status="FAIL" endtime="20140114 09:40:14.119" starttime="20140114 09:40:14.119"></status>
+<msg timestamp="20140114 10:19:05.766" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
+<status status="FAIL" endtime="20140114 10:19:05.766" starttime="20140114 10:19:05.765"></status>
 </kw>
 <doc>Pokud Aleph data přijal, vloží soubory *aleph-success* a *aleph-record.xml*</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 09:40:14.120" critical="yes" starttime="20140114 09:40:14.116">AttributeError: 'NoneType' object has no attribute 'replace'</status>
+<status status="FAIL" endtime="20140114 10:19:05.766" critical="yes" starttime="20140114 10:19:05.763">AttributeError: 'NoneType' object has no attribute 'replace'</status>
 </test>
-<test id="s1-t3" name="Anebo Aleph data odmítne do adresáře vloží zprávu o chybě">
+<test id="s1-s3-t3" name="Anebo Aleph data odmítne do adresáře vloží zprávu o chybě">
 <kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.122" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 09:40:14.122" starttime="20140114 09:40:14.122"></status>
+<msg timestamp="20140114 10:19:05.767" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140114 10:19:05.767" starttime="20140114 10:19:05.767"></status>
 </kw>
 <kw type="kw" name="inspector.Inspector.Aleph RejectedEPublication">
 <doc>created responses the same way as Aleph creates it </doc>
 <arguments>
 <arg>${export_id}</arg>
 </arguments>
-<status status="PASS" endtime="20140114 09:40:14.123" starttime="20140114 09:40:14.123"></status>
+<status status="PASS" endtime="20140114 10:19:05.767" starttime="20140114 10:19:05.767"></status>
 </kw>
 <kw type="kw" name="${path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -85,8 +186,8 @@
 <arg>${export_directory_path}</arg>
 <arg>${epublication_directory}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.124" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 09:40:14.124" starttime="20140114 09:40:14.123"></status>
+<msg timestamp="20140114 10:19:05.768" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
+<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.767"></status>
 </kw>
 <kw type="kw" name="${error_path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -94,8 +195,8 @@
 <arg>${path}</arg>
 <arg>aleph-error</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.125" level="INFO">${error_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error</msg>
-<status status="PASS" endtime="20140114 09:40:14.125" starttime="20140114 09:40:14.124"></status>
+<msg timestamp="20140114 10:19:05.768" level="INFO">${error_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error</msg>
+<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.768"></status>
 </kw>
 <kw type="kw" name="${error_message_path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -103,30 +204,30 @@
 <arg>${path}</arg>
 <arg>aleph-error-message.txt</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.125" level="INFO">${error_message_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error-message.txt</msg>
-<status status="PASS" endtime="20140114 09:40:14.125" starttime="20140114 09:40:14.125"></status>
+<msg timestamp="20140114 10:19:05.769" level="INFO">${error_message_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error-message.txt</msg>
+<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.768"></status>
 </kw>
 <kw type="kw" name="OperatingSystem.File Should Exist">
 <doc>Fails unless the given `path` points to an existing file.</doc>
 <arguments>
 <arg>${error_path}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.127" level="FAIL">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</msg>
-<status status="FAIL" endtime="20140114 09:40:14.127" starttime="20140114 09:40:14.126"></status>
+<msg timestamp="20140114 10:19:05.769" level="FAIL">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</msg>
+<status status="FAIL" endtime="20140114 10:19:05.769" starttime="20140114 10:19:05.769"></status>
 </kw>
 <doc>Aleph vloží soubory *aleph-error* a *aleph-error-message.txt*</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 09:40:14.127" critical="yes" starttime="20140114 09:40:14.120">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</status>
+<status status="FAIL" endtime="20140114 10:19:05.769" critical="yes" starttime="20140114 10:19:05.766">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</status>
 </test>
-<test id="s1-t4" name="Zpracování správné odpovědi z Alephu">
+<test id="s1-s3-t4" name="Zpracování správné odpovědi z Alephu">
 <kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.129" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 09:40:14.129" starttime="20140114 09:40:14.129"></status>
+<msg timestamp="20140114 10:19:05.771" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.770"></status>
 </kw>
 <kw type="kw" name="${path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -134,29 +235,29 @@
 <arg>${export_directory_path}</arg>
 <arg>${epublication_directory}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.130" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 09:40:14.130" starttime="20140114 09:40:14.129"></status>
+<msg timestamp="20140114 10:19:05.771" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
+<status status="PASS" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.771"></status>
 </kw>
 <kw type="kw" name="${queue_name} = aleph-success">
 <doc></doc>
 <arguments>
 </arguments>
-<msg timestamp="20140114 09:40:14.130" level="FAIL">No keyword with name 'aleph-success' found.</msg>
-<status status="FAIL" endtime="20140114 09:40:14.130" starttime="20140114 09:40:14.130"></status>
+<msg timestamp="20140114 10:19:05.771" level="FAIL">No keyword with name 'aleph-success' found.</msg>
+<status status="FAIL" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.771"></status>
 </kw>
 <doc>Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 09:40:14.131" critical="yes" starttime="20140114 09:40:14.128">No keyword with name 'aleph-success' found.</status>
+<status status="FAIL" endtime="20140114 10:19:05.771" critical="yes" starttime="20140114 10:19:05.770">No keyword with name 'aleph-success' found.</status>
 </test>
-<test id="s1-t5" name="Zpracování chyby z Alephu">
+<test id="s1-s3-t5" name="Zpracování chyby z Alephu">
 <kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.132" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 09:40:14.132" starttime="20140114 09:40:14.132"></status>
+<msg timestamp="20140114 10:19:05.772" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140114 10:19:05.772" starttime="20140114 10:19:05.772"></status>
 </kw>
 <kw type="kw" name="${path} = OperatingSystem.Join Path">
 <doc>Joins the given path part(s) to the given base path.</doc>
@@ -164,36 +265,44 @@
 <arg>${export_directory_path}</arg>
 <arg>${epublication_directory}</arg>
 </arguments>
-<msg timestamp="20140114 09:40:14.133" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 09:40:14.133" starttime="20140114 09:40:14.133"></status>
+<msg timestamp="20140114 10:19:05.773" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
+<status status="PASS" endtime="20140114 10:19:05.773" starttime="20140114 10:19:05.773"></status>
 </kw>
 <kw type="kw" name="${queue_name} = aleph-errors">
 <doc></doc>
 <arguments>
 </arguments>
-<msg timestamp="20140114 09:40:14.134" level="FAIL">No keyword with name 'aleph-errors' found.</msg>
-<status status="FAIL" endtime="20140114 09:40:14.134" starttime="20140114 09:40:14.134"></status>
+<msg timestamp="20140114 10:19:05.773" level="FAIL">No keyword with name 'aleph-errors' found.</msg>
+<status status="FAIL" endtime="20140114 10:19:05.773" starttime="20140114 10:19:05.773"></status>
 </kw>
 <doc>Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 09:40:14.134" critical="yes" starttime="20140114 09:40:14.131">No keyword with name 'aleph-errors' found.</status>
+<status status="FAIL" endtime="20140114 10:19:05.773" critical="yes" starttime="20140114 10:19:05.772">No keyword with name 'aleph-errors' found.</status>
 </test>
 <doc></doc>
 <metadata>
 <item name="name">"Použití knihovny"</item>
 </metadata>
-<status status="FAIL" endtime="20140114 09:40:14.135" starttime="20140114 09:40:13.976"></status>
+<status status="FAIL" endtime="20140114 10:19:05.774" starttime="20140114 10:19:05.736"></status>
+</suite>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20140114 10:19:05.774" starttime="20140114 10:19:05.264"></status>
 </suite>
 <statistics>
 <total>
-<stat fail="5" pass="0">Critical Tests</stat>
-<stat fail="5" pass="0">All Tests</stat>
+<stat fail="8" pass="3">Critical Tests</stat>
+<stat fail="8" pass="3">All Tests</stat>
 </total>
 <tag>
 </tag>
 <suite>
-<stat fail="5" pass="0" id="s1" name="Test Usage">Test Usage</stat>
+<stat fail="8" pass="3" id="s1" name="Tests">Tests</stat>
+<stat fail="2" pass="3" id="s1-s1" name="Test Configuration">Tests.Test Configuration</stat>
+<stat fail="1" pass="0" id="s1-s2" name="Test Installation">Tests.Test Installation</stat>
+<stat fail="5" pass="0" id="s1-s3" name="Test Usage">Tests.Test Usage</stat>
 </suite>
 </statistics>
 <errors>
