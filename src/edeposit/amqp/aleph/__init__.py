@@ -6,45 +6,34 @@ class Producent(namedtuple("Producent",['title','phone','fax','email','url','ide
     pass
 
 class EPublication(namedtuple("EPublication",
-                              ['title',
-                               'subtitle',
-                               'bookBinding',
-                               'price',
-                               'volume',
-                               'volumeTitle',
-                               'volumeNumber',
-                               'edition',
-                               'editionNumber',
-                               'subedition',
-                               'subeditionNumber',
-                               'placeOfPublishing',
-                               'publisher',
-                               'dateOfPublishing',
-                               'publishedWithCoedition',
-                               'publishedAtOrder',
-                               'personWhoProcessedThis',
-                               'librariesThatCanAccessAtLibraryTerminal',
-                               'librariesThatCanAccessAtPublic',
-                               'alephDocNumber',
-                               'generateISBN',
-                               'categoryForRIV',
-                               'placeOfDistribution',
+                              ['nazev',
+                               'podnazev',
+                               'vazba',
+                               'cena',
+                               'castDil',
+                               'nazevCasti',
+                               'nakladatelVydavatel',
+                               'datumVydani',
+                               'poradiVydani',
+                               'zpracovatelZaznamu',
+                               'kategorieProRIV',
+                               'mistoDistribuce',
                                'distributor',
-                               'dateOfDistribution',
-                               'producer',
-                               'dateOfProduction',
-                               'dateOfCopyright',
-                               'development',
-                               'mediaType',
-                               'authors',
-                               'originalFiles',
+                               'datumDistribuce',
+                               'datupProCopyright',
+                               'format',
+                               'url',
+                               'mistoVydani',
+                               'ISBNSouboruPublikaci',
+                               'authori',
+                               'originaly',
                            ])):
     """
     see https://e-deposit.readthedocs.org/cs/latest/dm01.html
     """
     pass
 
-class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbns'])):
+class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbn'])):
     """ type of isbn: ISBN"""
     pass
 
