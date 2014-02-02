@@ -3,25 +3,28 @@ Library     inspector.Inspector
 Library     OperatingSystem
 Variables   variables.py
 
-*** Variables ***
-${ALEPH_URL}               http://aleph.nkp.cz/
-${ALEPH_URL_PRODUCENTS}    https://pypi.python.org/pypi/edeposit.amqp.aleph/
-
-
 *** Test Cases ***
 Konfigurační soubor
     Should Exist       src/edeposit/amqp/aleph/settings.py        
 
 Cesta k alephu
-    Variable presented          src/edeposit/amqp/aleph/settings.py             aleph_url 
+    Variable presented          src/edeposit/amqp/aleph/settings.py             ALEPH_URL 
     
 Adresář pro export do Alephu
-    Variable presented          src/edeposit/amqp/aleph/settings.py             export_directory_path
+    Variable presented          src/edeposit/amqp/aleph/settings.py             PATH_OF_EXPORT_DIRECTORY
 
 Konfigurace pro vstupní exchange v RabbitMQ
     [Documentation]          Jméno exchange, kam se budou posílat žádosti na export do Alephu
-    Variable presented       src/edeposit/amqp/aleph/settings.py              input_exchange
+    Variable presented       src/edeposit/amqp/aleph/settings.py              INPUT_EXCHANGE_FOR_ALEPH_IMPORT
 
 Konfigurace pro exchange v RabbitMQ pro odpovědi
-    [Documentation]          Jméno exchange ve které se budou objevovat odpovědi z Alephu
-    Variable presented       src/edeposit/amqp/aleph/settings.py               result_exchange
+    [Documentation]          Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na import dat.
+    Variable presented       src/edeposit/amqp/aleph/settings.py               OUTPUT_EXCHANGE_FOR_ALEPH_IMPORT_RESPONSE
+
+Konfigurace pro vstupní exchange v RabbitMQ pro dotazy
+    [Documentation]          Jméno exchange, kam se budou posílat žádosti na dotazy do Alephu
+    Variable presented       src/edeposit/amqp/aleph/settings.py              INPUT_EXCHANGE_FOR_ALEPH_SEARCH
+
+Konfigurace pro exchange v RabbitMQ pro odpovědi na dotazy do Alephu
+    [Documentation]          Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na dotazy do Alephu.
+    Variable presented       src/edeposit/amqp/aleph/settings.py               OUTPUT_EXCHANGE_FOR_ALEPH_SEARCH_RESPONSE

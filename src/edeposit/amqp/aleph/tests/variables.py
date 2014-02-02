@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-import edeposit.amqp.aleph
 from datetime import date
-from edeposit.amqp.aleph.settings import export_directory_path
+import edeposit.amqp.aleph
+from edeposit.amqp.aleph.settings import *
 
-today = date.today()
-epublication_directory = "%s-*" % (str(today),)
-
-producent = edeposit.amqp.aleph.Producent(
+producent = edeposit.amqp.aleph.Producent (
     title='Návrat',
     phone=None,
     fax=None,
@@ -16,17 +13,13 @@ producent = edeposit.amqp.aleph.Producent(
     ico=None
 )
 
-author = edeposit.amqp.aleph.Author(
+author = edeposit.amqp.aleph.Author (
     firstName="Karel",
     lastName="May"
 )
 
-isbn = edeposit.amqp.aleph.ISBN(
-    ISBN="80-7174-091-8"
-)
-
-originalFile = edeposit.amqp.aleph.OriginalFile(
-    isbns = [isbn],
+originalFile = edeposit.amqp.aleph.OriginalFile (
+    isbns = [],
     url = "",
     file = None,
     format = None
@@ -66,3 +59,16 @@ epublication = edeposit.amqp.aleph.EPublication(
     authors=[author],
     originalFiles=[],
 )
+
+linkOfEPublication = "http://localhost/epublication-01/"
+
+exportRequest = edeposit.amqp.aleph.AlephExportRequest(
+    epublication = epublication,
+    linkOfEPublication = linkOfEPublication,
+)
+
+
+""" it is important to fill those three variables with results that are sent in RabbitMQ """
+amqp_data = None
+amqp_properties = None
+amqp_headers = None

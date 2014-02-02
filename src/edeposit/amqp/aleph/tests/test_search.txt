@@ -1,0 +1,56 @@
+*** Settings ***
+Metadata    name  "Použití knihovny"
+Library     inspector.Inspector
+Library     OperatingSystem
+Variables   variables.py
+Library     XML
+
+*** Keywords ***
+Odeslání žádosti modulem
+    Log   ahoj
+        
+Žádost má správný typ
+    Log   ahoj    
+    
+Modul se dotáže Alephu
+    Log   ahoj
+    
+Modul stáhne detaily dokumentů
+    Log   ahoj
+
+Modul odešle jednotlivé detaily do exchange v RabbitMQ
+    Log   ahoj    
+
+Načtení jedné zprávy z RabbitMQ fronty
+    Log   Načítám data z RabbitMQ fronty. Je tam několik zpráv.
+
+Odpovědi mají správný typ
+    Log   Každá zpráva je typu AlephSearchResult
+
+Převedení jedné odpovědi do výstupní struktury
+    [Arguments]    ${data}   ${properties}   ${headers}
+    ${result}=    Call   edeposit.amqp.aleph.convert_search_amqp_result   ${data}    ${properties}    ${headers}
+    Is type of   ${result}   ${edeposit.amqp.aleph.AlephSearchResult}
+
+Žádost o kontrolu ISBN má správný typ
+
+*** Test Cases ***
+    
+Dotaz na dokument se zadaným ISBN
+    Žádost má správný typ
+    Odeslání žádosti modulem
+    Modul se dotáže Alephu
+    Modul stáhne detaily dokumentů
+    Modul odešle jednotlivé detaily do exchange v RabbitMQ
+    Načtení jedné zprávy z RabbitMQ fronty
+    ${result}=    Převedení jedné odpovědi do výstupní struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
+
+Dotaz zda je ISBN uz použito
+    [Documentation]   modul se dotáže na isbn záznamy. Jestli existují, vrátí odpověd, že ANO. Jinak NE.
+    Žádost o kontrolu ISBN má správný typ
+    Odeslání žádosti modulem
+    Modul se dotáže Alephu
+    Modul odešle odpověd do exchange v RabbitMQ
+    Přečtení dat z RabbitMQ fronty
+    ${result}=    Převedení jedné žádosti do výstupní struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
+    

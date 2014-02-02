@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<robot generated="20140114 10:19:05.263" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
+<robot generated="20140202 15:02:37.815" generator="Robot 2.8.3 (Python 2.7.5+ on linux2)">
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests" id="s1" name="Tests">
 <suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_configuration.txt" id="s1-s1" name="Test Configuration">
 <test id="s1-s1-t1" name="Konfigurační soubor">
@@ -8,288 +8,383 @@
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.353" html="yes" level="INFO">Path '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py&lt;/a&gt;' exists</msg>
-<status status="PASS" endtime="20140114 10:19:05.353" starttime="20140114 10:19:05.353"></status>
+<msg timestamp="20140202 15:02:37.904" html="yes" level="INFO">Path '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/settings.py&lt;/a&gt;' exists</msg>
+<status status="PASS" endtime="20140202 15:02:37.904" starttime="20140202 15:02:37.903"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140114 10:19:05.353" critical="yes" starttime="20140114 10:19:05.352"></status>
+<status status="PASS" endtime="20140202 15:02:37.904" critical="yes" starttime="20140202 15:02:37.902"></status>
 </test>
 <test id="s1-s1-t2" name="Cesta k alephu">
 <kw type="kw" name="inspector.Inspector.Variable Presented">
 <doc></doc>
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
-<arg>aleph_url</arg>
+<arg>ALEPH_URL</arg>
 </arguments>
-<status status="PASS" endtime="20140114 10:19:05.354" starttime="20140114 10:19:05.354"></status>
+<status status="PASS" endtime="20140202 15:02:37.906" starttime="20140202 15:02:37.906"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140114 10:19:05.354" critical="yes" starttime="20140114 10:19:05.354"></status>
+<status status="PASS" endtime="20140202 15:02:37.906" critical="yes" starttime="20140202 15:02:37.905"></status>
 </test>
 <test id="s1-s1-t3" name="Adresář pro export do Alephu">
 <kw type="kw" name="inspector.Inspector.Variable Presented">
 <doc></doc>
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
-<arg>export_directory_path</arg>
+<arg>PATH_OF_EXPORT_DIRECTORY</arg>
 </arguments>
-<status status="PASS" endtime="20140114 10:19:05.355" starttime="20140114 10:19:05.355"></status>
+<status status="PASS" endtime="20140202 15:02:37.908" starttime="20140202 15:02:37.907"></status>
 </kw>
 <doc></doc>
 <tags>
 </tags>
-<status status="PASS" endtime="20140114 10:19:05.355" critical="yes" starttime="20140114 10:19:05.355"></status>
+<status status="PASS" endtime="20140202 15:02:37.908" critical="yes" starttime="20140202 15:02:37.907"></status>
 </test>
 <test id="s1-s1-t4" name="Konfigurace pro vstupní exchange v RabbitMQ">
 <kw type="kw" name="inspector.Inspector.Variable Presented">
 <doc></doc>
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
-<arg>input_exchange</arg>
+<arg>INPUT_EXCHANGE_FOR_ALEPH_IMPORT</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.358" level="FAIL">AttributeError: 'module' object has no attribute 'input_exchange'</msg>
-<status status="FAIL" endtime="20140114 10:19:05.358" starttime="20140114 10:19:05.357"></status>
+<msg timestamp="20140202 15:02:37.910" level="FAIL">AttributeError: 'module' object has no attribute 'INPUT_EXCHANGE_FOR_ALEPH_IMPORT'</msg>
+<status status="FAIL" endtime="20140202 15:02:37.910" starttime="20140202 15:02:37.909"></status>
 </kw>
 <doc>Jméno exchange, kam se budou posílat žádosti na export do Alephu</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 10:19:05.358" critical="yes" starttime="20140114 10:19:05.356">AttributeError: 'module' object has no attribute 'input_exchange'</status>
+<status status="FAIL" endtime="20140202 15:02:37.910" critical="yes" starttime="20140202 15:02:37.908">AttributeError: 'module' object has no attribute 'INPUT_EXCHANGE_FOR_ALEPH_IMPORT'</status>
 </test>
 <test id="s1-s1-t5" name="Konfigurace pro exchange v RabbitMQ pro odpovědi">
 <kw type="kw" name="inspector.Inspector.Variable Presented">
 <doc></doc>
 <arguments>
 <arg>src/edeposit/amqp/aleph/settings.py</arg>
-<arg>result_exchange</arg>
+<arg>OUTPUT_EXCHANGE_FOR_ALEPH_IMPORT_RESPONSE</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.359" level="FAIL">AttributeError: 'module' object has no attribute 'result_exchange'</msg>
-<status status="FAIL" endtime="20140114 10:19:05.360" starttime="20140114 10:19:05.359"></status>
+<msg timestamp="20140202 15:02:37.911" level="FAIL">AttributeError: 'module' object has no attribute 'OUTPUT_EXCHANGE_FOR_ALEPH_IMPORT_RESPONSE'</msg>
+<status status="FAIL" endtime="20140202 15:02:37.911" starttime="20140202 15:02:37.911"></status>
 </kw>
-<doc>Jméno exchange ve které se budou objevovat odpovědi z Alephu</doc>
+<doc>Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na import dat.</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 10:19:05.360" critical="yes" starttime="20140114 10:19:05.358">AttributeError: 'module' object has no attribute 'result_exchange'</status>
+<status status="FAIL" endtime="20140202 15:02:37.911" critical="yes" starttime="20140202 15:02:37.910">AttributeError: 'module' object has no attribute 'OUTPUT_EXCHANGE_FOR_ALEPH_IMPORT_RESPONSE'</status>
 </test>
+<test id="s1-s1-t6" name="Konfigurace pro vstupní exchange v RabbitMQ pro dotazy">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
 <doc></doc>
-<metadata>
-</metadata>
-<status status="FAIL" endtime="20140114 10:19:05.360" starttime="20140114 10:19:05.286"></status>
-</suite>
-<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_installation.txt" id="s1-s2" name="Test Installation">
-<test id="s1-s2-t1" name="PYPI repozitář">
-<kw type="kw" name="HttpLibrary.HTTP.GET">
-<doc>Issues a HTTP GET request.</doc>
 <arguments>
-<arg>${PACKAGE_URL}</arg>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>INPUT_EXCHANGE_FOR_ALEPH_SEARCH</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.422" level="INFO">Host for next HTTP request set to 'pypi.python.org'</msg>
-<msg timestamp="20140114 10:19:05.422" level="INFO">Scheme for next HTTP request set to 'https'</msg>
-<msg timestamp="20140114 10:19:05.732" level="FAIL">Request should have succeeded, but was "404 Not Found ()".</msg>
-<status status="FAIL" endtime="20140114 10:19:05.733" starttime="20140114 10:19:05.422"></status>
+<msg timestamp="20140202 15:02:37.913" level="FAIL">AttributeError: 'module' object has no attribute 'INPUT_EXCHANGE_FOR_ALEPH_SEARCH'</msg>
+<status status="FAIL" endtime="20140202 15:02:37.913" starttime="20140202 15:02:37.912"></status>
 </kw>
-<doc></doc>
+<doc>Jméno exchange, kam se budou posílat žádosti na dotazy do Alephu</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 10:19:05.733" critical="yes" starttime="20140114 10:19:05.422">Request should have succeeded, but was "404 Not Found ()".</status>
+<status status="FAIL" endtime="20140202 15:02:37.913" critical="yes" starttime="20140202 15:02:37.912">AttributeError: 'module' object has no attribute 'INPUT_EXCHANGE_FOR_ALEPH_SEARCH'</status>
+</test>
+<test id="s1-s1-t7" name="Konfigurace pro exchange v RabbitMQ pro odpovědi na dotazy do Alephu">
+<kw type="kw" name="inspector.Inspector.Variable Presented">
+<doc></doc>
+<arguments>
+<arg>src/edeposit/amqp/aleph/settings.py</arg>
+<arg>OUTPUT_EXCHANGE_FOR_ALEPH_SEARCH_RESPONSE</arg>
+</arguments>
+<msg timestamp="20140202 15:02:37.914" level="FAIL">AttributeError: 'module' object has no attribute 'OUTPUT_EXCHANGE_FOR_ALEPH_SEARCH_RESPONSE'</msg>
+<status status="FAIL" endtime="20140202 15:02:37.914" starttime="20140202 15:02:37.914"></status>
+</kw>
+<doc>Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na dotazy do Alephu.</doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140202 15:02:37.915" critical="yes" starttime="20140202 15:02:37.913">AttributeError: 'module' object has no attribute 'OUTPUT_EXCHANGE_FOR_ALEPH_SEARCH_RESPONSE'</status>
 </test>
 <doc></doc>
 <metadata>
 </metadata>
-<status status="FAIL" endtime="20140114 10:19:05.734" starttime="20140114 10:19:05.361"></status>
+<status status="FAIL" endtime="20140202 15:02:37.915" starttime="20140202 15:02:37.837"></status>
 </suite>
-<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_usage.txt" id="s1-s3" name="Test Usage">
-<test id="s1-s3-t1" name="Příprava exportu EPublikace">
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_export.txt" id="s1-s2" name="Test Export">
+<test id="s1-s2-t1" name="Export ePublikace do Alephu">
 <kw type="kw" name="OperatingSystem.Empty Directory">
 <doc>Deletes all the content (incl. subdirectories) from the given directory.</doc>
 <arguments>
-<arg>${export_directory_path}</arg>
+<arg>${PATH_OF_EXPORT_DIRECTORY}</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.760" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
-<msg timestamp="20140114 10:19:05.760" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
-<status status="PASS" endtime="20140114 10:19:05.760" starttime="20140114 10:19:05.760"></status>
+<msg timestamp="20140202 15:02:37.929" html="yes" level="INFO">Listing contents of directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'.</msg>
+<msg timestamp="20140202 15:02:37.929" html="yes" level="INFO">Emptied directory '&lt;a href="file:///home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export"&gt;/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export&lt;/a&gt;'</msg>
+<status status="PASS" endtime="20140202 15:02:37.929" starttime="20140202 15:02:37.928"></status>
 </kw>
-<kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
+<kw type="kw" name="Request pro export má správný typ">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="inspector.Inspector.Is Type Of">
 <doc></doc>
 <arguments>
 <arg>${epublication}</arg>
+<arg>${edeposit.amqp.aleph.EPublication}</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.761" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 10:19:05.761" starttime="20140114 10:19:05.761"></status>
+<status status="PASS" endtime="20140202 15:02:37.930" starttime="20140202 15:02:37.930"></status>
 </kw>
-<kw type="kw" name="${path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
+<kw type="kw" name="inspector.Inspector.Is Type Of">
+<doc></doc>
 <arguments>
-<arg>${export_directory_path}</arg>
+<arg>${exportRequest}</arg>
+<arg>${edeposit.amqp.aleph.AlephExportRequest}</arg>
+</arguments>
+<status status="PASS" endtime="20140202 15:02:37.930" starttime="20140202 15:02:37.930"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:37.931" starttime="20140202 15:02:37.929"></status>
+</kw>
+<kw type="kw" name="${export_id} = inspector.Inspector.Call">
+<doc>calls method from module with *args</doc>
+<arguments>
+<arg>edeposit.amqp.aleph.submit_export_request</arg>
+<arg>${exportRequest}</arg>
+</arguments>
+<msg timestamp="20140202 15:02:37.931" level="INFO">${export_id} = None</msg>
+<status status="PASS" endtime="20140202 15:02:37.931" starttime="20140202 15:02:37.931"></status>
+</kw>
+<kw type="kw" name="Zádost se objevila v Exchange v RabbitMQ">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>zadost je v exchange</arg>
+</arguments>
+<msg timestamp="20140202 15:02:37.932" level="INFO">zadost je v exchange</msg>
+<status status="PASS" endtime="20140202 15:02:37.932" starttime="20140202 15:02:37.931"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:37.932" starttime="20140202 15:02:37.931"></status>
+</kw>
+<kw type="kw" name="Modul přečte žádost ve frontě v RabbitMQ">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>modul načetl žádost z fronty</arg>
+</arguments>
+<msg timestamp="20140202 15:02:37.932" level="INFO">modul načetl žádost z fronty</msg>
+<status status="PASS" endtime="20140202 15:02:37.932" starttime="20140202 15:02:37.932"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:37.933" starttime="20140202 15:02:37.932"></status>
+</kw>
+<kw type="kw" name="Modul uloží data do nového adresáře">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>v novém adresáři se objeví soubory</arg>
+</arguments>
+<msg timestamp="20140202 15:02:37.933" level="INFO">v novém adresáři se objeví soubory</msg>
+<status status="PASS" endtime="20140202 15:02:37.933" starttime="20140202 15:02:37.933"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:37.933" starttime="20140202 15:02:37.933"></status>
+</kw>
+<kw type="kw" name="Adresář s exportem obsahuje soubory pro export">
+<doc>existují soubory edeposit-link.txt a edeposit-record.xml</doc>
+<arguments>
 <arg>${export_id}</arg>
 </arguments>
-<msg timestamp="20140114 10:19:05.763" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
-<status status="FAIL" endtime="20140114 10:19:05.763" starttime="20140114 10:19:05.761"></status>
-</kw>
-<doc>Uloží data do adresáře. Vrátí jméno vzniklého adresáře: TODAY-......</doc>
-<tags>
-</tags>
-<status status="FAIL" endtime="20140114 10:19:05.763" critical="yes" starttime="20140114 10:19:05.759">AttributeError: 'NoneType' object has no attribute 'replace'</status>
-</test>
-<test id="s1-s3-t2" name="Aleph načte data a do adresáře vloží odpověď">
-<kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
-<doc></doc>
+<kw type="kw" name="${path} = OperatingSystem.Join Path">
+<doc>Joins the given path part(s) to the given base path.</doc>
 <arguments>
-<arg>${epublication}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.765" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 10:19:05.765" starttime="20140114 10:19:05.764"></status>
-</kw>
-<kw type="kw" name="inspector.Inspector.Aleph AcceptedEPublication">
-<doc>created responses the same way as Aleph creates it </doc>
-<arguments>
+<arg>${PATH_OF_EXPORT_DIRECTORY}</arg>
 <arg>${export_id}</arg>
 </arguments>
-<status status="PASS" endtime="20140114 10:19:05.765" starttime="20140114 10:19:05.765"></status>
+<msg timestamp="20140202 15:02:37.935" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
+<status status="FAIL" endtime="20140202 15:02:37.935" starttime="20140202 15:02:37.934"></status>
 </kw>
-<kw type="kw" name="${path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${export_directory_path}</arg>
-<arg>${export_id}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.766" level="FAIL">AttributeError: 'NoneType' object has no attribute 'replace'</msg>
-<status status="FAIL" endtime="20140114 10:19:05.766" starttime="20140114 10:19:05.765"></status>
+<status status="FAIL" endtime="20140202 15:02:37.935" starttime="20140202 15:02:37.933"></status>
 </kw>
-<doc>Pokud Aleph data přijal, vloží soubory *aleph-success* a *aleph-record.xml*</doc>
+<doc>Modul pošle data do Exchange v RabbitMQ</doc>
 <tags>
 </tags>
-<status status="FAIL" endtime="20140114 10:19:05.766" critical="yes" starttime="20140114 10:19:05.763">AttributeError: 'NoneType' object has no attribute 'replace'</status>
-</test>
-<test id="s1-s3-t3" name="Anebo Aleph data odmítne do adresáře vloží zprávu o chybě">
-<kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
-<doc></doc>
-<arguments>
-<arg>${epublication}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.767" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 10:19:05.767" starttime="20140114 10:19:05.767"></status>
-</kw>
-<kw type="kw" name="inspector.Inspector.Aleph RejectedEPublication">
-<doc>created responses the same way as Aleph creates it </doc>
-<arguments>
-<arg>${export_id}</arg>
-</arguments>
-<status status="PASS" endtime="20140114 10:19:05.767" starttime="20140114 10:19:05.767"></status>
-</kw>
-<kw type="kw" name="${path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${export_directory_path}</arg>
-<arg>${epublication_directory}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.768" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.767"></status>
-</kw>
-<kw type="kw" name="${error_path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${path}</arg>
-<arg>aleph-error</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.768" level="INFO">${error_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error</msg>
-<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.768"></status>
-</kw>
-<kw type="kw" name="${error_message_path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${path}</arg>
-<arg>aleph-error-message.txt</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.769" level="INFO">${error_message_path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error-message.txt</msg>
-<status status="PASS" endtime="20140114 10:19:05.768" starttime="20140114 10:19:05.768"></status>
-</kw>
-<kw type="kw" name="OperatingSystem.File Should Exist">
-<doc>Fails unless the given `path` points to an existing file.</doc>
-<arguments>
-<arg>${error_path}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.769" level="FAIL">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</msg>
-<status status="FAIL" endtime="20140114 10:19:05.769" starttime="20140114 10:19:05.769"></status>
-</kw>
-<doc>Aleph vloží soubory *aleph-error* a *aleph-error-message.txt*</doc>
-<tags>
-</tags>
-<status status="FAIL" endtime="20140114 10:19:05.769" critical="yes" starttime="20140114 10:19:05.766">Path '/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*/aleph-error' does not match any file</status>
-</test>
-<test id="s1-s3-t4" name="Zpracování správné odpovědi z Alephu">
-<kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
-<doc></doc>
-<arguments>
-<arg>${epublication}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.771" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.770"></status>
-</kw>
-<kw type="kw" name="${path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${export_directory_path}</arg>
-<arg>${epublication_directory}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.771" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.771"></status>
-</kw>
-<kw type="kw" name="${queue_name} = aleph-success">
-<doc></doc>
-<arguments>
-</arguments>
-<msg timestamp="20140114 10:19:05.771" level="FAIL">No keyword with name 'aleph-success' found.</msg>
-<status status="FAIL" endtime="20140114 10:19:05.771" starttime="20140114 10:19:05.771"></status>
-</kw>
-<doc>Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*</doc>
-<tags>
-</tags>
-<status status="FAIL" endtime="20140114 10:19:05.771" critical="yes" starttime="20140114 10:19:05.770">No keyword with name 'aleph-success' found.</status>
-</test>
-<test id="s1-s3-t5" name="Zpracování chyby z Alephu">
-<kw type="kw" name="${export_id} = inspector.Inspector.Testedlibrary Send To Aleph">
-<doc></doc>
-<arguments>
-<arg>${epublication}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.772" level="INFO">${export_id} = None</msg>
-<status status="PASS" endtime="20140114 10:19:05.772" starttime="20140114 10:19:05.772"></status>
-</kw>
-<kw type="kw" name="${path} = OperatingSystem.Join Path">
-<doc>Joins the given path part(s) to the given base path.</doc>
-<arguments>
-<arg>${export_directory_path}</arg>
-<arg>${epublication_directory}</arg>
-</arguments>
-<msg timestamp="20140114 10:19:05.773" level="INFO">${path} = /home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/var/export/2014-01-14-*</msg>
-<status status="PASS" endtime="20140114 10:19:05.773" starttime="20140114 10:19:05.773"></status>
-</kw>
-<kw type="kw" name="${queue_name} = aleph-errors">
-<doc></doc>
-<arguments>
-</arguments>
-<msg timestamp="20140114 10:19:05.773" level="FAIL">No keyword with name 'aleph-errors' found.</msg>
-<status status="FAIL" endtime="20140114 10:19:05.773" starttime="20140114 10:19:05.773"></status>
-</kw>
-<doc>Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*</doc>
-<tags>
-</tags>
-<status status="FAIL" endtime="20140114 10:19:05.773" critical="yes" starttime="20140114 10:19:05.772">No keyword with name 'aleph-errors' found.</status>
+<status status="FAIL" endtime="20140202 15:02:37.935" critical="yes" starttime="20140202 15:02:37.928">AttributeError: 'NoneType' object has no attribute 'replace'</status>
 </test>
 <doc></doc>
 <metadata>
 <item name="name">"Použití knihovny"</item>
 </metadata>
-<status status="FAIL" endtime="20140114 10:19:05.774" starttime="20140114 10:19:05.736"></status>
+<status status="FAIL" endtime="20140202 15:02:37.935" starttime="20140202 15:02:37.916"></status>
+</suite>
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_installation.txt" id="s1-s3" name="Test Installation">
+<test id="s1-s3-t1" name="PYPI repozitář">
+<kw type="kw" name="HttpLibrary.HTTP.GET">
+<doc>Issues a HTTP GET request.</doc>
+<arguments>
+<arg>${PACKAGE_URL}</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.002" level="INFO">Host for next HTTP request set to 'pypi.python.org'</msg>
+<msg timestamp="20140202 15:02:38.002" level="INFO">Scheme for next HTTP request set to 'https'</msg>
+<msg timestamp="20140202 15:02:38.359" level="FAIL">Request should have succeeded, but was "404 Not Found ()".</msg>
+<status status="FAIL" endtime="20140202 15:02:38.359" starttime="20140202 15:02:38.002"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140202 15:02:38.359" critical="yes" starttime="20140202 15:02:38.001">Request should have succeeded, but was "404 Not Found ()".</status>
+</test>
+<doc></doc>
+<metadata>
+</metadata>
+<status status="FAIL" endtime="20140202 15:02:38.360" starttime="20140202 15:02:37.936"></status>
+</suite>
+<suite source="/home/jan/work/edeposit.amqp.aleph/src/edeposit/amqp/aleph/tests/test_search.txt" id="s1-s4" name="Test Search">
+<test id="s1-s4-t1" name="Dotaz na dokument se zadaným ISBN">
+<kw type="kw" name="Žádost má správný typ">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>ahoj</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.370" level="INFO">ahoj</msg>
+<status status="PASS" endtime="20140202 15:02:38.370" starttime="20140202 15:02:38.370"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.370" starttime="20140202 15:02:38.367"></status>
+</kw>
+<kw type="kw" name="Odeslání žádosti modulem">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>ahoj</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.371" level="INFO">ahoj</msg>
+<status status="PASS" endtime="20140202 15:02:38.371" starttime="20140202 15:02:38.371"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.371" starttime="20140202 15:02:38.370"></status>
+</kw>
+<kw type="kw" name="Modul se dotáže Alephu">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>ahoj</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.372" level="INFO">ahoj</msg>
+<status status="PASS" endtime="20140202 15:02:38.372" starttime="20140202 15:02:38.371"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.372" starttime="20140202 15:02:38.371"></status>
+</kw>
+<kw type="kw" name="Modul stáhne detaily dokumentů">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>ahoj</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.372" level="INFO">ahoj</msg>
+<status status="PASS" endtime="20140202 15:02:38.372" starttime="20140202 15:02:38.372"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.372" starttime="20140202 15:02:38.372"></status>
+</kw>
+<kw type="kw" name="Modul odešle jednotlivé detaily do exchange v RabbitMQ">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>ahoj</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.373" level="INFO">ahoj</msg>
+<status status="PASS" endtime="20140202 15:02:38.373" starttime="20140202 15:02:38.373"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.373" starttime="20140202 15:02:38.373"></status>
+</kw>
+<kw type="kw" name="Načtení jedné zprávy z RabbitMQ fronty">
+<doc></doc>
+<arguments>
+</arguments>
+<kw type="kw" name="BuiltIn.Log">
+<doc>Logs the given message with the given level.</doc>
+<arguments>
+<arg>Načítám data z RabbitMQ fronty. Je tam několik zpráv.</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.374" level="INFO">Načítám data z RabbitMQ fronty. Je tam několik zpráv.</msg>
+<status status="PASS" endtime="20140202 15:02:38.374" starttime="20140202 15:02:38.374"></status>
+</kw>
+<status status="PASS" endtime="20140202 15:02:38.375" starttime="20140202 15:02:38.374"></status>
+</kw>
+<kw type="kw" name="${result} = Převedení jedné odpovědi do výstupní struktury">
+<doc></doc>
+<arguments>
+<arg>${amqp_data}</arg>
+<arg>${amqp_properties}</arg>
+<arg>${amqp_headers}</arg>
+</arguments>
+<kw type="kw" name="${result} = inspector.Inspector.Call">
+<doc>calls method from module with *args</doc>
+<arguments>
+<arg>edeposit.amqp.aleph.convert_search_amqp_result</arg>
+<arg>${data}</arg>
+<arg>${properties}</arg>
+<arg>${headers}</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.376" level="INFO">${result} = None</msg>
+<status status="PASS" endtime="20140202 15:02:38.376" starttime="20140202 15:02:38.376"></status>
+</kw>
+<kw type="kw" name="inspector.Inspector.Is Type Of">
+<doc></doc>
+<arguments>
+<arg>${result}</arg>
+<arg>${edeposit.amqp.aleph.AlephSearchResult}</arg>
+</arguments>
+<msg timestamp="20140202 15:02:38.377" level="FAIL">Resolving variable '${edeposit.amqp.aleph.AlephSearchResult}' failed: AttributeError: 'module' object has no attribute 'AlephSearchResult'</msg>
+<status status="FAIL" endtime="20140202 15:02:38.377" starttime="20140202 15:02:38.376"></status>
+</kw>
+<status status="FAIL" endtime="20140202 15:02:38.377" starttime="20140202 15:02:38.375"></status>
+</kw>
+<doc></doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140202 15:02:38.377" critical="yes" starttime="20140202 15:02:38.366">Resolving variable '${edeposit.amqp.aleph.AlephSearchResult}' failed: AttributeError: 'module' object has no attribute 'AlephSearchResult'</status>
+</test>
+<test id="s1-s4-t2" name="Dotaz zda je ISBN uz použito">
+<kw type="kw" name="Žádost o kontrolu ISBN má správný typ">
+<doc></doc>
+<arguments>
+</arguments>
+<msg timestamp="20140202 15:02:38.379" level="FAIL">User keyword 'Žádost o kontrolu ISBN má správný typ' contains no keywords.</msg>
+<status status="FAIL" endtime="20140202 15:02:38.379" starttime="20140202 15:02:38.378"></status>
+</kw>
+<doc>modul se dotáže na isbn záznamy. Jestli existují, vrátí odpověd, že ANO. Jinak NE.</doc>
+<tags>
+</tags>
+<status status="FAIL" endtime="20140202 15:02:38.379" critical="yes" starttime="20140202 15:02:38.378">User keyword 'Žádost o kontrolu ISBN má správný typ' contains no keywords.</status>
+</test>
+<doc></doc>
+<metadata>
+<item name="name">"Použití knihovny"</item>
+</metadata>
+<status status="FAIL" endtime="20140202 15:02:38.379" starttime="20140202 15:02:38.360"></status>
 </suite>
 <doc></doc>
 <metadata>
 </metadata>
-<status status="FAIL" endtime="20140114 10:19:05.774" starttime="20140114 10:19:05.264"></status>
+<status status="FAIL" endtime="20140202 15:02:38.380" starttime="20140202 15:02:37.815"></status>
 </suite>
 <statistics>
 <total>
@@ -300,9 +395,10 @@
 </tag>
 <suite>
 <stat fail="8" pass="3" id="s1" name="Tests">Tests</stat>
-<stat fail="2" pass="3" id="s1-s1" name="Test Configuration">Tests.Test Configuration</stat>
-<stat fail="1" pass="0" id="s1-s2" name="Test Installation">Tests.Test Installation</stat>
-<stat fail="5" pass="0" id="s1-s3" name="Test Usage">Tests.Test Usage</stat>
+<stat fail="4" pass="3" id="s1-s1" name="Test Configuration">Tests.Test Configuration</stat>
+<stat fail="1" pass="0" id="s1-s2" name="Test Export">Tests.Test Export</stat>
+<stat fail="1" pass="0" id="s1-s3" name="Test Installation">Tests.Test Installation</stat>
+<stat fail="2" pass="0" id="s1-s4" name="Test Search">Tests.Test Search</stat>
 </suite>
 </statistics>
 <errors>

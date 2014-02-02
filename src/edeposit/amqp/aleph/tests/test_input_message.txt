@@ -1,9 +1,0 @@
-*** Settings ***
-Metadata    name  "vstupní AMQP zprávy"
-Library     inspector.PythonModule  "../__init__.py"
-
-*** Variables ***
-${ALEPH_URL}               http://aleph.nkp.cz/
-${ALEPH_URL_PRODUCENTS}    https://pypi.python.org/pypi/edeposit.amqp.aleph/
-
-*** Test Cases ***

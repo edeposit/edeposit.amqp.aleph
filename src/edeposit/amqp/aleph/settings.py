@@ -3,5 +3,6 @@ import os.path
 
 BASE_PATH=(os.path.dirname(__file__))
 
-aleph_url = "http://aleph.nkp.cz"
-export_directory_path=os.path.join(BASE_PATH,"tests","var","export")
+ALEPH_URL = "http://aleph.nkp.cz"
+PATH_OF_EXPORT_DIRECTORY=os.path.join(BASE_PATH,"tests","var","export")
+

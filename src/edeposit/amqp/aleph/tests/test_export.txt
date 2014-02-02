@@ -1,0 +1,124 @@
+*** Settings ***
+Metadata    name  "Použití knihovny"
+Library     inspector.Inspector
+Library     OperatingSystem
+Variables   variables.py
+Library     XML
+
+*** Keywords ***
+
+Request pro export má správný typ
+    Is type of    ${epublication}   ${edeposit.amqp.aleph.EPublication}
+    Is type of    ${exportRequest}  ${edeposit.amqp.aleph.AlephExportRequest}
+    
+Adresář s exportem obsahuje soubory pro export
+    [Arguments]    ${export_id}
+    [Documentation]    existují soubory edeposit-link.txt a edeposit-record.xml
+    ${path}=            Join Path    ${PATH_OF_EXPORT_DIRECTORY}    ${export_id}
+    Directory should exist    ${path}    
+    ${file_with_epublication_link}=     Join Path   ${path}   edeposit-link.txt
+    File Should Exist    ${file_with_epublication_link}
+    ${file_with_xml}=    Join Path    ${path}   edeposit-record.xml
+    File Should Exist    ${file_with_xml}    
+
+Modul čeká na odpověď z Alephu
+    [Arguments]    ${export_id}
+    Log   Aleph načte data z adresáře a doplní svoje soubory
+    Aleph success results      ${export_id}
+
+Zádost se objevila v Exchange v RabbitMQ
+    Log   zadost je v exchange
+
+Modul přečte žádost ve frontě v RabbitMQ
+    Log   modul načetl žádost z fronty
+
+Modul uloží data do nového adresáře
+    Log   v novém adresáři se objeví soubory
+
+Modul čeká na odpověď z Alephu
+    Log   Aleph uloží do adresáře správné soubory
+
+Aleph načte soubory a uloží správné odpovědi
+    [Arguments]   ${export_id}
+    Aleph Success Results     ${export_id}
+    ${path}=            Join Path    ${PATH_OF_EXPORT_DIRECTORY}    ${export_id}
+    Directory should exist    ${path}    
+    ${file_with_aleph_record}=     Join Path   ${path}   aleph-record.xml
+    File Should Exist    ${file_with_aleph_record}
+    ${file_with_success}=    Join Path    ${path}   aleph-success
+    File Should Exist    ${file_with_success}
+        
+Modul pošle odpověd do exchange v RabbitMQ
+    Log  odpověd je v exchange
+
+Data v exchange
+    Log   aplikace načte data co se objevila v exchange
+
+Odpověd má správný tvar
+    [Arguments]   ${result}
+    Is Type Of    ${result}   ${edeposit.amqp.aleph.AlephRecord}
+    
+*** Test Cases ***
+    
+Export ePublikace do Alephu
+    [Documentation]     Modul pošle data do Exchange v RabbitMQ
+    Empty Directory     ${PATH_OF_EXPORT_DIRECTORY}
+    Request pro export má správný typ
+    ${export_id}=       Call     edeposit.amqp.aleph.submit_export_request      ${exportRequest}
+    Zádost se objevila v Exchange v RabbitMQ
+    Modul přečte žádost ve frontě v RabbitMQ
+    Modul uloží data do nového adresáře
+    Adresář s exportem obsahuje soubory pro export     ${export_id}
+    Modul čeká na odpověď z Alephu
+    Aleph načte soubory a uloží správné odpovědi
+    Modul pošle odpověd do exchange v RabbitMQ
+    Data v exchange    
+    ${result}=   Call   edeposit.amqp.aleph.convert_amqp_response   ${amqp_data}   ${amqp_properties}   ${headers_properties}
+    Odpověd má správný tvar   ${result}
+        
+# Příprava exportu EPublikace
+#        ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+#        ${path}=            Join Path    ${export_directory_path}        ${export_id}
+#        ${edeposit_epublication_link_path}=           Join Path    ${path}    edeposit-link.txt
+#        Directory Should Exist           ${path}
+#        TestedLibrary id conforms naming way   ${export_id}
+#        File Should Exist     ${edeposit_epublication_link_path}
+
+# Aleph načte data a do adresáře vloží odpověď
+#        [Documentation]     Pokud Aleph data přijal, vloží soubory *aleph-success* a *aleph-record.xml*
+#        ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+#        Aleph AcceptedEPublication     ${export_id}
+#        ${path}=            Join Path    ${export_directory_path}     ${export_id}
+#        ${aleph_record_path}=    Join Path    ${path}   aleph-record.xml
+#        ${success_path}=         Join Path    ${path}   aleph-success
+#        File Should Exist            ${aleph_record_path}
+#        File Should Exist            ${success_path}
+
+# Anebo Aleph data odmítne do adresáře vloží zprávu o chybě
+#        [Documentation]     Aleph vloží soubory *aleph-error* a *aleph-error-message.txt*
+#        ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
+#        Aleph RejectedEPublication     ${export_id}
+#        ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+#        ${error_path}=            Join Path    ${path}   aleph-error
+#        ${error_message_path}=    Join Path    ${path}   aleph-error-message.txt
+#        File Should Exist            ${error_path}
+#        File Should Exist            ${error_message_path}
+
+# Zpracování správné odpovědi z Alephu
+#        [Documentation]    Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*
+#        ${export_id}=   TestedLibrary send_to_aleph      ${epublication}
+#        ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+#        ${queue_name}=  aleph-success
+#        Aleph AcceptedEPublication   ${export_id}
+#        TestedLibrary handle_aleph_success  ${export_id}
+#        RabbitMQ Message Exists at Queue
+     
+# Zpracování chyby z Alephu
+#        [Documentation]    Odešle zprávu do RabbitMQ a po odeslání vytvoří soubor *rabbitmq-sent*
+#        ${export_id}=   TestedLibrary send_to_aleph      ${epublication}
+#        ${path}=                  Join Path    ${export_directory_path}     ${epublication_directory}
+#        ${queue_name}=  aleph-errors
+#        Aleph AcceptedEPublication   ${export_id}
+#        TestedLibrary handle_aleph_error  ${export_id}
+#        RabbitMQ Message Exists at Queue
+       

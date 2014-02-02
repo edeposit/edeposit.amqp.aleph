@@ -7,6 +7,11 @@
 import inspect
 import imp
 import edeposit.amqp.aleph
+import shutil
+import variables
+import os.path
+
+BASE_PATH=os.path.basename(__file__)
 
 class Inspector(object):
     ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
@@ -45,4 +50,21 @@ class Inspector(object):
         pass
 
     def rabbitmq_message_exists_at_queue(self, queueName):
+        pass
+
+    def call(self, module_name, method_name, *args):
+        """ calls method from module with *args
+        """
+        pass
+
+    def aleph_success_results(self, export_id):
+        """ this test function saves into export directory files:
+        - aleph-record.xml
+        - aleph-success
+        """
+        directory = os.path.join(variables.PATH_OF_EXPORT_DIRECTORY, export_id)
+        shutil.copyfile(os.path.join(BASE_PATH, "aleph-record.xml"), 
+                        os.path.join(directory, "aleph-record.xml"))
+        shutil.copyfile(os.path.join(BASE_PATH, "aleph-success"), 
+                        os.path.join(directory, "aleph-success"))
         pass
