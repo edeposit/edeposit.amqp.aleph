@@ -3,3 +3,6 @@
 _build
 build
 macros.el
+log.html
+output.xml
+report.html
