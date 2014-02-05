@@ -19,10 +19,10 @@ author = edeposit.amqp.aleph.Author (
 )
 
 originalFile = edeposit.amqp.aleph.OriginalFile (
-    isbn = "",
     url = "",
     file = None,
-    format = None
+    format = None,
+    isbns = []
 )
 
 epublication = edeposit.amqp.aleph.EPublication(

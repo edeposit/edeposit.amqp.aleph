@@ -8,7 +8,7 @@ import inspect
 import imp
 import edeposit.amqp.aleph
 import shutil
-import variables
+# import variables # TODO: az bude fixnute pojmenovani EPublication
 import os.path
 
 BASE_PATH=os.path.basename(__file__)

@@ -33,7 +33,7 @@ class EPublication(namedtuple("EPublication",
     """
     pass
 
-class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbn'])):
+class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbns'])):
     """ type of isbn: ISBN"""
     pass
 
