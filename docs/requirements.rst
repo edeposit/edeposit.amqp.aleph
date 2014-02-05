@@ -17,9 +17,11 @@ export dat do *Alephu*
 #. modul odešle odpověd z **Alephu** do exchange v **RabbitMQ**
 #. modul si pamatuje, jestli už oodpověd z **Alephu** poslal
 
+
 dotazy do *Alephu*
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+#. modul odešle odpovědi z Alephu najednou v jedné zprávě
 
 Omezení systému
 ............................

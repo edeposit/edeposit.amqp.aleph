@@ -57,6 +57,12 @@ class AlephQuery(namedtuple("AlephQuery",
     """
     pass
 
+class AlephSearchResult(namedtuple("AlephSearchResult",
+                                   ['records',
+                                    'UUID_of_request',
+                                    ])):
+    pass
+
 class AlephRecord(namedtuple("AlephRecord",
                              ['base',
                               'docNumber',
@@ -69,6 +75,8 @@ class AlephExportRequest(namedtuple("AlephExportRequest",
                                      'linkOfEPublication'])):
     """ epublication ... type of EPublication
         linkOfEPublication  ... url with epublication
+
+    User will fill this record.
     """
     pass
 

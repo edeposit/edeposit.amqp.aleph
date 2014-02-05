@@ -13,6 +13,9 @@ Cesta k alephu
 Adresář pro export do Alephu
     Variable presented          src/edeposit/amqp/aleph/settings.py             PATH_OF_EXPORT_DIRECTORY
 
+Adresář pro zalohu exportu do Alephu
+    Variable presented          src/edeposit/amqp/aleph/settings.py             PATH_OF_BACKUP_DIRECTORY
+
 Konfigurace pro vstupní exchange v RabbitMQ
     [Documentation]          Jméno exchange, kam se budou posílat žádosti na export do Alephu
     Variable presented       src/edeposit/amqp/aleph/settings.py              INPUT_EXCHANGE_FOR_ALEPH_IMPORT

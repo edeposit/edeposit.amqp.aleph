@@ -7,8 +7,10 @@ Library     XML
 
 *** Keywords ***
 Odeslání žádosti modulem
-    Log   ahoj
-        
+    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephQuery}    
+    ${request_id}=    Call   edeposit.amqp.aleph.submit_search_request   ${search_request}
+    
+
 Žádost má správný typ
     Log   ahoj    
     
@@ -27,7 +29,7 @@ Načtení jedné zprávy z RabbitMQ fronty
 Odpovědi mají správný typ
     Log   Každá zpráva je typu AlephSearchResult
 
-Převedení jedné odpovědi do výstupní struktury
+Převedení odpovědi do výstupní struktury
     [Arguments]    ${data}   ${properties}   ${headers}
     ${result}=    Call   edeposit.amqp.aleph.convert_search_amqp_result   ${data}    ${properties}    ${headers}
     Is type of   ${result}   ${edeposit.amqp.aleph.AlephSearchResult}

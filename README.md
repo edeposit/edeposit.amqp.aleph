@@ -15,7 +15,7 @@ All tests are stored at src/tests directory.
 
 You can run them manually
 
-    jan@jan-XPS-L421X:~/work/edeposit.amqp.aleph$ pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/ src/edeposit/amqp/aleph/tests/
+    jan@jan-XPS-L421X:~/work/edeposit.amqp.aleph$ pybot -W 100 --pythonpath src --pythonpath src/edeposit/amqp/aleph/tests/ src/edeposit/amqp/aleph/tests/
 
 
 ... or continuously running using nosier:

@@ -47,7 +47,18 @@ Aleph načte soubory a uloží správné odpovědi
     File Should Exist    ${file_with_aleph_record}
     ${file_with_success}=    Join Path    ${path}   aleph-success
     File Should Exist    ${file_with_success}
+
+Aleph načte soubory a uloží chyby
+    [Arguments]   ${export_id}
+    Aleph Success Results     ${export_id}
+    ${path}=            Join Path    ${PATH_OF_EXPORT_DIRECTORY}    ${export_id}
+    Directory should exist    ${path}    
+    ${file_with_aleph_record}=     Join Path   ${path}   aleph-record.xml
+    File Should Exist    ${file_with_aleph_record}
+    ${file_with_success}=    Join Path    ${path}   aleph-error
+    File Should Exist    ${file_with_success}
         
+
 Modul pošle odpověd do exchange v RabbitMQ
     Log  odpověd je v exchange
 
@@ -75,7 +86,8 @@ Export ePublikace do Alephu
     Data v exchange    
     ${result}=   Call   edeposit.amqp.aleph.convert_amqp_response   ${amqp_data}   ${amqp_properties}   ${headers_properties}
     Odpověd má správný tvar   ${result}
-        
+    Modul adresář přesune do zálohovacího adresáře
+    
 # Příprava exportu EPublikace
 #        ${export_id}=       TestedLibrary send_to_aleph      ${epublication}
 #        ${path}=            Join Path    ${export_directory_path}        ${export_id}
