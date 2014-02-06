@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>Propojeni do katalogu NK ČR</title>
+<!-- 2014-02-06 Čt 11:48 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="author" content="Jan Stavěl"/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  td, th { vertical-align:top;  }
+  th.right  { text-align: center;  }
+  th.left   { text-align: center;   }
+  th.center { text-align: center; }
+  td.right  { text-align: right;  }
+  td.left   { text-align: left;   }
+  td.center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara:nth-child(2) { display: inline; }
+  .footpara { display: block; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012  Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Propojeni do katalogu NK ČR</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1. Kódy pro vyhledávání:</a></li>
+<li><a href="#sec-2">2. Vyhledání záznamů – podle ISBN</a></li>
+<li><a href="#sec-3">3. Vyhledání záznamů – podle autora a názvu, nakladatele</a></li>
+<li><a href="#sec-4">4. Server vrátí odpověď, kde je uveden počet nalezených záznamů a kód množiny výsledků. Následně je možné stáhnout jeden nebo více vyhledaných záznamů v XML</a></li>
+<li><a href="#sec-5">5. prubeh cele session</a></li>
+<li><a href="#sec-6">6. Další možnost stažení záznamů (formát MARCXML) – funkce ill<sub>get</sub><sub>set</sub> a ill<sub>get</sub><sub>doc</sub></a></li>
+<li><a href="#sec-7">7. Funkce publish<sub>avail</sub> – zjištění aktuální dostupnosti jednotek k danému záznamu (může být zadáno až 10 systém. čísel oddělených čárkami)</a>
+<ul>
+<li><a href="#sec-7-1">7.1. Nastavení v tab<sub>expand</sub></a></li>
+</ul>
+</li>
+<li><a href="#sec-8">8. Funkce find<sub>doc</sub> – stažení záznamu podle systém. čísla</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><a id="ID-61bacf15-1e1c-4939-9f48-f336456b4a1a" name="ID-61bacf15-1e1c-4939-9f48-f336456b4a1a"></a><span class="section-number-2">1</span> Kódy pro vyhledávání:</h2>
+<div class="outline-text-2" id="text-1">
+
+<pre class="example">
+wrd = slova ze všech popisných údaju (název, autoři, rok vyd., nakladatel, edice, klíčová slova atd.)
+wtl = slova z názvových údajů (název, název části, edice, originál atd.)
+wau = slova z údajů o autorech
+wpb = slova z údajů o nakladateli
+wpp = slova z údajů o místě vydání
+wyr = rok vydání
+wkw = předmět (klíčová slova)
+sbn = ISBN/ISMN
+ssn = ISSN
+icz = identifikační číslo záznamu
+cnb = číslo ČNB
+sg = signatura
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Vyhledání záznamů – podle ISBN</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<a href="http://aleph.nkp.cz/X?op=find&request=sbn=978-80-7367-397-0&base=nkc">http://aleph.nkp.cz/X?op=find&request=sbn=978-80-7367-397-0&base=nkc</a>
+</p>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Vyhledání záznamů – podle autora a názvu, nakladatele</h2>
+<div class="outline-text-2" id="text-3">
+<pre class="example">
+http://aleph.nkp.cz/X?op=find&amp;request=wau=(Milan+Hejny)+and+wtl=(Dite+matematika)&amp;base=nkc
+(problémy s diakritikou, interpunkci, některými spojkami atd.)
+
+http://aleph.nkp.cz/X?op=find&amp;request=wau=(Milan+Hejn%C3%BD)+and+wtl=(D%C3%ADt%C4%9B+a+matematika)&amp;base=nkc
+
+případně ještě nakladatel
+
+http://aleph.nkp.cz/X?op=find&amp;request=wau=(Hejny)+and+wtl=(matematika)+and+wpb=Portal&amp;base=nkc         
+
+nakladatel Grada
+http://aleph.nkp.cz/X?op=find&amp;request=wpb=Grada&amp;base=nkc         
+
+případně pouze knihy:
+
+http://aleph.nkp.cz/X?op=find&amp;request=wau=(Hejny)+and+wtl=(matematika)+and+wtp=bk&amp;base=nkc
+
+a další možné kombinace…
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Server vrátí odpověď, kde je uveden počet nalezených záznamů a kód množiny výsledků. Následně je možné stáhnout jeden nebo více vyhledaných záznamů v XML</h2>
+<div class="outline-text-2" id="text-4">
+<pre class="example">
+(formát OAI-XML - http://www.openarchives.org/OAI/2.0/guidelines-oai_marc.htm)
+
+http://aleph.nkp.cz/X?op=present&amp;set_number=&lt;kód množiny výsledků&gt;&amp;set_entry=1
+https://aleph.nkp.cz/X?op=present&amp;set_number=39EUFDPANCBL5134N9UPNMPHFDEXPR2LR32GMP99R85TACTN5U
+resp.
+
+http://aleph.nkp.cz/X?op=present&amp;set_number=&lt;kód množiny výsledků&gt;&amp;set_entry=5,6,11
+
+resp.
+
+http://aleph.nkp.cz/X?op=present&amp;set_number=&lt;kód množiny výsledků&gt;&amp;set_entry=1-25
+http://aleph.nkp.cz/X?op=present&amp;set_number=077285&amp;set_entry=1-25
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> prubeh cele session</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+<a href="http://aleph.nkp.cz/X?op=find&request=wpb=Grada&base=nkc">http://aleph.nkp.cz/X?op=find&request=wpb=Grada&base=nkc</a>         
+</p>
+
+<pre class="example">
+&lt;find&gt;
+&lt;set_number&gt;016513&lt;/set_number&gt;
+&lt;no_records&gt;000004998&lt;/no_records&gt;
+&lt;no_entries&gt;000002500&lt;/no_entries&gt;
+&lt;session-id&gt;9A5HGMD6SMHBBX6NFDGTS6JD1GNK9JUFGQENM28Y6EDTL4RABD&lt;/session-id&gt;
+&lt;/find&gt;
+</pre>
+<p>
+<a href="http://aleph.nkp.cz/X?op=present&set_number=016513&set_entry=1-100">http://aleph.nkp.cz/X?op=present&set_number=016513&set_entry=1-100</a>
+</p>
+
+<p>
+anebo ve formatu marcxml
+<a href="http://aleph.nkp.cz/X?op=ill_get_set&set_number=016513&start_point=1&no_docs=500">http://aleph.nkp.cz/X?op=ill_get_set&set_number=016513&start_point=1&no_docs=500</a>
+<a href="http://aleph.nkp.cz/X?op=ill_get_set&set_number=016513&start_point=1&no_docs=2">http://aleph.nkp.cz/X?op=ill_get_set&set_number=016513&start_point=1&no_docs=2</a>
+</p>
+<pre class="example">
+&lt;ill-get-set&gt;
+&lt;doc-number&gt;002475050&lt;/doc-number&gt;
+&lt;doc-number&gt;002468257&lt;/doc-number&gt;
+&lt;no-docs&gt;000000002&lt;/no-docs&gt;
+&lt;set-library&gt;NKC01&lt;/set-library&gt;
+&lt;session-id&gt;F3A9P757D16J84CULSGBTYSMDMYUXDDGDD8R6EEJIJIK9YDV4H&lt;/session-id&gt;
+&lt;/ill-get-set&gt;
+</pre>
+<p>
+<a href="http://aleph.nkp.cz/X?op=ill_get_doc&set_number=016513&start_point=1&no_docs=2">http://aleph.nkp.cz/X?op=ill_get_doc&set_number=016513&start_point=1&no_docs=2</a>
+</p>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Další možnost stažení záznamů (formát MARCXML) – funkce ill<sub>get</sub><sub>set</sub> a ill<sub>get</sub><sub>doc</sub></h2>
+<div class="outline-text-2" id="text-6">
+<pre class="example">
+získání systém. čísel vyhledaných záznamů a kódu báze (library) – např.
+
+http://aleph.nkp.cz/X?op=ill_get_set&amp;set_number=&lt;kód množiny výsledků&gt;&amp;start_point=1&amp;no_docs=2
+
+stažení záznamů (po jednom) – např.
+
+http://aleph.nkp.cz/X?op=ill_get_doc&amp;doc_number=001810391&amp;library=nkc01
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-7" class="outline-2">
+<h2 id="sec-7"><span class="section-number-2">7</span> Funkce publish<sub>avail</sub> – zjištění aktuální dostupnosti jednotek k danému záznamu (může být zadáno až 10 systém. čísel oddělených čárkami)</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+<a href="http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662&library=nkc01">http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662&library=nkc01</a>
+</p>
+
+<p>
+resp.
+</p>
+
+<p>
+<a href="http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662,002124258,002105616&library=nkc01">http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662,002124258,002105616&library=nkc01</a>
+</p>
+
+<p>
+odpověď v češtině
+</p>
+
+<p>
+<a href="http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662,002124258,002105616&library=nkc01&con_lng=cze">http://aleph.nkp.cz/X?op=publish_avail&doc_num=002107662,002124258,002105616&library=nkc01&con_lng=cze</a>
+</p>
+</div>
+
+
+<div id="outline-container-sec-7-1" class="outline-3">
+<h3 id="sec-7-1"><span class="section-number-3">7.1</span> Nastavení v tab<sub>expand</sub></h3>
+<div class="outline-text-3" id="text-7-1">
+<pre class="example">
+X-AVAIL    expand_doc_bib_avail           AVA=DG,ZL,ND,RD
+X-AVAIL    expand_doc_del_fields          100##,245##,250##,260##,300##,AVA##
+
+Standardně, je-li vyplněn status zprac. Jednotky, je jednotka nedostupná. 
+To je možné změnit přidáním parametru AVA=…, kde se uvedou všechny statusy, které dostupnost neblokují.
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-8" class="outline-2">
+<h2 id="sec-8"><span class="section-number-2">8</span> Funkce find<sub>doc</sub> – stažení záznamu podle systém. čísla</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+<a href="http://aleph.nkp.cz/X?op=find_doc&doc_num=000125126&base=nkc">http://aleph.nkp.cz/X?op=find_doc&doc_num=000125126&base=nkc</a>
+</p>
+
+<p>
+<a href="http://aleph.nkp.cz/X?op=find_doc&doc_number=000005932&base=NAK">http://aleph.nkp.cz/X?op=find_doc&doc_number=000005932&base=NAK</a>
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Jan Stavěl</p>
+<p class="date">Created: 2014-02-06 Čt 11:48</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 24.3.1 (<a href="http://orgmode.org">Org</a> mode 8.0.3)</p>
+<p class="xhtml-validation"><a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a></p>
+</div>
+</body>
+</html>
