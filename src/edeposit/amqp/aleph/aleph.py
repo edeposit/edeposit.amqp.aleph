@@ -13,8 +13,8 @@ from httpkie import Downloader
 
 
 #= Variables ==================================================================
-ISBN_TEMPLATE = "/X?op=find&request=sbn=$ISBN&base=$base"
-VALID_BASES = [  # see getListOfBases() for details
+ISBN_TEMPLATE = "/X?op=find&request=sbn=$ISBN&base=$base"  # String.Template()
+VALID_ALEPH_BASES = [  # see getListOfBases() for details
     'ksl',
     'nkc',
     'nkok',
@@ -74,11 +74,11 @@ def getListOfBases():
         bases
     )
 
-    return list(set(bases))
+    return list(set(bases))  # list(set()) is same as unique()
 
 
 def searchISBN(isbn, base):
-    if base.lower() not in VALID_BASES:
+    if base.lower() not in VALID_ALEPH_BASES:
         raise InvalidAlephBaseException("Unknown base '" + base + "'!")
 
     result = downer.download(
@@ -87,12 +87,12 @@ def searchISBN(isbn, base):
 
     dom = dhtmlparser.parseString(result)
 
-    print dom  # TODO
+    print dom  # TODO parsování XML na dict.
 
 
 #= Main program ===============================================================
 if __name__ == '__main__':
     print searchISBN("978-80-7367-397-0", "nkc")
 
-    # check if VALID_BASES is actual (set assures unordered comparsion)
-    assert(set(getListOfBases()) == set(VALID_BASES))
+    # check if VALID_ALEPH_BASES is actual (set assures unordered comparsion)
+    assert(set(getListOfBases()) == set(VALID_ALEPH_BASES))
