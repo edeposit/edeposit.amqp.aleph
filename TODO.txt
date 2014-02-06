@@ -1,1 +1,2 @@
 Move documetation from html/orgmode to .rst, which is supported natively by sphinx.
+Create PIP package.
