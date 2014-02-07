@@ -19,6 +19,7 @@ from httpkie import Downloader
 # String.Template() variable convetion is used
 ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE&adjacent=$SIMILAR"
 ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER&start_point=1&no_docs=$NUMBER_OF_DOCS"
+ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
 
 VALID_ALEPH_BASES = [  # see getListOfBases() for details
     'ksl',
@@ -120,9 +121,14 @@ def _tryConvertToInt(s):
         return s
 
 
-def _alephResultToDict(find): # TODO: docstring, parameters
+def _alephResultToDict(dom):
+    """
+    Convert part of non-nested XML to dict.
+
+    dom -- preparsed XML (see dhtmlparser).
+    """
     result = {}
-    for i in find.childs:
+    for i in dom.childs:
         if i.isOpeningTag():
             keyword = i.getTagName().strip()
             value = _tryConvertToInt(i.getContent().strip())
@@ -134,8 +140,8 @@ def _alephResultToDict(find): # TODO: docstring, parameters
             else:  # if it is already there ..
                 if isinstance(result[keyword], list):  # and it is list ..
                     result[keyword].append(value)  # add it to list
-                else:
-                    result[keyword] = [result[keyword], value] # or make it array
+                else:  # or make it array
+                    result[keyword] = [result[keyword], value]
 
     return result
 
@@ -169,6 +175,11 @@ def searchInAleph(base, phrase, considerSimilar, field):
              'no_records': 1,
              'no_entries': 1
             }
+
+    Raise:
+        AlephException
+        InvalidAlephBaseException
+        InvalidAlephFieldException
 
     TODO:
         - support multiple phrases in one request
@@ -217,6 +228,9 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
     number_of_docs -- how much DocumentIDs from set should be returned
 
     Returned DocumentID can be used as parameters to downloadAlephDocument().
+
+    Raise:
+        AlephException
     """
     downer = Downloader()
 
@@ -271,16 +285,39 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
 
 def downloadAlephDocument(doc_id, library):
     downer = Downloader()
-    ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_NUMBER&library=$LIBRARY"
 
     data = downer.download(
         ALEPH_URL + Template(ALEPH_GET_DOC_URL_TEMPLATE).substitute(
-            DOC_NUMBER=doc_id,
+            DOC_ID=doc_id,
             LIBRARY=library
         )
     )
 
-    print data # MARCxml of document with given doc_id (TODO:  ošetřit errory)
+    dom = dhtmlparser.parseString(data)
+
+    # check if there are any errros
+    # bad library error
+    error = dom.find("login")
+    if len(error) > 0:
+        error = error[0].find("error")
+
+        if len(error) > 0:
+            raise AlephException(
+                "Can't download document doc_id: '" + str(doc_id) + "' " +
+                "(probably bad library: '" + library + "')!\nMessage: " +
+                error.getContent()
+            )
+
+    error = dom.find("ill-get-doc")
+    if len(error) > 0:
+        error = error[0].find("error")
+
+        if len(error) > 0:
+            raise AlephException(
+                error[0].getContent()
+            )
+
+    return data  # MARCxml of document with given doc_id
 
 
 def searchISBN(isbn, base="nkc"):  # TODO: test olny
@@ -293,7 +330,10 @@ def searchAuthor(author, base="nkc"):
 
 #= Main program ===============================================================
 if __name__ == '__main__':
-    print getDocumentIDs(searchISBN("978-80-7367-397-0"))
+    doc = getDocumentIDs(searchISBN("978-80-7367-397-0"))[0]
+    print downloadAlephDocument(doc.id, doc.library)
+    # print downloadAlephDocument(doc.id, "xexexe")
+    # print downloadAlephDocument("xexexe", doc.library)
     # print getDocumentIDs(searchAuthor("Jiří Kulhánek"))
 
     # check if VALID_ALEPH_BASES is actual (set assures unordered comparsion)
