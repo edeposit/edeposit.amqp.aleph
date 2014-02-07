@@ -107,7 +107,20 @@ def _getListOfBases():
     return list(set(bases))  # list(set()) is same as unique()
 
 
-def searchInAleph(base, phrase, considerSimilar, field):  # TODO: podporu vice phrases najednou
+def searchInAleph(base, phrase, considerSimilar, field):
+    """
+    Send request to the aleph search engine.
+
+    phrase -- what you want to search
+    base -- which database you want to use
+    field -- where you want to look
+    considerSimilar -- fuzzy search, which is not working at all, so don't use
+    it
+
+    TODO:
+        - support multiple phrases in one request
+        - try convert result fileds to integers
+    """
     if base.lower() not in VALID_ALEPH_BASES:
         raise InvalidAlephBaseException("Unknown base '" + base + "'!")
 
@@ -137,7 +150,7 @@ def searchInAleph(base, phrase, considerSimilar, field):  # TODO: podporu vice p
 
     if "error" in result:
         if result["error"] == "empty set":
-            return []  # TODO: dodělat
+            return []  # TODO: dodělat podle dalšího interface
         else:
             raise AlephException(result["error"])
 
