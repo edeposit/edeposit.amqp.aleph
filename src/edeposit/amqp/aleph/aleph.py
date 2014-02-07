@@ -75,6 +75,16 @@ class InvalidAlephFieldException(AlephException):
         super(self, message)
 
 
+class LibraryNotFoundException(AlephException):
+    def __init__(self, message):
+        super(self, message)
+
+
+class DocumentNotFoundException(AlephException):
+    def __init__(self, message):
+        super(self, message)
+
+
 def _getListOfBases():
     """
     Return list of valid bases as they are used as URL parameters in links at
@@ -284,6 +294,19 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
 
 
 def downloadAlephDocument(doc_id, library):
+    """
+    Download document with given ID from given library.
+
+    doc_id -- document id (you will get this from getDocumentIDs())
+    library -- NKC01 in our case, but don't worry, getDocumentIDs() add library
+               informations into DocumentID named tuple.
+
+    Returns: MARCXML unicode string.
+
+    Raise:
+        LibraryNotFoundException
+        DocumentNotFoundException
+    """
     downer = Downloader()
 
     data = downer.download(
@@ -302,18 +325,19 @@ def downloadAlephDocument(doc_id, library):
         error = error[0].find("error")
 
         if len(error) > 0:
-            raise AlephException(
+            raise LibraryNotFoundException(
                 "Can't download document doc_id: '" + str(doc_id) + "' " +
                 "(probably bad library: '" + library + "')!\nMessage: " +
                 error.getContent()
             )
 
+    # another error - document not found
     error = dom.find("ill-get-doc")
     if len(error) > 0:
         error = error[0].find("error")
 
         if len(error) > 0:
-            raise AlephException(
+            raise DocumentNotFoundException(
                 error[0].getContent()
             )
 
@@ -332,9 +356,11 @@ def searchAuthor(author, base="nkc"):
 if __name__ == '__main__':
     doc = getDocumentIDs(searchISBN("978-80-7367-397-0"))[0]
     print downloadAlephDocument(doc.id, doc.library)
-    # print downloadAlephDocument(doc.id, "xexexe")
-    # print downloadAlephDocument("xexexe", doc.library)
-    # print getDocumentIDs(searchAuthor("Jiří Kulhánek"))
 
     # check if VALID_ALEPH_BASES is actual (set assures unordered comparsion)
     assert(set(_getListOfBases()) == set(VALID_ALEPH_BASES))
+
+    # this can be kinda specific to prague library
+    # docid = getDocumentIDs(searchISBN("978-80-7367-397-0"))
+    # assert(len(docid) == 1)
+    # print docid
