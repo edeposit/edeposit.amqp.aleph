@@ -2,8 +2,17 @@
 from collections import namedtuple
 from datetime import datetime
 
-class Producent(namedtuple("Producent",['title','phone','fax','email','url','identificator','ico'])):
+
+class Producent(namedtuple("Producent",
+                           ['title',
+                            'phone',
+                            'fax',
+                            'email',
+                            'url',
+                            'identificator',
+                            'ico'])):
     pass
+
 
 class EPublication(namedtuple("EPublication",
                               ['nazev',
@@ -26,19 +35,22 @@ class EPublication(namedtuple("EPublication",
                                'mistoVydani',
                                'ISBNSouboruPublikaci',
                                'authori',
-                               'originaly',
-                           ])):
+                               'originaly'])):
     """
     see https://e-deposit.readthedocs.org/cs/latest/dm01.html
     """
     pass
 
-class OriginalFile(namedtuple("OriginalFile",['url','format','file','isbns'])):
+
+class OriginalFile(namedtuple("OriginalFile",
+                              ['url', 'format', 'file', 'isbns'])):
     """ type of isbn: ISBN"""
     pass
 
-class Author(namedtuple("Author",['firstName','lastName'])):
+
+class Author(namedtuple("Author", ['firstName', 'lastName'])):
     pass
+
 
 def send_to_aleph(epublication):
     pass
@@ -49,19 +61,20 @@ class AlephQuery(namedtuple("AlephQuery",
                              'phrase',
                              'considerSimilar',
                              'field'])):
-    """ 
+    """
     base ... base in Aleph
          NKC, ...
          see:  http://aleph.nkp.cz/F/?func=file&file_name=base-list
-    
     """
     pass
+
 
 class AlephSearchResult(namedtuple("AlephSearchResult",
                                    ['records',
                                     'UUID_of_request',
                                     ])):
     pass
+
 
 class AlephRecord(namedtuple("AlephRecord",
                              ['base',

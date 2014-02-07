@@ -13,7 +13,9 @@ from httpkie import Downloader
 
 
 #= Variables ==================================================================
-ISBN_TEMPLATE = "/X?op=find&request=sbn=$ISBN&base=$base"  # String.Template()
+# String.Template() variable convetion is used
+ISBN_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE&adjacent=$SIMILAR"
+
 VALID_ALEPH_BASES = [  # see getListOfBases() for details
     'ksl',
     'nkc',
@@ -34,16 +36,41 @@ VALID_ALEPH_BASES = [  # see getListOfBases() for details
     'skcp'
 ]
 
-downer = Downloader()
+VALID_ALEPH_FIELDS = [
+    "wrd",  # slova ze všech popisných údaju
+    "wtl",  # slova z názvových údajů (název, název části, edice, originál atd)
+    "wau",  # slova z údajů o autorech
+    "wpb",  # slova z údajů o nakladateli
+    "wpp",  # slova z údajů o místě vydání
+    "wyr",  # rok vydání
+    "wkw",  # předmět (klíčová slova)
+    "sbn",  # ISBN/ISMN
+    "ssn",  # ISSN
+    "icz",  # identifikační číslo záznamu
+    "cnb",  # číslo ČNB
+    "sg"  # signatura
+]
+
+downer = Downloader()  # used for working with webapi
 
 
 #= Functions & objects ========================================================
-class InvalidAlephBaseException(Exception):
+class AlephException(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
 
 
-def getListOfBases():
+class InvalidAlephBaseException(AlephException):
+    def __init__(self, message):
+        Exception.__init__(self, message)
+
+
+class InvalidAlephFieldException(AlephException):
+    def __init__(self, message):
+        Exception.__init__(self, message)
+
+
+def _getListOfBases():
     """
     Return list of valid bases as they are used as URL parameters in links at
     aleph main page.
@@ -60,11 +87,14 @@ def getListOfBases():
     )
 
     # split links by & - we will need only XXX from link.tld/..&local_base=XXX
-    base_links = map(lambda x: x.params["href"].split("&"), base_links)
+    base_links = map(
+        lambda x: x.params["href"].replace("?", "&", 1).split("&"),
+        base_links
+    )
 
     # filter only sections containing bases
     bases = map(
-        lambda link: filter(lambda base: "local_base" in base, link)[0],
+        lambda link: filter(lambda base: "local_base=" in base, link)[0],
         base_links
     )
 
@@ -77,22 +107,63 @@ def getListOfBases():
     return list(set(bases))  # list(set()) is same as unique()
 
 
-def searchISBN(isbn, base):
+def searchInAleph(base, phrase, considerSimilar, field):
+    """
+    Send request to the aleph search engine.
+
+    phrase -- what you want to search
+    base -- which database you want to use
+    field -- where you want to look
+    considerSimilar -- fuzzy search, which is not working at all, so don't use
+    it
+
+    TODO:
+        - support multiple phrases in one request
+        - try convert result fileds to integers
+    """
     if base.lower() not in VALID_ALEPH_BASES:
         raise InvalidAlephBaseException("Unknown base '" + base + "'!")
 
-    result = downer.download(
-        ALEPH_URL + Template(ISBN_TEMPLATE).substitute(ISBN=isbn, base=base)
+    if field.lower() not in VALID_ALEPH_FIELDS:
+        raise InvalidAlephFieldException("Unknown field '" + base + "'!")
+
+    param_url = Template(ISBN_TEMPLATE).substitute(
+        PHRASE=phrase,
+        BASE=base,
+        FIELD=field,
+        SIMILAR="Y" if considerSimilar else "N"
     )
+    result = downer.download(ALEPH_URL + param_url)
 
     dom = dhtmlparser.parseString(result)
 
-    print dom  # TODO parsování XML na dict.
+    find = dom.find("find")  # find <find> element :)
+    if len(find) <= 0:
+        raise AlephException("Aleph didn't returned any information.")
+    find = find[0]
+
+    # convert aleph result into dictionary
+    result = {}
+    for i in find.childs:
+        if i.isOpeningTag():
+            result[i.getTagName()] = i.getContent()
+
+    if "error" in result:
+        if result["error"] == "empty set":
+            return []  # TODO: dodělat podle dalšího interface
+        else:
+            raise AlephException(result["error"])
+
+    return result
+
+
+def searchISBN(isbn, base="nkc"):  # TODO: test olny
+    return searchInAleph(base, isbn, False, "sbn")
 
 
 #= Main program ===============================================================
 if __name__ == '__main__':
-    print searchISBN("978-80-7367-397-0", "nkc")
+    print searchISBN("978-80-7367-397-0")
 
     # check if VALID_ALEPH_BASES is actual (set assures unordered comparsion)
-    assert(set(getListOfBases()) == set(VALID_ALEPH_BASES))
+    assert(set(_getListOfBases()) == set(VALID_ALEPH_BASES))
