@@ -6,6 +6,10 @@ from datetime import datetime
 ###############################################################################
 # Add new record to Aleph #####################################################
 ###############################################################################
+class Author(namedtuple("Author", ['firstName', 'lastName'])):  # TODO: přidat title?
+    pass
+
+
 class Producent(namedtuple("Producent",
                            ['title',
                             'phone',
@@ -32,12 +36,12 @@ class EPublication(namedtuple("EPublication",
                                'mistoDistribuce',
                                'distributor',
                                'datumDistribuce',
-                               'datupProCopyright',
+                               'datumProCopyright',
                                'format',
                                'url',
                                'mistoVydani',
                                'ISBNSouboruPublikaci',
-                               'authori',
+                               'autori',
                                'originaly'])):
     """
     see https://e-deposit.readthedocs.org/cs/latest/dm01.html
@@ -48,10 +52,6 @@ class EPublication(namedtuple("EPublication",
 class OriginalFile(namedtuple("OriginalFile",
                               ['url', 'format', 'file', 'isbns'])):
     """ type of isbn: ISBN"""
-    pass
-
-
-class Author(namedtuple("Author", ['firstName', 'lastName'])):
     pass
 
 
