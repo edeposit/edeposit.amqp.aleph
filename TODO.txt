@@ -1,12 +1,11 @@
-Move documetation from html/orgmode to .rst, which is supported natively by sphinx.
+Move documetation for aleph webapi from html/orgmode to .rst, which is supported
+natively by sphinx.
 
 Create PIP package.
 	-> This will need official pypi account.
-	-> dhtmlparser to pypi
-	-> httpkie to pypi
-		-> define requiements for both
 	http://freepythontips.wordpress.com/2013/08/01/packaging-and-distributing-your-python-libraries/
 	http://blog.miguelgrinberg.com/post/the-package-dependency-blues
 	http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
 
 Specify clear interface to module.
+	-> __init__.py?
