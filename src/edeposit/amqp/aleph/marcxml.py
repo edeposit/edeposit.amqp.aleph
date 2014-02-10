@@ -5,6 +5,8 @@
 # This work is licensed under a Creative Commons 3.0 Unported License
 # (http://creativecommons.org/licenses/by/3.0/).
 #
+## Todo
+#   - makeSureThatFieldsExist()
 #= Imports ====================================================================
 from string import Template
 
@@ -19,7 +21,126 @@ from dhtmlparser import HTMLElement
 
 
 #= Functions & objects ========================================================
-class MARCXmlRecord:
+class MARCXMLRecord:
+    """
+    Class for serialization/deserialization of MARCXML and MARC OAI documents.
+
+    Standard MARC record is made from three parts:
+        leader -- binary something, you can probably ignore it
+        controlfileds -- marc fields < 10
+        datafields -- important information you actually want
+
+    Basic scheme looks like this:
+
+    <record xmlns=definition..>
+        [<leader>optional_binary_something</leader>]
+        [
+            <controlfield tag="001">data</controlfield>
+            ...
+            <controlfield tag="010">data</controlfield>
+        ]
+        <datafield tag="011" ind1=" " ind2=" ">
+            <subfield code="scode">data</subfield>
+            [<subfield code"scode+">another data</subfield>]
+        </datafield>
+    </record>
+
+    <leader> is optional and it is parsed into MARCXMLRecord.leader as string.
+
+    <controlfield>s are parsed as dictionary into MARCXMLRecord.controlfields,
+    and dictionary for data from example would look like this:
+
+    MARCXMLRecord.controlfields = {
+        "001": "data",
+        ...
+        "010": "data"
+    }
+
+    <datafield>s are non-optional and are parsed into MARCXMLRecord.datafields,
+    which is little bit more complicated dictionary. Complicated is mainly
+    because tag ID is not unique, so there can be more <datafield>s with same
+    tag!
+
+    scode is always one character (ascii lowercase), or number.
+
+    MARCXMLRecord.datafields = {
+        "011": {
+            "ind1": " ",
+            "ind2": " ",
+            "scode": "data",
+            "scode+": "another data"
+        },
+
+        # real example
+        "928": {
+            "ind1": "1",
+            "ind2": " ",
+            "a": "Portál"
+        },
+
+        "910": [
+            {
+                "ind1": "1",
+                "ind2": " ",
+                "a": "ABA001"
+            },
+            {
+                "ind1": "2",
+                "ind2": " ",
+                "a": "BOA001",
+                "b": "2-1235.975"
+            },
+            {
+                "ind1": "3",
+                "ind2": " ",
+                "a": "OLA001",
+                "a": "1-218.844"
+            }
+        ]
+    }
+
+    As you can see in 910 record example, sometimes there are multiple records
+    in list and not expected dict!
+
+    Example above corresponds with this piece of code from real world:
+
+    <datafield tag="910" ind1="1" ind2=" ">
+    <subfield code="a">ABA001</subfield>
+    </datafield>
+    <datafield tag="910" ind1="2" ind2=" ">
+    <subfield code="a">BOA001</subfield>
+    <subfield code="b">2-1235.975</subfield>
+    </datafield>
+    <datafield tag="910" ind1="3" ind2=" ">
+    <subfield code="a">OLA001</subfield>
+    <subfield code="b">1-218.844</subfield>
+    </datafield>
+
+
+    - OAI ---------------------------------------------------------------------
+    OAI documents are little bit different, but almost same in structure.
+
+    leader is optional and is stored in MARCXMLRecord.controlfields["LDR"], but
+    also in MARCXMLRecord.leader for backward compatibility.
+
+    <controlfield> is renamed to <fixfield> and its "tag" parameter to "label".
+
+    <datafield> tag is not named datafield, but <varfield>, "tag" parameter is
+    "id" and ind1/ind2 are named i1/i2, but works the same way.
+
+    <subfield>s parameter "code" is renamed to "label".
+
+
+    - Full documentation ------------------------------------------------------
+    Description of simplified MARCXML schema can be found at
+    http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd
+
+    Full description of MARCXML with definition of each element can be found at
+    http://www.loc.gov/standards/marcxml/mrcbxmlfile.dtd (19492 lines of code)
+
+    Description of MARC OAI can be found at
+    http://www.openarchives.org/OAI/oai_marc.xsd
+    """
     def __init__(self, xml=None):
         self.leader = None
         self.controlfields = {}
@@ -29,12 +150,18 @@ class MARCXmlRecord:
         if xml is not None:
             self.__parseString(xml)
 
+    def addControlField(name, value):
+        pass
+
+    def addNewDataField(name, i1, i2, subfields_dict):
+        pass
+
     def __parseString(self, xml):
         """
         Parse MARC XML document to dicts, which are contained in
         self.controlfields and self.datafields.
 
-        Also detect if this is oai marc format or not (self.oai_marc).
+        Also detect if this is oai marc format or not (see elf.oai_marc).
         """
         if not isinstance(xml, HTMLElement):
             xml = dhtmlparser.parseString(str(xml))
@@ -60,6 +187,10 @@ class MARCXmlRecord:
         else:
             self.__parseControlFields(record.find("controlfield"), "tag")
             self.__parseDataFields(record.find("datafield"), "tag", "code")
+
+        # for backward compatibility of marcxml with oai
+        if self.oai_marc and "LDR" in self.controlfields:
+            self.leader = self.controlfields["LDR"]
 
     def __parseControlFields(self, fields, tag_id="tag"):
         """
@@ -216,15 +347,16 @@ $CONTROL_FIELDS
 $DATA_FIELDS
 </record>
 """
+
         # serialize leader, if it is present
         leader = ""
         if not self.oai_marc:
             leader = "<leader>" + self.leader + "</leader>"
 
         return Template(marcxml_template).substitute(
-            LEADER=leader,
-            CONTROL_FIELDS=self.__serializeControlFields(),
-            DATA_FIELDS=self.__serializeDataFields()
+            LEADER=leader.strip(),
+            CONTROL_FIELDS=self.__serializeControlFields().strip(),
+            DATA_FIELDS=self.__serializeDataFields().strip()
         )
 
 
@@ -238,7 +370,7 @@ def fromEpublication(epublication):
 
 #= Main program ===============================================================
 if __name__ == '__main__':
-    r = MARCXmlRecord(open("example.xml").read())
+    r = MARCXMLRecord(open("example.xml").read())
 
     # print r.datafields["910"]
     print r.leader
