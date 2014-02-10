@@ -1,4 +1,0 @@
-kombu>=3.0.11
-librabbitmq>=1.0.3
-https://pypi.python.org/pypi/pyDHTMLParser/1.7.2
-https://pypi.python.org/pypi/httpkie/1.0.0
