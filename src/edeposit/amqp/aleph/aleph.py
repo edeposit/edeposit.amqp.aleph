@@ -3,6 +3,11 @@
 #
 # Interpreter version: python 2.7
 #
+# TODO:
+#   sphinx doc
+#   dokoumentace pro cely modul (main docsring)
+#   umožnit více bází v dotazu
+#   seznam bazi nekam vyexportovat, případně je vůbec neověřovat?
 #= Imports ====================================================================
 from collections import namedtuple
 from string import Template
@@ -16,7 +21,7 @@ from httpkie import Downloader
 
 
 #= Variables ==================================================================
-# String.Template() variable convetion is used
+# String.Template() variable convention is used
 ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE&adjacent=$SIMILAR"
 ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER&start_point=1&no_docs=$NUMBER_OF_DOCS"
 ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
@@ -57,10 +62,20 @@ VALID_ALEPH_FIELDS = [
 ]
 
 DocumentID = namedtuple("DocumentID", ["id", "library"])
+dhtmlparser.NONPAIR_TAGS = []  # used for parsing XML - see documentation
 
 
 #= Functions & objects ========================================================
 class AlephException(Exception):
+    """
+    Exception tree:
+
+    - AlephException
+      |- InvalidAlephBaseException
+      |- InvalidAlephFieldException
+      |- LibraryNotFoundException
+      `- DocumentNotFoundException
+    """
     def __init__(self, message):
         Exception.__init__(self, message)
 
@@ -96,7 +111,7 @@ def _getListOfBases():
     data = downer.download(ALEPH_URL + "/F/?func=file&file_name=base-list")
     dom = dhtmlparser.parseString(data.lower())
 
-    # from deafult aleph page filter links containing local_base in their href
+    # from default aleph page filter links containing local_base in their href
     base_links = filter(
         lambda x: "href" in x.params and "local_base" in x.params["href"],
         dom.find("a")
@@ -124,7 +139,12 @@ def _getListOfBases():
 
 
 def _tryConvertToInt(s):
-    """Try convert value from 's' to int, return int if succes, 's' if fail."""
+    """
+    Try convert value from |s| to int.
+
+    Return int(s) if the value was successfully converted, or |s| if conversion
+    failed.
+    """
     try:
         return int(s)
     except ValueError:
@@ -135,7 +155,7 @@ def _alephResultToDict(dom):
     """
     Convert part of non-nested XML to dict.
 
-    dom -- preparsed XML (see dhtmlparser).
+    dom -- pre-parsed XML (see dhtmlparser).
     """
     result = {}
     for i in dom.childs:
@@ -161,22 +181,22 @@ def searchInAleph(base, phrase, considerSimilar, field):
     Send request to the aleph search engine.
 
     Request itself is pretty useless, but it can be later used as parameter
-    getAlephRecords(), which can fetch records from Aleph.
+    for getAlephRecords(), which can fetch records from Aleph.
 
-    phrase -- what you want to search
+    phrase -- what do you want to search
     base -- which database you want to use
     field -- where you want to look
     considerSimilar -- fuzzy search, which is not working at all, so don't use
     it
 
     Returns:
-        aleph_search_record, which is dictionary consisting from those fileds:
+        aleph_search_record, which is dictionary consisting from those fields:
             error (optional) -- present if there was some form of error
             no_entries (int) -- number of entries that can be fetch from aleph
             no_records (int) -- no idea what is this, but it is always >= than
                                 no_entries
             set_number (int) -- important - something like ID of your request
-            session-id (str) -- used to count users for licencing purposes
+            session-id (str) -- used to count users for licensing purposes
 
         example:
             {
@@ -232,10 +252,12 @@ def searchInAleph(base, phrase, considerSimilar, field):
 
 def getDocumentIDs(aleph_search_result, number_of_docs=-1):
     """
-    Return list of DocumentID named tupples to given 'aleph_search_result'.
+    Return list of DocumentID named tuples to given 'aleph_search_result'.
 
     aleph_search_result -- dict returned from searchInAleph()
-    number_of_docs -- how much DocumentIDs from set should be returned
+    number_of_docs -- how many DocumentIDs from set given by
+                      aleph_search_result should be returned, default -1 for
+                      all of them
 
     Returned DocumentID can be used as parameters to downloadAlephDocument().
 
@@ -298,8 +320,8 @@ def downloadAlephDocument(doc_id, library):
     Download document with given ID from given library.
 
     doc_id -- document id (you will get this from getDocumentIDs())
-    library -- NKC01 in our case, but don't worry, getDocumentIDs() add library
-               informations into DocumentID named tuple.
+    library -- NKC01 in our case, but don't worry, getDocumentIDs() adds
+               library specification into DocumentID named tuple.
 
     Returns: MARCXML unicode string.
 
@@ -318,7 +340,7 @@ def downloadAlephDocument(doc_id, library):
 
     dom = dhtmlparser.parseString(data)
 
-    # check if there are any errros
+    # check if there are any errors
     # bad library error
     error = dom.find("login")
     if len(error) > 0:
@@ -357,10 +379,10 @@ if __name__ == '__main__':
     doc = getDocumentIDs(searchISBN("978-80-7367-397-0"))[0]
     print downloadAlephDocument(doc.id, doc.library)
 
-    # check if VALID_ALEPH_BASES is actual (set assures unordered comparsion)
+    # check if VALID_ALEPH_BASES is actual (set assures unordered comparison )
     assert(set(_getListOfBases()) == set(VALID_ALEPH_BASES))
 
-    # this can be kinda specific to prague library
+    # this can be kinda specific to Prague library
     # docid = getDocumentIDs(searchISBN("978-80-7367-397-0"))
     # assert(len(docid) == 1)
     # print docid
