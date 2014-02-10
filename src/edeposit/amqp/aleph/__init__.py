@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
 # This package may contain traces of nuts
 from collections import namedtuple
 from datetime import datetime
