@@ -23,6 +23,16 @@ from dhtmlparser import HTMLElement
 
 #= Functions & objects ========================================================
 class Person():
+    """
+    This class represents informations about persons as they are defined in
+    MARC standards.
+
+    Properties:
+        .name
+        .second_name
+        .surname
+        .title
+    """
     def __init__(self, name, second_name, surname, title):
         self.name = name
         self.second_name = second_name
@@ -35,7 +45,6 @@ class MarcSubrecord(str):
         return str.__new__(self, arg)
 
     def __init__(self, arg, ind1, ind2, other_subfields):
-        # super(MarcSubrecord, self).__init__(arg)
         self.arg = arg
         self.ind1 = ind1
         self.ind2 = ind2
@@ -210,7 +219,7 @@ class MARCXMLRecord:
             "z": "X0456b"
         }
 
-        Function takes care of oai marc.
+        Function takes care of OAI MARC.
         """
         subfields_dict[self.getI(1)] = i1
         subfields_dict[self.getI(2)] = i2
@@ -381,7 +390,7 @@ class MARCXMLRecord:
             self.leader = self.controlfields["LDR"]
 
     def getI(self, num):
-        """Get current name of i1/ind1 paraemter based on self.oai_marc."""
+        """Get current name of i1/ind1 parameter based on self.oai_marc."""
         i_name = "ind" if not self.oai_marc else "i"
 
         return i_name + str(num)
