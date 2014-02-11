@@ -40,6 +40,8 @@ class MARCXMLRecord:
         <controlfield tag="010">data</controlfield>
         <datafield tag="011" ind1=" " ind2=" ">
             <subfield code="scode">data</subfield>
+            <subfield code="a">data</subfield>
+            <subfield code="a">another data, but same code!</subfield>
             ...
             <subfield code"scode+">another data</subfield>
         </datafield>
@@ -72,34 +74,34 @@ class MARCXMLRecord:
         "011": [{
             "ind1": " ",
             "ind2": " ",
-            "scode": "data",
-            "scode+": "another data"
+            "scode": ["data"],
+            "scode+": ["another data"]
         }],
 
         # real example
         "928": [{
             "ind1": "1",
             "ind2": " ",
-            "a": "Portál"
+            "a": ["Portál"]
         }],
 
         "910": [
             {
                 "ind1": "1",
                 "ind2": " ",
-                "a": "ABA001"
+                "a": ["ABA001"]
             },
             {
                 "ind1": "2",
                 "ind2": " ",
-                "a": "BOA001",
-                "b": "2-1235.975"
+                "a": ["BOA001"],
+                "b": ["2-1235.975"]
             },
             {
                 "ind1": "3",
                 "ind2": " ",
-                "a": "OLA001",
-                "a": "1-218.844"
+                "a": ["OLA001"],
+                "b": ["1-218.844"]
             }
         ]
     }
@@ -108,7 +110,7 @@ class MARCXMLRecord:
     in list!
 
     NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
-    RECORD, OR MULTIPLE RECORDS.
+    RECORD, OR MULTIPLE RECORDS. SAME APPLY TO SUBFIELDS.
 
     Example above corresponds with this piece of code from real world:
 
@@ -270,7 +272,10 @@ class MARCXMLRecord:
                     continue
                 code = subfield.params[sub_id]
 
-                field_repr[code] = subfield.getContent().strip()
+                if code in field_repr:
+                    field_repr[code].append(subfield.getContent().strip())
+                else:
+                    field_repr[code] = [subfield.getContent().strip()]
 
             if tag in self.datafields:
                 self.datafields[tag].append(field_repr)
@@ -301,12 +306,13 @@ class MARCXMLRecord:
 
         output = ""
         for field_id in sorted(subfields.keys()):
-            output += Template(template).substitute(
-                TAGNAME=tagname,
-                FIELD_NAME=field_name,
-                FIELD_ID=field_id,
-                CONTENT=subfields[field_id]
-            )
+            for subfield in subfields[field_id]:
+                output += Template(template).substitute(
+                    TAGNAME=tagname,
+                    FIELD_NAME=field_name,
+                    FIELD_ID=field_id,
+                    CONTENT=subfield
+                )
 
         return output
 
