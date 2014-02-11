@@ -278,7 +278,6 @@ class MARCXMLRecord:
         """
         Parse persons from given record.
 
-        marc-record -- MARCXMLRecord object
         record -- string code of record ("010", "730", etc..)
         subrecord -- string code of subrecord ("a", "z", "4", etc..)
         role -- see http://www.loc.gov/marc/relators/relaterm.html for details
@@ -315,7 +314,7 @@ class MARCXMLRecord:
             surname = ""
             title = ""
 
-            # here it get nasty - there is lot of options in ind1/ind2
+            # here it gets nasty - there is lot of options in ind1/ind2
             # parameters
             if ind1 == "1" and ind2 == " ":
                 name, surname = person.rsplit(" ")
