@@ -265,6 +265,85 @@ class MARCXMLRecord:
 
         return output
 
+    def parsePersons(self, record, subrecord, roles=["aut"]):
+        """
+        Parse persons from given record.
+
+        marc-record -- MARCXMLRecord object
+        record -- string code of record ("010", "730", etc..)
+        subrecord -- string code of subrecord ("a", "z", "4", etc..)
+        role -- see http://www.loc.gov/marc/relators/relaterm.html for details
+                set to ["any"] for any role, ["aut"] for authors, etc..
+
+        Main records for persons are: "100", "600" and "700", subrecords "c".
+
+        Returns list of Person objects.
+        """
+        # parse authors
+        parsed_persons = []
+        raw_persons = self.getDataRecords(record, subrecord, False)
+        for person in raw_persons:
+            ind1 = person.getI1()
+            ind2 = person.getI2()
+            other_subfields = person.getOtherSubfiedls()
+
+            # check if person have at least one of the roles specified in
+            # 'roles' parameter of function
+            if "4" in other_subfields and roles != ["any"]:
+                person_roles = other_subfields["4"]  # list of role parameters
+
+                relevant = any(map(lambda role: role in roles, person_roles))
+
+                # skip non-relevant persons
+                if not relevant:
+                    continue
+
+            # result is string, so ind1/2 in MarcSubrecord are lost
+            person = person.strip()
+
+            name = ""
+            second_name = ""
+            surname = ""
+            title = ""
+
+            # here it get nasty - there is lot of options in ind1/ind2
+            # parameters
+            if ind1 == "1" and ind2 == " ":
+                name, surname = person.rsplit(" ")
+
+                if "c" in other_subfields:
+                    title = ",".join(other_subfields["c"])
+            elif ind1 == "0" and ind2 == " ":
+                name = person.strip()
+
+                if "b" in other_subfields:
+                    second_name = ",".join(other_subfields["b"])
+
+                if "c" in other_subfields:
+                    surname = ",".join(other_subfields["c"])
+            elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
+                name = person.strip()
+                title = ",".join(other_subfields["c"])
+
+            parsed_persons.append(
+                Person(
+                    name,
+                    second_name,
+                    surname,
+                    title
+                )
+            )
+
+        return parsed_persons
+
+    def getAuthors(self):
+        """Return list of authors represented as Person objects."""
+        authors = self.parsePersons("100", "a")
+        authors += self.parsePersons("600", "a")
+        authors += self.parsePersons("700", "a")
+
+        return authors
+
     def __parseString(self, xml):
         """
         Parse MARC XML document to dicts, which are contained in
@@ -478,56 +557,6 @@ def arrayOrWhat(array, what):
     return array if len(array) > 1 else array[0]
 
 
-def parsePersons(parsed, record, subrecord, role=["aut"]):
-    """
-    role -- see http://www.loc.gov/marc/relators/relaterm.html for details
-    """
-    # parse authors
-    parsed_persons = []
-    raw_persons = parsed.getDataRecords(record, subrecord, False)
-    for person in raw_persons:
-        ind1 = person.getI1()
-        ind2 = person.getI2()
-        other_subfields = person.getOtherSubfiedls()
-
-        # result is string, so ind1/2 in MarcSubrecord are lost
-        person = person.strip()  # replace(",", "")
-
-        name = ""
-        second_name = ""
-        surname = ""
-        title = ""
-
-        # here it get nasty
-        if ind1 == "1" and ind2 == " ":
-            name, surname = person.rsplit(" ")
-
-            if "c" in other_subfields:
-                title = ",".join(other_subfields["c"])
-        elif ind1 == "0" and ind2 == " ":
-            name = person.strip()
-
-            if "b" in other_subfields:
-                second_name = ",".join(other_subfields["b"])
-
-            if "c" in other_subfields:
-                surname = ",".join(other_subfields["c"])
-        elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
-            name = person.strip()
-            title = ",".join(other_subfields["c"])
-
-        parsed_persons.append(
-            Person(
-                name,
-                second_name,
-                surname,
-                title
-            )
-        )
-
-    return parsed_persons
-
-
 def toEpublication(marcxml):
     parsed = marcxml
     if not isinstance(marcxml, MARCXMLRecord):
@@ -539,16 +568,6 @@ def toEpublication(marcxml):
     for ISBN in parsed.getDataRecords("020", "a", True):
         clean_ISBN, rest = ISBN.split(" ", 1)
         clean_ISBNs.append(clean_ISBN)
-
-    authors = parsePersons(parsed, "100", "a")
-    authors += parsePersons(parsed, "600", "a")
-    authors += parsePersons(parsed, "700", "a")
-
-    # convert Persons to amqp's Authors
-    amqp_authors = map(
-        lambda a: Author(a.name + " " + a.second_name, a.surname),
-        authors
-    )
 
     return EPublication(
         nazev=arrayOrWhat(
@@ -584,7 +603,7 @@ def toEpublication(marcxml):
             parsed.getDataRecords("901", "f", False),
             ""
         ),
-        zpracovatelZaznamu="", #008/39 040ad,
+        zpracovatelZaznamu="", # TODO: 008/39 040ad,
         kategorieProRIV="",
         mistoDistribuce="",
         distributor="",
@@ -600,7 +619,10 @@ def toEpublication(marcxml):
             ""
         ),
         ISBNSouboruPublikaci=clean_ISBNs,
-        autori=amqp_authors,
+        autori=map(  # convert Persons to amqp's Authors
+            lambda a: Author(a.name + " " + a.second_name, a.surname),
+            parsed.getAuthors()
+        ),
         originaly="",
     )
 
