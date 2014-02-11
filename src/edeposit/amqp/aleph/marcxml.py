@@ -7,6 +7,7 @@
 #
 ## Todo
 #   - makeSureThatFieldsExist()
+#   - script, co si z DTD/xsd vytahne popisky do slovniku/whatever
 #= Imports ====================================================================
 from string import Template
 
@@ -143,18 +144,33 @@ class MARCXMLRecord:
     """
     def __init__(self, xml=None):
         self.leader = None
+        self.oai_marc = False
         self.controlfields = {}
         self.datafields = {}
-        self.oai_marc = False
 
         if xml is not None:
             self.__parseString(xml)
 
-    def addControlField(name, value):
-        pass
+    def addControlField(self, name, value):
+        self.controlfields[name] = value
 
-    def addNewDataField(name, i1, i2, subfields_dict):
-        pass
+    def addDataField(self, name, i1, i2, subfields_dict):
+        """
+        Add new datafield into self.datafields.
+
+        Takes care of oai marc.
+        """
+        subfields_dict[self.getI(1)] = i1
+        subfields_dict[self.getI(2)] = i2
+
+        # append dict, or add new dict into self.datafields
+        if name in self.datafields:
+            if isinstance(self.datafields, dict):
+                self.datafields[name] = [self.datafields[name]]
+
+            self.datafields.append(subfields_dict)
+        else:
+            self.datafields[name] = subfields_dict
 
     def __parseString(self, xml):
         """
@@ -192,6 +208,12 @@ class MARCXMLRecord:
         if self.oai_marc and "LDR" in self.controlfields:
             self.leader = self.controlfields["LDR"]
 
+    def getI(self, num):
+        """Get current name of i1/ind1 paraemter based on self.oai_marc."""
+        i_name = "ind" if not self.oai_marc else "i"
+
+        return i_name + str(num)
+
     def __parseControlFields(self, fields, tag_id="tag"):
         """
         Parse control fields.
@@ -204,7 +226,7 @@ class MARCXMLRecord:
         """
         for field in fields:
             params = field.params
-            if tag_id not in params:
+            if tag_id not in params:  # skip tags with blank parameters
                 continue
 
             self.controlfields[params[tag_id]] = field.getContent().strip()
@@ -231,9 +253,8 @@ class MARCXMLRecord:
 
             # take care of iX/indX parameter - I have no idea what is this, but
             # they look important (=they are everywhere)
-            i_name = "ind" if not self.oai_marc else "i"
-            i1_name = i_name + "1"
-            i2_name = i_name + "2"
+            i1_name = self.getI(1)
+            i2_name = self.getI(2)
             field_repr = {
                 i1_name: " " if i1_name not in params else params[i1_name],
                 i2_name: " " if i2_name not in params else params[i2_name],
@@ -300,9 +321,8 @@ class MARCXMLRecord:
         tagname = "datafield" if not self.oai_marc else "varfield"
         field_name = "tag" if not self.oai_marc else "id"
 
-        i_name = "ind" if not self.oai_marc else "i"
-        i1_name = i_name + "1"
-        i2_name = i_name + "2"
+        i1_name = self.getI(1)
+        i2_name = self.getI(2)
 
         output = ""
         for field_id in sorted(self.datafields.keys()):
