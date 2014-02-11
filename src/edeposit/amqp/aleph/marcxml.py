@@ -22,6 +22,14 @@ from dhtmlparser import HTMLElement
 
 
 #= Functions & objects ========================================================
+class Person():
+    def __init__(self, name, second_name, surname, title):
+        self.name = name
+        self.second_name = second_name
+        self.surname = surname
+        self.title = title
+
+
 class MarcSubrecord(str):
     def __new__(self, arg, ind1, ind2, other_subfields):
         return str.__new__(self, arg)
@@ -470,6 +478,56 @@ def arrayOrWhat(array, what):
     return array if len(array) > 1 else array[0]
 
 
+def parsePersons(parsed, record, subrecord, role=["aut"]):
+    """
+    role -- see http://www.loc.gov/marc/relators/relaterm.html for details
+    """
+    # parse authors
+    parsed_persons = []
+    raw_persons = parsed.getDataRecords(record, subrecord, False)
+    for person in raw_persons:
+        ind1 = person.getI1()
+        ind2 = person.getI2()
+        other_subfields = person.getOtherSubfiedls()
+
+        # result is string, so ind1/2 in MarcSubrecord are lost
+        person = person.strip()  # replace(",", "")
+
+        name = ""
+        second_name = ""
+        surname = ""
+        title = ""
+
+        # here it get nasty
+        if ind1 == "1" and ind2 == " ":
+            name, surname = person.rsplit(" ")
+
+            if "c" in other_subfields:
+                title = ",".join(other_subfields["c"])
+        elif ind1 == "0" and ind2 == " ":
+            name = person.strip()
+
+            if "b" in other_subfields:
+                second_name = ",".join(other_subfields["b"])
+
+            if "c" in other_subfields:
+                surname = ",".join(other_subfields["c"])
+        elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
+            name = person.strip()
+            title = ",".join(other_subfields["c"])
+
+        parsed_persons.append(
+            Person(
+                name,
+                second_name,
+                surname,
+                title
+            )
+        )
+
+    return parsed_persons
+
+
 def toEpublication(marcxml):
     parsed = marcxml
     if not isinstance(marcxml, MARCXMLRecord):
@@ -482,36 +540,15 @@ def toEpublication(marcxml):
         clean_ISBN, rest = ISBN.split(" ", 1)
         clean_ISBNs.append(clean_ISBN)
 
-    # parse authors
-    parsed_authors = []
-    raw_authors = parsed.getDataRecords("100", "a", False)   # get all authors
-    raw_authors += parsed.getDataRecords("600", "a", False)  # fields
-    raw_authors += parsed.getDataRecords("700", "a", False)
-    for author in raw_authors:
-        ind1 = author.getI1()
-        ind2 = author.getI2()
-        other_subfields = author.getOtherSubfiedls()
+    authors = parsePersons(parsed, "100", "a")
+    authors += parsePersons(parsed, "600", "a")
+    authors += parsePersons(parsed, "700", "a")
 
-        # result is string, so ind1/2 in MarcSubrecord are lost
-        author = author.strip()  # replace(",", "")
-
-        # here it get nasty
-        first_name = ""
-        last_name = ""
-        if ind1 == "1" and ind2 == " ":
-            first_name, last_name = author.rsplit(" ")
-        elif ind1 == "0" and ind2 == " ":
-            first_name = author.strip()
-            last_name = other_subfields["c"][0].strip()  # experimental
-        elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
-            first_name = author.strip()
-
-        parsed_authors.append(
-            Author(
-                first_name,
-                last_name
-            )
-        )
+    # convert Persons to amqp's Authors
+    amqp_authors = map(
+        lambda a: Author(a.name + " " + a.second_name, a.surname),
+        authors
+    )
 
     return EPublication(
         nazev=arrayOrWhat(
@@ -563,7 +600,7 @@ def toEpublication(marcxml):
             ""
         ),
         ISBNSouboruPublikaci=clean_ISBNs,
-        autori=parsed_authors,
+        autori=amqp_authors,
         originaly="",
     )
 
