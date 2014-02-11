@@ -34,22 +34,26 @@ class MARCXMLRecord:
     Basic scheme looks like this:
 
     <record xmlns=definition..>
-        [<leader>optional_binary_something</leader>]
-        [
-            <controlfield tag="001">data</controlfield>
-            ...
-            <controlfield tag="010">data</controlfield>
-        ]
+        <leader>optional_binary_something</leader>
+        <controlfield tag="001">data</controlfield>
+        ...
+        <controlfield tag="010">data</controlfield>
         <datafield tag="011" ind1=" " ind2=" ">
             <subfield code="scode">data</subfield>
-            [<subfield code"scode+">another data</subfield>]
+            ...
+            <subfield code"scode+">another data</subfield>
+        </datafield>
+        ...
+        <datafield tag="999" ind1=" " ind2=" ">
+        ...
         </datafield>
     </record>
 
     <leader> is optional and it is parsed into MARCXMLRecord.leader as string.
 
-    <controlfield>s are parsed as dictionary into MARCXMLRecord.controlfields,
-    and dictionary for data from example would look like this:
+    <controlfield>s are optional and parsed as dictionary into
+    MARCXMLRecord.controlfields, and dictionary for data from example would
+    look like this:
 
     MARCXMLRecord.controlfields = {
         "001": "data",
@@ -59,25 +63,25 @@ class MARCXMLRecord:
 
     <datafield>s are non-optional and are parsed into MARCXMLRecord.datafields,
     which is little bit more complicated dictionary. Complicated is mainly
-    because tag ID is not unique, so there can be more <datafield>s with same
-    tag!
+    because tag parameter is not unique, so there can be more <datafield>s with
+    same tag!
 
     scode is always one character (ascii lowercase), or number.
 
     MARCXMLRecord.datafields = {
-        "011": {
+        "011": [{
             "ind1": " ",
             "ind2": " ",
             "scode": "data",
             "scode+": "another data"
-        },
+        }],
 
         # real example
-        "928": {
+        "928": [{
             "ind1": "1",
             "ind2": " ",
             "a": "Portál"
-        },
+        }],
 
         "910": [
             {
@@ -101,7 +105,10 @@ class MARCXMLRecord:
     }
 
     As you can see in 910 record example, sometimes there are multiple records
-    in list and not expected dict!
+    in list!
+
+    NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
+    RECORD, OR MULTIPLE RECORDS.
 
     Example above corresponds with this piece of code from real world:
 
@@ -165,12 +172,9 @@ class MARCXMLRecord:
 
         # append dict, or add new dict into self.datafields
         if name in self.datafields:
-            if isinstance(self.datafields, dict):
-                self.datafields[name] = [self.datafields[name]]
-
             self.datafields.append(subfields_dict)
         else:
-            self.datafields[name] = subfields_dict
+            self.datafields[name] = [subfields_dict]
 
     def __parseString(self, xml):
         """
@@ -268,16 +272,10 @@ class MARCXMLRecord:
 
                 field_repr[code] = subfield.getContent().strip()
 
-            # if there are more fields with same name, convert placeholder to
-            # dict
-            if tag in self.datafields and \
-               isinstance(self.datafields[tag], dict):
-                self.datafields[tag] = [self.datafields[tag]]
-
             if tag in self.datafields:
                 self.datafields[tag].append(field_repr)
             else:
-                self.datafields[tag] = field_repr
+                self.datafields[tag] = [field_repr]
 
     def __serializeControlFields(self):
         template = '<$TAGNAME $FIELD_NAME="$FIELD_ID">$CONTENT</$TAGNAME>\n'
@@ -326,11 +324,6 @@ class MARCXMLRecord:
 
         output = ""
         for field_id in sorted(self.datafields.keys()):
-            # if field_id points to just dict, make it array (this saves a lot
-            # of work with array unpacking in case there is array and not dict)
-            if isinstance(self.datafields[field_id], dict):
-                self.datafields[field_id] = [self.datafields[field_id]]
-
             # unpac dicts from array
             for dict_field in self.datafields[field_id]:
                 i1_val = dict_field[i1_name]
