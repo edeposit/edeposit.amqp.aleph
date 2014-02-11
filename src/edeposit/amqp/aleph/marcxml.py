@@ -167,7 +167,18 @@ class MARCXMLRecord:
         """
         Add new datafield into self.datafields.
 
-        Takes care of oai marc.
+        name -- name of datafield
+        i1 -- value of i1/ind1 parameter
+        i2 -- value of i2/ind2 parameter
+        subfields_dict -- dictionary containing subfields in this format:
+
+        {
+            "field_id": ["subfield data",],
+            ...
+            "z": "X0456b"
+        }
+
+        Function takes care of oai marc.
         """
         subfields_dict[self.getI(1)] = i1
         subfields_dict[self.getI(2)] = i2
@@ -177,6 +188,24 @@ class MARCXMLRecord:
             self.datafields.append(subfields_dict)
         else:
             self.datafields[name] = [subfields_dict]
+
+    def getDataRecords(self, datafield, subfield, throw_exceptions=True):
+        if datafield not in self.datafields:
+            if throw_exceptions:
+                raise KeyError(datafield + " is not in datafields!")
+            else:
+                return []
+
+        output = []
+        for df in self.datafields[datafield]:
+            if subfield not in df:
+                if throw_exceptions:
+                    raise KeyError(subfield + " is not in subfields!")
+                else:
+                    return []
+            output.extend(df[subfield])
+
+        return output
 
     def __parseString(self, xml):
         """
@@ -379,8 +408,101 @@ $DATA_FIELDS
         )
 
 
+def arrayOrWhat(array, what):
+    """
+    If len(array) == 0, return what, else array.
+
+    If there is only one element in array, return just the element.
+    """
+    if len(array) <= 0:
+        return what
+
+    return array if len(array) > 1 else array[0]
+
+
 def toEpublication(marcxml):
-    pass
+    parsed = marcxml
+    if not isinstance(marcxml, MARCXMLRecord):
+        parsed = MARCXMLRecord(str(marcxml))
+
+    # parse ISBNs
+    rest = ""
+    clean_ISBNs = []
+    for ISBN in parsed.getDataRecords("020", "a", True):
+        clean_ISBN, rest = ISBN.split(" ", 1)
+        clean_ISBNs.append(clean_ISBN)
+
+    # parse authors
+    parsed_authors = []
+    raw_authors = parsed.getDataRecords("100", "a", False)
+    raw_authors += parsed.getDataRecords("700", "a", False)
+    for author in raw_authors:
+        author = author.strip().replace(",", "")
+
+        last_name, first_name = author.rsplit(" ")
+        last_name = last_name.strip()
+        first_name = first_name.strip()
+
+        parsed_authors.append(
+            Author(
+                first_name,
+                last_name
+            )
+        )
+
+    return EPublication(
+        nazev=arrayOrWhat(
+            parsed.getDataRecords("245", "a", False),
+            ""
+        ),
+        podnazev=arrayOrWhat(
+            parsed.getDataRecords("245", "b", False),
+            ""
+        ),
+        vazba=rest.strip(),
+        cena=arrayOrWhat(
+            parsed.getDataRecords("020", "c", False),
+            ""
+        ),
+        castDil=arrayOrWhat(
+            parsed.getDataRecords("245", "p", False),
+            ""
+        ),
+        nazevCasti=arrayOrWhat(
+            parsed.getDataRecords("245", "n", False),
+            ""
+        ),
+        nakladatelVydavatel=arrayOrWhat(
+            parsed.getDataRecords("260", "b", False),
+            ""
+        ),
+        datumVydani=arrayOrWhat(
+            parsed.getDataRecords("260", "c", False),
+            ""
+        ),
+        poradiVydani=arrayOrWhat(
+            parsed.getDataRecords("901", "f", False),
+            ""
+        ),
+        zpracovatelZaznamu="",
+        kategorieProRIV="",
+        mistoDistribuce="",
+        distributor="",
+        datumDistribuce="",
+        datumProCopyright="",
+        format=arrayOrWhat(
+            parsed.getDataRecords("300", "c", False),
+            ""
+        ),
+        url="",
+        mistoVydani=arrayOrWhat(
+            parsed.getDataRecords("260", "a", False),
+            ""
+        ),
+        ISBNSouboruPublikaci=clean_ISBNs,
+        autori=parsed_authors,
+        originaly="",
+    )
 
 
 def fromEpublication(epublication):
@@ -392,5 +514,8 @@ if __name__ == '__main__':
     r = MARCXMLRecord(open("example.xml").read())
 
     # print r.datafields["910"]
-    print r.leader
-    print r.toXML()
+    # print r.leader
+    # print r.toXML()
+
+    # print r.getDataRecords("020", "a")
+    print toEpublication(r)
