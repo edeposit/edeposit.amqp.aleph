@@ -22,6 +22,30 @@ from dhtmlparser import HTMLElement
 
 
 #= Functions & objects ========================================================
+class MarcSubrecord(str):
+    def __new__(self, arg, ind1, ind2, other_subfields):
+        return str.__new__(self, arg)
+
+    def __init__(self, arg, ind1, ind2, other_subfields):
+        # super(MarcSubrecord, self).__init__(arg)
+        self.arg = arg
+        self.ind1 = ind1
+        self.ind2 = ind2
+        self.other_subfields = other_subfields
+
+    def getI1(self):
+        return self.ind1
+
+    def getI2(self):
+        return self.ind2
+
+    def getOtherSubfiedls(self):
+        return self.other_subfields
+
+    def __str__(self):
+        return self.arg
+
+
 class MARCXMLRecord:
     """
     Class for serialization/deserialization of MARCXML and MARC OAI documents.
@@ -190,6 +214,21 @@ class MARCXMLRecord:
             self.datafields[name] = [subfields_dict]
 
     def getDataRecords(self, datafield, subfield, throw_exceptions=True):
+        """
+        Return content of given subfield in datafield.
+
+        datafield -- String with section name (for example "001", "100", "700")
+        subfield -- String with subfield name (for example "a", "1", etc..)
+        throw_exceptions -- If True, KeyError is raised if method couldnt found
+                            given datafield/subfield. If false, blank array []
+                            is returned.
+
+        Returns list of MarcSubrecords. MarcSubrecord is practically same thing
+        as string, but has defined .getI1() and .getI2() properties.
+
+        Believe me, you will need this, because MARC XML depends on them from
+        time to time (name of authors for example).
+        """
         if datafield not in self.datafields:
             if throw_exceptions:
                 raise KeyError(datafield + " is not in datafields!")
@@ -203,7 +242,18 @@ class MARCXMLRecord:
                     raise KeyError(subfield + " is not in subfields!")
                 else:
                     return []
-            output.extend(df[subfield])
+
+            # records are not returned just like plain string, but like
+            # MarcSubrecord, because you will need ind1/ind2 values
+            for i in df[subfield]:
+                output.append(
+                    MarcSubrecord(
+                        i,
+                        df[self.getI(1)],
+                        df[self.getI(2)],
+                        df
+                    )
+                )
 
         return output
 
@@ -434,14 +484,27 @@ def toEpublication(marcxml):
 
     # parse authors
     parsed_authors = []
-    raw_authors = parsed.getDataRecords("100", "a", False)
+    raw_authors = parsed.getDataRecords("100", "a", False)   # get all authors
+    raw_authors += parsed.getDataRecords("600", "a", False)  # fields
     raw_authors += parsed.getDataRecords("700", "a", False)
     for author in raw_authors:
-        author = author.strip().replace(",", "")
+        ind1 = author.getI1()
+        ind2 = author.getI2()
+        other_subfields = author.getOtherSubfiedls()
 
-        last_name, first_name = author.rsplit(" ")
-        last_name = last_name.strip()
-        first_name = first_name.strip()
+        # result is string, so ind1/2 in MarcSubrecord are lost
+        author = author.strip()  # replace(",", "")
+
+        # here it get nasty
+        first_name = ""
+        last_name = ""
+        if ind1 == "1" and ind2 == " ":
+            first_name, last_name = author.rsplit(" ")
+        elif ind1 == "0" and ind2 == " ":
+            first_name = author.strip()
+            last_name = other_subfields["c"][0].strip()  # experimental
+        elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
+            first_name = author.strip()
 
         parsed_authors.append(
             Author(
@@ -484,7 +547,7 @@ def toEpublication(marcxml):
             parsed.getDataRecords("901", "f", False),
             ""
         ),
-        zpracovatelZaznamu="",
+        zpracovatelZaznamu="", #008/39 040ad,
         kategorieProRIV="",
         mistoDistribuce="",
         distributor="",
