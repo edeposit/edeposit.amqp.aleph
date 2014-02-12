@@ -702,7 +702,10 @@ class MARCXMLRecord:
             # here it gets nasty - there is lot of options in ind1/ind2
             # parameters
             if ind1 == "1" and ind2 == " ":
-                surname, name = person.rsplit(" ")
+                if "," in person:
+                    surname, name = person.split(",", 1)
+                else:
+                    surname, name = person.split(" ", 1)
 
                 if "c" in other_subfields:
                     title = ",".join(other_subfields["c"])
