@@ -3,10 +3,168 @@
 #
 # Interpreter version: python 2.7
 #
-## Todo
-#   - makeSureThatFieldsExist()
-#   - script, co si z DTD/xsd vytahne popisky do slovniku/whatever
+## TODO:
+#    - Add setters
+#
 #= Imports ====================================================================
+"""
+Standard MARC record is made from three parts:
+
+    leader -- binary something, you can probably ignore it
+    controlfileds -- marc fields < 10
+    datafields -- important information you actually want
+
+Basic MARC XML scheme uses this structure:
+
+----
+<record xmlns=definition..>
+    <leader>optional_binary_something</leader>
+    <controlfield tag="001">data</controlfield>
+    ...
+    <controlfield tag="010">data</controlfield>
+    <datafield tag="011" ind1=" " ind2=" ">
+        <subfield code="scode">data</subfield>
+        <subfield code="a">data</subfield>
+        <subfield code="a">another data, but same code!</subfield>
+        ...
+        <subfield code"scode+">another data</subfield>
+    </datafield>
+    ...
+    <datafield tag="999" ind1=" " ind2=" ">
+    ...
+    </datafield>
+</record>
+---
+
+<leader> is optional and it is parsed into MARCXMLRecord.leader as string.
+
+<controlfield>s are optional and parsed as dictionary into
+MARCXMLRecord.controlfields, and dictionary for data from example would look
+like this:
+
+---
+MARCXMLRecord.controlfields = {
+    "001": "data",
+    ...
+    "010": "data"
+}
+---
+
+<datafield>s are non-optional and are parsed into MARCXMLRecord.datafields,
+which is little bit more complicated dictionary. Complicated is mainly"because
+tag parameter is not unique, so there can be more <datafield>s with same tag!
+
+scode is always one character (ascii lowercase), or number.
+
+---
+MARCXMLRecord.datafields = {
+    "011": [{
+        "ind1": " ",
+        "ind2": " ",
+        "scode": ["data"],
+        "scode+": ["another data"]
+    }],
+
+    # real example
+    "928": [{
+        "ind1": "1",
+        "ind2": " ",
+        "a": ["Portál"]
+    }],
+
+    "910": [
+        {
+            "ind1": "1",
+            "ind2": " ",
+            "a": ["ABA001"]
+        },
+        {
+            "ind1": "2",
+            "ind2": " ",
+            "a": ["BOA001"],
+            "b": ["2-1235.975"]
+        },
+        {
+            "ind1": "3",
+            "ind2": " ",
+            "a": ["OLA001"],
+            "b": ["1-218.844"]
+        }
+    ]
+}
+---
+
+As you can see in 910 record example, sometimes there are multiple records in a
+list!
+
+NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
+RECORD, OR MULTIPLE RECORDS. SAME APPLY TO SUBFIELDS.
+
+Example above corresponds with this piece of code from real world:
+
+---
+<datafield tag="910" ind1="1" ind2=" ">
+<subfield code="a">ABA001</subfield>
+</datafield>
+<datafield tag="910" ind1="2" ind2=" ">
+<subfield code="a">BOA001</subfield>
+<subfield code="b">2-1235.975</subfield>
+</datafield>
+<datafield tag="910" ind1="3" ind2=" ">
+<subfield code="a">OLA001</subfield>
+<subfield code="b">1-218.844</subfield>
+</datafield>
+---
+
+- OAI -------------------------------------------------------------------------
+To prevent things to be too much simple, there is also another type of MARC XML
+document - OAI format.
+
+OAI documents are little bit different, but almost same in structure.
+
+leader is optional and is stored in MARCXMLRecord.controlfields["LDR"], but
+also in MARCXMLRecord.leader for backward compatibility.
+
+<controlfield> is renamed to <fixfield> and its "tag" parameter to "label".
+
+<datafield> tag is not named datafield, but <varfield>, "tag" parameter is "id"
+and ind1/ind2 are named i1/i2, but works the same way.
+
+<subfield>s parameter "code" is renamed to "label".
+
+Real world example:
+
+---
+<oai_marc>
+<fixfield id="LDR">-----nam-a22------aa4500</fixfield>
+<fixfield id="FMT">BK</fixfield>
+<fixfield id="001">cpk19990652691</fixfield>
+<fixfield id="003">CZ-PrNK</fixfield>
+<fixfield id="005">20130513104801.0</fixfield>
+<fixfield id="007">tu</fixfield>
+<fixfield id="008">990330m19981999xr-af--d------000-1-cze--</fixfield>
+<varfield id="015" i1=" " i2=" ">
+<subfield label="a">cnb000652691</subfield>
+</varfield>
+<varfield id="020" i1=" " i2=" ">
+<subfield label="a">80-7174-091-8 (sv. 1 : váz.) :</subfield>
+<subfield label="c">Kč 182,00</subfield>
+</varfield>
+...
+</oai_marc>
+---
+
+- Full documentation ----------------------------------------------------------
+Description of simplified MARCXML schema can be found at
+http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd
+
+Full description of MARCXML with definition of each element can be found at
+http://www.loc.gov/standards/marcxml/mrcbxmlfile.dtd (19492 lines of code)
+
+Description of MARC OAI can be found at
+http://www.openarchives.org/OAI/oai_marc.xsd
+
+"""
 from string import Template
 
 
@@ -89,130 +247,115 @@ class MARCXMLRecord:
     """
     Class for serialization/deserialization of MARCXML and MARC OAI documents.
 
-    Standard MARC record is made from three parts:
-        leader -- binary something, you can probably ignore it
-        controlfileds -- marc fields < 10
-        datafields -- important information you actually want
+    This class parses everything between <root> elements. It checks, if there
+    is root element, so please, give it full XML.
 
-    Basic scheme looks like this:
+    Internal format is described in module docstring. You can access internal
+    data directly, or using few handy methods on two different levels of
+    abstraction:
 
-    <record xmlns=definition..>
-        <leader>optional_binary_something</leader>
-        <controlfield tag="001">data</controlfield>
-        ...
-        <controlfield tag="010">data</controlfield>
-        <datafield tag="011" ind1=" " ind2=" ">
-            <subfield code="scode">data</subfield>
-            <subfield code="a">data</subfield>
-            <subfield code="a">another data, but same code!</subfield>
-            ...
-            <subfield code"scode+">another data</subfield>
-        </datafield>
-        ...
-        <datafield tag="999" ind1=" " ind2=" ">
-        ...
-        </datafield>
-    </record>
+    - No abstraction at all ---------------------------------------------------
+    You can choose to access data directly and for this use, there is few
+    important properties:
 
-    <leader> is optional and it is parsed into MARCXMLRecord.leader as string.
+      .leader         (string)
+      .oai_marc       (bool)
+      .controlfields  (dict)
+      .datafields     (dict of arrays of dict of arrays of strings ^-^)
 
-    <controlfield>s are optional and parsed as dictionary into
-    MARCXMLRecord.controlfields, and dictionary for data from example would
-    look like this:
+    .controlfields is simple and easy to use dictionary, where keys are field
+    identificators (string, 3 chars, all chars digits). Value is always string.
 
-    MARCXMLRecord.controlfields = {
-        "001": "data",
-        ...
-        "010": "data"
-    }
+    .datafields is little bit complicated and it is dictionary, consisting of
+    arrays of dictionaries, which consist from arrays of strings and two
+    special parameters.
 
-    <datafield>s are non-optional and are parsed into MARCXMLRecord.datafields,
-    which is little bit more complicated dictionary. Complicated is mainly
-    because tag parameter is not unique, so there can be more <datafield>s with
-    same tag!
+    It sounds horrible, but it is not that hard to understand:
 
-    scode is always one character (ascii lowercase), or number.
-
-    MARCXMLRecord.datafields = {
-        "011": [{
-            "ind1": " ",
-            "ind2": " ",
-            "scode": ["data"],
-            "scode+": ["another data"]
-        }],
-
-        # real example
-        "928": [{
-            "ind1": "1",
-            "ind2": " ",
-            "a": ["Portál"]
-        }],
-
-        "910": [
+    ---
+    .datafields = {
+        "011": ["ind1": " ", "ind2": " "]  # array of 0 or more dicts
+        "012": [
             {
-                "ind1": "1",
-                "ind2": " ",
-                "a": ["ABA001"]
+                "a": ["a) subsection value"],
+                "b": ["b) subsection value"],
+                "ind1": " ",
+                "ind2": " "
             },
             {
-                "ind1": "2",
-                "ind2": " ",
-                "a": ["BOA001"],
-                "b": ["2-1235.975"]
-            },
-            {
-                "ind1": "3",
-                "ind2": " ",
-                "a": ["OLA001"],
-                "b": ["1-218.844"]
+                "a": [
+                    "multiple values in a) subsections are possible!",
+                    "another value in a) subsection"
+                ],
+                "c": ["subsection identificator is always one character long"],
+                "ind1": " ",
+                "ind2": " "
             }
         ]
     }
+    ---
 
-    As you can see in 910 record example, sometimes there are multiple records
-    in list!
+    Notice ind1/ind2 keywords, which are reserved indicators and used in few
+    cases thru MARC standard.
 
-    NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
-    RECORD, OR MULTIPLE RECORDS. SAME APPLY TO SUBFIELDS.
+    Dict structure is not that hard to understand, but kinda long to access, so
+    there is also little bit more higlevel abstraction access methods.
 
-    Example above corresponds with this piece of code from real world:
+    - Lowlevel abstraction ----------------------------------------------------
+    To access data little bit easier, there are defined two methods to access
+    and two methods to add data to internal dictionaries:
 
-    <datafield tag="910" ind1="1" ind2=" ">
-    <subfield code="a">ABA001</subfield>
-    </datafield>
-    <datafield tag="910" ind1="2" ind2=" ">
-    <subfield code="a">BOA001</subfield>
-    <subfield code="b">2-1235.975</subfield>
-    </datafield>
-    <datafield tag="910" ind1="3" ind2=" ">
-    <subfield code="a">OLA001</subfield>
-    <subfield code="b">1-218.844</subfield>
-    </datafield>
+      .addControlField(name, value)
+      .addDataField(name, i1, i2, subfields_dict)
 
+    Names imho selfdescribing. subfields_dict is expected en enforced to be
+    dictionary with one character long keys and list of strings as values.
 
-    - OAI ---------------------------------------------------------------------
-    OAI documents are little bit different, but almost same in structure.
+    Getters are also simple to use:
 
-    leader is optional and is stored in MARCXMLRecord.controlfields["LDR"], but
-    also in MARCXMLRecord.leader for backward compatibility.
+      .getControlRecord(controlfield)
+      .getDataRecords(datafield, subfield, throw_exceptions)
 
-    <controlfield> is renamed to <fixfield> and its "tag" parameter to "label".
+    .getControlRecord() is basically just wrapper over .controlfields and works
+    same way as accessing .controlfields[controlfield]
 
-    <datafield> tag is not named datafield, but <varfield>, "tag" parameter is
-    "id" and ind1/ind2 are named i1/i2, but works the same way.
+    .getDataRecords(datafield, subfield, throw_exceptions) return list of
+    MarcSubrecord* objects with informations from section |datafield| subsection
+    |subfield|.
 
-    <subfield>s parameter "code" is renamed to "label".
+    If throw_exceptions parameter is set to False, method returns empty list
+    instead of throwing KeyError.
 
+    *As I said, function returns list of MarcSubrecord objects. They are almost
+    same thing as normal strings (they are actually subclassed strings), but
+    defines few important methods, which can make your life little bit easier:
 
-    - Full documentation ------------------------------------------------------
-    Description of simplified MARCXML schema can be found at
-    http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd
+      .getI1()
+      .getI2()
+      .getOtherSubfiedls()
 
-    Full description of MARCXML with definition of each element can be found at
-    http://www.loc.gov/standards/marcxml/mrcbxmlfile.dtd (19492 lines of code)
+    .getOtherSubfiedls() returns dictionary with other subsections, as subfield
+    requested by calling .getDataRecords().
 
-    Description of MARC OAI can be found at
-    http://www.openarchives.org/OAI/oai_marc.xsd
+    - Highlevel abstractions --------------------------------------------------
+    There is also lot of highlevel getters:
+
+      .getName()
+      .getSubname()
+      .getPrice()
+      .getPart()
+      .getPartName()
+      .getPublisher()
+      .getPubDate()
+      .getPubOrder()
+      .getFormat()
+      .getPubPlace()
+      .getAuthors()
+      .getCorporations()
+      .getDistributors()
+      .getISBNs()
+      .getBinding()
+      .getOriginals()
     """
     def __init__(self, xml=None):
         self.leader = None
@@ -221,6 +364,8 @@ class MARCXMLRecord:
         self.datafields = {}
         self.valid_i_chars = list(" 0123456789")
 
+        # it is always possible to create blank object and add values into it
+        # piece by piece thru .addControlField()/.addDataField() methods.
         if xml is not None:
             self.__parseString(xml)
 
@@ -242,8 +387,10 @@ class MARCXMLRecord:
         {
             "field_id": ["subfield data",],
             ...
-            "z": "X0456b"
+            "z": ["X0456b"]
         }
+
+        field_id can be only one characted long!
 
         Function takes care of OAI MARC.
         """
@@ -253,6 +400,19 @@ class MARCXMLRecord:
             raise ValueError("Invalid i2parameter '" + i2 + "'!")
         if len(name) != 3:
             raise ValueError("name parameter have to be exactly 3 chars long!")
+        if not isinstance(subfields_dict, dict):
+            raise ValueError(
+                "subfields_dict parameter has to be dict instance!"
+            )
+        for key in subfields_dict.keys():
+            if len(key) > 1:
+                raise KeyError(
+                    "subfields_dict can be only one character long!"
+                )
+            if not isinstance(subfields_dict[key], list):
+                raise ValueError(
+                    "Values at under '" + key + "' have to be list!"
+                )
 
         subfields_dict[self.getI(1)] = i1
         subfields_dict[self.getI(2)] = i2
@@ -262,6 +422,9 @@ class MARCXMLRecord:
             self.datafields.append(subfields_dict)
         else:
             self.datafields[name] = [subfields_dict]
+
+    def getControlRecord(self, controlfield):
+        return self.controlfields[controlfield]
 
     def getDataRecords(self, datafield, subfield, throw_exceptions=True):
         """
@@ -765,16 +928,3 @@ $DATA_FIELDS
 
     def __repr__(self):
         return str(self.__dict__)
-
-
-#= Main program ===============================================================
-if __name__ == '__main__':
-    r = MARCXMLRecord(open("multi_example.xml").read())
-
-    print repr(r)
-
-    # print r.datafields["910"]
-    # print r.leader
-    # print r.toXML()
-
-    # print r.getDataRecords("020", "a")
