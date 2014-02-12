@@ -40,6 +40,14 @@ class Person():
         self.title = title
 
 
+class Corporation():
+    def __init__(self, name, place, date):
+        super(Corporation, self).__init__()
+        self.name = name
+        self.place = place
+        self.date = date
+
+
 class MarcSubrecord(str):
     def __new__(self, arg, ind1, ind2, other_subfields):
         return str.__new__(self, arg)
@@ -317,7 +325,7 @@ class MARCXMLRecord:
             # here it gets nasty - there is lot of options in ind1/ind2
             # parameters
             if ind1 == "1" and ind2 == " ":
-                name, surname = person.rsplit(" ")
+                surname, name = person.rsplit(" ")
 
                 if "c" in other_subfields:
                     title = ",".join(other_subfields["c"])
@@ -335,10 +343,10 @@ class MARCXMLRecord:
 
             parsed_persons.append(
                 Person(
-                    name,
-                    second_name,
-                    surname,
-                    title
+                    name.strip(),
+                    second_name.strip(),
+                    surname.strip(),
+                    title.strip()
                 )
             )
 
@@ -349,8 +357,56 @@ class MARCXMLRecord:
         authors = self.parsePersons("100", "a")
         authors += self.parsePersons("600", "a")
         authors += self.parsePersons("700", "a")
+        authors += self.parsePersons("800", "a")
 
         return authors
+
+    def parseCorporations(self, record, subrecord, roles=["any"]):
+        parsed_corporations = []
+        for corporation in self.getDataRecords(record, subrecord, False):
+            other_subfields = corporation.getOtherSubfiedls()
+
+            # check if corporation have at least one of the roles specified in
+            # 'roles' parameter of function
+            if "4" in other_subfields and roles != ["any"]:
+                corp_roles = other_subfields["4"]  # list of role parameters
+
+                relevant = any(map(lambda role: role in roles, corp_roles))
+
+                # skip non-relevant corporations
+                if not relevant:
+                    continue
+
+            name = ""
+            place = ""
+            date = ""
+
+            name = corporation
+
+            if "c" in other_subfields:
+                place = ",".join(other_subfields["c"])
+            if "d" in other_subfields:
+                date = ",".join(other_subfields["d"])
+            if "c" in other_subfields:
+                place = ",".join(other_subfields["c"])
+
+            parsed_corporations.append(Corporation(name, place, date))
+
+        return parsed_corporations
+
+    def getCorporations(self, roles=["dst"]):
+        corporations = self.parseCorporations("110", "a", roles)
+        corporations += self.parseCorporations("610", "a", roles)
+        corporations += self.parseCorporations("710", "a", roles)
+        corporations += self.parseCorporations("810", "a", roles)
+
+        return corporations
+
+    def getI(self, num):
+        """Get current name of i1/ind1 parameter based on self.oai_marc."""
+        i_name = "ind" if not self.oai_marc else "i"
+
+        return i_name + str(num)
 
     def __parseString(self, xml):
         """
@@ -387,12 +443,6 @@ class MARCXMLRecord:
         # for backward compatibility of marcxml with oai
         if self.oai_marc and "LDR" in self.controlfields:
             self.leader = self.controlfields["LDR"]
-
-    def getI(self, num):
-        """Get current name of i1/ind1 parameter based on self.oai_marc."""
-        i_name = "ind" if not self.oai_marc else "i"
-
-        return i_name + str(num)
 
     def __parseControlFields(self, fields, tag_id="tag"):
         """
@@ -552,6 +602,12 @@ $DATA_FIELDS
             DATA_FIELDS=self.__serializeDataFields().strip()
         )
 
+    def __str__(self):
+        return self.toXML()
+
+    def __repr__(self):
+        return str(self.__dict__)
+
 
 def arrayOrWhat(array, what):
     """
@@ -576,6 +632,19 @@ def toEpublication(marcxml):
     for ISBN in parsed.getDataRecords("020", "a", True):
         clean_ISBN, rest = ISBN.split(" ", 1)
         clean_ISBNs.append(clean_ISBN)
+
+    originals = []
+    for orig in parsed.getDataRecords("765", "t", False):
+        originals.append(orig)
+
+    mistoDistribuce=""
+    distributor=""
+    datumDistribuce=""
+    distributors = parsed.getCorporations("dst")
+    if len(distributors) >= 1:
+        mistoDistribuce = distributors[0].place
+        datumDistribuce = distributors[0].date
+        distributor = distributors[0].name
 
     return EPublication(
         nazev=arrayOrWhat(
@@ -613,9 +682,9 @@ def toEpublication(marcxml):
         ),
         zpracovatelZaznamu="", # TODO: 008/39 040ad,
         kategorieProRIV="",
-        mistoDistribuce="",
-        distributor="",
-        datumDistribuce="",
+        mistoDistribuce=mistoDistribuce,
+        distributor=distributor,
+        datumDistribuce=datumDistribuce,
         datumProCopyright="",
         format=arrayOrWhat(
             parsed.getDataRecords("300", "c", False),
@@ -628,10 +697,13 @@ def toEpublication(marcxml):
         ),
         ISBNSouboruPublikaci=clean_ISBNs,
         autori=map(  # convert Persons to amqp's Authors
-            lambda a: Author(a.name + " " + a.second_name, a.surname),
+            lambda a: Author(
+                (a.name + " " + a.second_name).strip(),
+                a.surname
+            ),
             parsed.getAuthors()
         ),
-        originaly="",
+        originaly=originals,
     )
 
 
@@ -641,7 +713,7 @@ def fromEpublication(epublication):
 
 #= Main program ===============================================================
 if __name__ == '__main__':
-    r = MARCXMLRecord(open("example.xml").read())
+    r = MARCXMLRecord(open("multi_example.xml").read())
 
     # print r.datafields["910"]
     # print r.leader
