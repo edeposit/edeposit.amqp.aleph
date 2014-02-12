@@ -15,6 +15,16 @@ from dhtmlparser import HTMLElement
 
 
 #= Functions & objects ========================================================
+def _undefinedPattern(value, fn, undefined):
+    """
+    If fn(value) == True, return |undefined|, else |value|.
+    """
+    if fn(value):
+        return undefined
+
+    return value
+
+
 class Person():
     """
     This class represents informations about persons as they are defined in
@@ -306,6 +316,72 @@ class MARCXMLRecord:
 
         return output
 
+    def getName(self):
+        return "".join(self.getDataRecords("245", "a", True))
+
+    def getSubname(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("245", "b", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPrice(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("020", "c", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPart(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("245", "p", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPartName(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("245", "n", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPublisher(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("260", "b", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPubDate(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("260", "c", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPubOrder(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("901", "f", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getFormat(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("300", "c", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
+    def getPubPlace(self, undefined=""):
+        return _undefinedPattern(
+            "".join(self.getDataRecords("260", "a", False)),
+            lambda x: x.strip() == "",
+            undefined
+        )
+
     def getAuthors(self):
         """Return list of authors represented as Person objects."""
         authors = self._parsePersons("100", "a")
@@ -337,8 +413,30 @@ class MARCXMLRecord:
         """
         return self.getCorporations(roles=["dst"])
 
+    def getISBNs(self):
+        """Return list of ISBN strings."""
+        return map(
+            lambda ISBN: ISBN.strip().split(" ", 1)[0],
+            self.getDataRecords("020", "a", True)
+        )
+
+    def getBinding(self):
+        return map(
+            lambda x: x.strip().split(" ", 1)[1],
+            self.getDataRecords("020", "a", True)
+        )
+
+    def getOriginals(self):
+        """Return list of original names."""
+        return self.getDataRecords("765", "t", False)
+
     def getI(self, num):
-        """Get current name of i1/ind1 parameter based on self.oai_marc."""
+        """
+        Get current name of i1/ind1 parameter based on self.oai_marc.
+
+        This method is used mainly internally, but it can be handy if you work
+        with with raw MARC XML object and not using getters.
+        """
         if num != 1 and num != 2:
             raise ValueError("num parameter have to be 1 or 2!")
 
