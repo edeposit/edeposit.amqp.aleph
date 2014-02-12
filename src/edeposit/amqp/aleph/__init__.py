@@ -8,7 +8,7 @@ from datetime import datetime
 ###############################################################################
 # Add new record to Aleph #####################################################
 ###############################################################################
-class Author(namedtuple("Author", ['firstName', 'lastName'])):  # TODO: přidat title?
+class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
     pass
 
 
