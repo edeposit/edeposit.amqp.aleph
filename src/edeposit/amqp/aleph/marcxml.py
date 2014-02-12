@@ -282,7 +282,63 @@ class MARCXMLRecord:
 
         return output
 
-    def parsePersons(self, record, subrecord, roles=["aut"]):
+    def getAuthors(self):
+        """Return list of authors represented as Person objects."""
+        authors = self._parsePersons("100", "a")
+        authors += self._parsePersons("600", "a")
+        authors += self._parsePersons("700", "a")
+        authors += self._parsePersons("800", "a")
+
+        return authors
+
+    def getCorporations(self, roles=["dst"]):
+        corporations = self._parseCorporations("110", "a", roles)
+        corporations += self._parseCorporations("610", "a", roles)
+        corporations += self._parseCorporations("710", "a", roles)
+        corporations += self._parseCorporations("810", "a", roles)
+
+        return corporations
+
+    def getI(self, num):
+        """Get current name of i1/ind1 parameter based on self.oai_marc."""
+        i_name = "ind" if not self.oai_marc else "i"
+
+        return i_name + str(num)
+
+    def _parseCorporations(self, record, subrecord, roles=["any"]):
+        parsed_corporations = []
+        for corporation in self.getDataRecords(record, subrecord, False):
+            other_subfields = corporation.getOtherSubfiedls()
+
+            # check if corporation have at least one of the roles specified in
+            # 'roles' parameter of function
+            if "4" in other_subfields and roles != ["any"]:
+                corp_roles = other_subfields["4"]  # list of role parameters
+
+                relevant = any(map(lambda role: role in roles, corp_roles))
+
+                # skip non-relevant corporations
+                if not relevant:
+                    continue
+
+            name = ""
+            place = ""
+            date = ""
+
+            name = corporation
+
+            if "c" in other_subfields:
+                place = ",".join(other_subfields["c"])
+            if "d" in other_subfields:
+                date = ",".join(other_subfields["d"])
+            if "c" in other_subfields:
+                place = ",".join(other_subfields["c"])
+
+            parsed_corporations.append(Corporation(name, place, date))
+
+        return parsed_corporations
+
+    def _parsePersons(self, record, subrecord, roles=["aut"]):
         """
         Parse persons from given record.
 
@@ -351,62 +407,6 @@ class MARCXMLRecord:
             )
 
         return parsed_persons
-
-    def getAuthors(self):
-        """Return list of authors represented as Person objects."""
-        authors = self.parsePersons("100", "a")
-        authors += self.parsePersons("600", "a")
-        authors += self.parsePersons("700", "a")
-        authors += self.parsePersons("800", "a")
-
-        return authors
-
-    def parseCorporations(self, record, subrecord, roles=["any"]):
-        parsed_corporations = []
-        for corporation in self.getDataRecords(record, subrecord, False):
-            other_subfields = corporation.getOtherSubfiedls()
-
-            # check if corporation have at least one of the roles specified in
-            # 'roles' parameter of function
-            if "4" in other_subfields and roles != ["any"]:
-                corp_roles = other_subfields["4"]  # list of role parameters
-
-                relevant = any(map(lambda role: role in roles, corp_roles))
-
-                # skip non-relevant corporations
-                if not relevant:
-                    continue
-
-            name = ""
-            place = ""
-            date = ""
-
-            name = corporation
-
-            if "c" in other_subfields:
-                place = ",".join(other_subfields["c"])
-            if "d" in other_subfields:
-                date = ",".join(other_subfields["d"])
-            if "c" in other_subfields:
-                place = ",".join(other_subfields["c"])
-
-            parsed_corporations.append(Corporation(name, place, date))
-
-        return parsed_corporations
-
-    def getCorporations(self, roles=["dst"]):
-        corporations = self.parseCorporations("110", "a", roles)
-        corporations += self.parseCorporations("610", "a", roles)
-        corporations += self.parseCorporations("710", "a", roles)
-        corporations += self.parseCorporations("810", "a", roles)
-
-        return corporations
-
-    def getI(self, num):
-        """Get current name of i1/ind1 parameter based on self.oai_marc."""
-        i_name = "ind" if not self.oai_marc else "i"
-
-        return i_name + str(num)
 
     def __parseString(self, xml):
         """
