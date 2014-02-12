@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 #
 # Interpreter version: python 2.7
-# This work is licensed under a Creative Commons 3.0 Unported License
-# (http://creativecommons.org/licenses/by/3.0/).
 #
 ## Todo
 #   - makeSureThatFieldsExist()
@@ -11,14 +9,9 @@
 #= Imports ====================================================================
 from string import Template
 
-from __init__ import Producent, EPublication, OriginalFile, Author
 
 import dhtmlparser
 from dhtmlparser import HTMLElement
-
-
-#= Variables ==================================================================
-
 
 
 #= Functions & objects ========================================================
@@ -41,6 +34,14 @@ class Person():
 
 
 class Corporation():
+    """
+    Some informations about corporations (fields 110, 610, 710, 810).
+
+    Properties:
+        .name
+        .place
+        .date
+    """
     def __init__(self, name, place, date):
         super(Corporation, self).__init__()
         self.name = name
@@ -49,6 +50,9 @@ class Corporation():
 
 
 class MarcSubrecord(str):
+    """
+    TODO
+    """
     def __new__(self, arg, ind1, ind2, other_subfields):
         return str.__new__(self, arg)
 
@@ -205,11 +209,15 @@ class MARCXMLRecord:
         self.oai_marc = False
         self.controlfields = {}
         self.datafields = {}
+        self.valid_i_chars = list(" 0123456789")
 
         if xml is not None:
             self.__parseString(xml)
 
     def addControlField(self, name, value):
+        if len(name) != 3:
+            raise ValueError("name parameter have to be exactly 3 chars long!")
+
         self.controlfields[name] = value
 
     def addDataField(self, name, i1, i2, subfields_dict):
@@ -229,6 +237,13 @@ class MARCXMLRecord:
 
         Function takes care of OAI MARC.
         """
+        if i1 not in self.valid_i_chars:
+            raise ValueError("Invalid i1parameter '" + i1 + "'!")
+        if i2 not in self.valid_i_chars:
+            raise ValueError("Invalid i2parameter '" + i2 + "'!")
+        if len(name) != 3:
+            raise ValueError("name parameter have to be exactly 3 chars long!")
+
         subfields_dict[self.getI(1)] = i1
         subfields_dict[self.getI(2)] = i2
 
@@ -254,6 +269,15 @@ class MARCXMLRecord:
         Believe me, you will need this, because MARC XML depends on them from
         time to time (name of authors for example).
         """
+        if len(datafield) != 3:
+            raise ValueError(
+                "datafield parameter have to be exactly 3 chars long!"
+            )
+        if len(subfield) != 1:
+            raise ValueError(
+                "Bad subfield specification - subield have to be 3 chars long!"
+            )
+
         if datafield not in self.datafields:
             if throw_exceptions:
                 raise KeyError(datafield + " is not in datafields!")
@@ -292,6 +316,13 @@ class MARCXMLRecord:
         return authors
 
     def getCorporations(self, roles=["dst"]):
+        """
+        Return list of Corporation objects specified by roles parameter.
+
+        roles -- specify which types of corporations you need. Set to ["any"]
+                 for any role, ["dst"] for distributors, etc.. See
+                 http://www.loc.gov/marc/relators/relaterm.html for details.
+        """
         corporations = self._parseCorporations("110", "a", roles)
         corporations += self._parseCorporations("610", "a", roles)
         corporations += self._parseCorporations("710", "a", roles)
@@ -299,15 +330,46 @@ class MARCXMLRecord:
 
         return corporations
 
+    def getDistributors(self):
+        """
+        Return list of distributors. Each distributor is represented as
+        Corporation object.
+        """
+        return self.getCorporations(roles=["dst"])
+
     def getI(self, num):
         """Get current name of i1/ind1 parameter based on self.oai_marc."""
+        if num != 1 and num != 2:
+            raise ValueError("num parameter have to be 1 or 2!")
+
         i_name = "ind" if not self.oai_marc else "i"
 
         return i_name + str(num)
 
-    def _parseCorporations(self, record, subrecord, roles=["any"]):
+    def _parseCorporations(self, datafield, subfield, roles=["any"]):
+        """
+        Parse informations about corporations from given field identified by
+        datafield parmeter.
+
+        datafield -- String identifying MARC field ("110", "610", etc..)
+        subfield -- String identifying MARC subfield with name, which is
+                     typically stored in "a" subfield.
+        roles -- specify which roles you need. Set to ["any"] for any role,
+                 ["dst"] for distributors, etc.. See
+                 http://www.loc.gov/marc/relators/relaterm.html for details.
+
+        Returns list of Corporation objects.
+        """
+        if len(datafield) != 3:
+            raise ValueError(
+                "datafield parameter have to be exactly 3 chars long!"
+            )
+        if len(subfield) != 1:
+            raise ValueError(
+                "Bad subfield specification - subield have to be 3 chars long!"
+            )
         parsed_corporations = []
-        for corporation in self.getDataRecords(record, subrecord, False):
+        for corporation in self.getDataRecords(datafield, subfield, False):
             other_subfields = corporation.getOtherSubfiedls()
 
             # check if corporation have at least one of the roles specified in
@@ -331,19 +393,17 @@ class MARCXMLRecord:
                 place = ",".join(other_subfields["c"])
             if "d" in other_subfields:
                 date = ",".join(other_subfields["d"])
-            if "c" in other_subfields:
-                place = ",".join(other_subfields["c"])
 
             parsed_corporations.append(Corporation(name, place, date))
 
         return parsed_corporations
 
-    def _parsePersons(self, record, subrecord, roles=["aut"]):
+    def _parsePersons(self, datafield, subfield, roles=["aut"]):
         """
-        Parse persons from given record.
+        Parse persons from given datafield.
 
-        record -- string code of record ("010", "730", etc..)
-        subrecord -- string code of subrecord ("a", "z", "4", etc..)
+        datafield -- string code of datafield ("010", "730", etc..)
+        subfield -- string code of subfield ("a", "z", "4", etc..)
         role -- see http://www.loc.gov/marc/relators/relaterm.html for details
                 set to ["any"] for any role, ["aut"] for authors, etc..
 
@@ -353,7 +413,7 @@ class MARCXMLRecord:
         """
         # parse authors
         parsed_persons = []
-        raw_persons = self.getDataRecords(record, subrecord, False)
+        raw_persons = self.getDataRecords(datafield, subfield, False)
         for person in raw_persons:
             ind1 = person.getI1()
             ind2 = person.getI2()
@@ -422,7 +482,7 @@ class MARCXMLRecord:
         record = xml.find("record")
         if len(record) <= 0:
             raise ValueError("There is no <record> in your MARCXML document!")
-        record = record[0]  # TODO: možná opravit na postupné rozparsování?
+        record = record[0]
 
         self.oai_marc = len(record.find("oai_marc")) > 0
 
@@ -609,115 +669,14 @@ $DATA_FIELDS
         return str(self.__dict__)
 
 
-def arrayOrWhat(array, what):
-    """
-    If len(array) == 0, return what, else array.
-
-    If there is only one element in array, return just the element.
-    """
-    if len(array) <= 0:
-        return what
-
-    return array if len(array) > 1 else array[0]
-
-
-def toEpublication(marcxml):
-    parsed = marcxml
-    if not isinstance(marcxml, MARCXMLRecord):
-        parsed = MARCXMLRecord(str(marcxml))
-
-    # parse ISBNs
-    rest = ""
-    clean_ISBNs = []
-    for ISBN in parsed.getDataRecords("020", "a", True):
-        clean_ISBN, rest = ISBN.split(" ", 1)
-        clean_ISBNs.append(clean_ISBN)
-
-    originals = []
-    for orig in parsed.getDataRecords("765", "t", False):
-        originals.append(orig)
-
-    mistoDistribuce=""
-    distributor=""
-    datumDistribuce=""
-    distributors = parsed.getCorporations("dst")
-    if len(distributors) >= 1:
-        mistoDistribuce = distributors[0].place
-        datumDistribuce = distributors[0].date
-        distributor = distributors[0].name
-
-    return EPublication(
-        nazev=arrayOrWhat(
-            parsed.getDataRecords("245", "a", False),
-            ""
-        ),
-        podnazev=arrayOrWhat(
-            parsed.getDataRecords("245", "b", False),
-            ""
-        ),
-        vazba=rest.strip(),
-        cena=arrayOrWhat(
-            parsed.getDataRecords("020", "c", False),
-            ""
-        ),
-        castDil=arrayOrWhat(
-            parsed.getDataRecords("245", "p", False),
-            ""
-        ),
-        nazevCasti=arrayOrWhat(
-            parsed.getDataRecords("245", "n", False),
-            ""
-        ),
-        nakladatelVydavatel=arrayOrWhat(
-            parsed.getDataRecords("260", "b", False),
-            ""
-        ),
-        datumVydani=arrayOrWhat(
-            parsed.getDataRecords("260", "c", False),
-            ""
-        ),
-        poradiVydani=arrayOrWhat(
-            parsed.getDataRecords("901", "f", False),
-            ""
-        ),
-        zpracovatelZaznamu="", # TODO: 008/39 040ad,
-        kategorieProRIV="",
-        mistoDistribuce=mistoDistribuce,
-        distributor=distributor,
-        datumDistribuce=datumDistribuce,
-        datumProCopyright="",
-        format=arrayOrWhat(
-            parsed.getDataRecords("300", "c", False),
-            ""
-        ),
-        url="",
-        mistoVydani=arrayOrWhat(
-            parsed.getDataRecords("260", "a", False),
-            ""
-        ),
-        ISBNSouboruPublikaci=clean_ISBNs,
-        autori=map(  # convert Persons to amqp's Authors
-            lambda a: Author(
-                (a.name + " " + a.second_name).strip(),
-                a.surname
-            ),
-            parsed.getAuthors()
-        ),
-        originaly=originals,
-    )
-
-
-def fromEpublication(epublication):
-    pass
-
-
 #= Main program ===============================================================
 if __name__ == '__main__':
     r = MARCXMLRecord(open("multi_example.xml").read())
+
+    print repr(r)
 
     # print r.datafields["910"]
     # print r.leader
     # print r.toXML()
 
     # print r.getDataRecords("020", "a")
-    print toEpublication(r)
