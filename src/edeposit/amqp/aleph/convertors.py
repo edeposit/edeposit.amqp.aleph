@@ -30,17 +30,6 @@ def toEpublication(marcxml):
     if not isinstance(marcxml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(marcxml))
 
-    # parse ISBNs
-    rest = ""
-    clean_ISBNs = []
-    for ISBN in parsed.getDataRecords("020", "a", True):
-        clean_ISBN, rest = ISBN.split(" ", 1)
-        clean_ISBNs.append(clean_ISBN)
-
-    originals = []
-    for orig in parsed.getDataRecords("765", "t", False):
-        originals.append(orig)
-
     distributor = ""
     mistoDistribuce = ""
     datumDistribuce = ""
@@ -60,55 +49,28 @@ def toEpublication(marcxml):
         zpracovatel = ""
 
     return EPublication(
-        nazev=arrayOrWhat(
-            parsed.getDataRecords("245", "a", False),
-            ""
-        ),
-        podnazev=arrayOrWhat(
-            parsed.getDataRecords("245", "b", False),
-            ""
-        ),
-        vazba=rest.strip(),
-        cena=arrayOrWhat(
-            parsed.getDataRecords("020", "c", False),
-            ""
-        ),
-        castDil=arrayOrWhat(
-            parsed.getDataRecords("245", "p", False),
-            ""
-        ),
-        nazevCasti=arrayOrWhat(
-            parsed.getDataRecords("245", "n", False),
-            ""
-        ),
-        nakladatelVydavatel=arrayOrWhat(
-            parsed.getDataRecords("260", "b", False),
-            ""
-        ),
-        datumVydani=arrayOrWhat(
-            parsed.getDataRecords("260", "c", False),
-            ""
-        ),
-        poradiVydani=arrayOrWhat(
-            parsed.getDataRecords("901", "f", False),
-            ""
-        ),
+        nazev=parsed.getName(),
+        podnazev=parsed.getSubname(),
+        vazba=parsed.getBinding()[0],
+        cena=parsed.getPrice(),
+        castDil=parsed.getPart(),
+        nazevCasti=parsed.getPartName(),
+        nakladatelVydavatel=parsed.getPublisher(),
+        datumVydani=parsed.getPubDate(),
+        poradiVydani=parsed.getPubOrder(),
         zpracovatelZaznamu=zpracovatel,
         kategorieProRIV="",
         mistoDistribuce=mistoDistribuce,
         distributor=distributor,
         datumDistribuce=datumDistribuce,
         datumProCopyright="",
-        format=arrayOrWhat(
-            parsed.getDataRecords("300", "c", False),
-            ""
-        ),
+        format=parsed.getFormat(),
         url="",
         mistoVydani=arrayOrWhat(
             parsed.getDataRecords("260", "a", False),
             ""
         ),
-        ISBNSouboruPublikaci=clean_ISBNs,
+        ISBNSouboruPublikaci=parsed.getISBNs(),
         autori=map(  # convert Persons to amqp's Authors
             lambda a: Author(
                 (a.name + " " + a.second_name).strip(),
@@ -117,7 +79,7 @@ def toEpublication(marcxml):
             ),
             parsed.getAuthors()
         ),
-        originaly=originals,
+        originaly=parsed.getOriginals(),
     )
 
 
