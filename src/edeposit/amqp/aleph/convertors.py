@@ -8,24 +8,15 @@ from marcxml import MARCXMLRecord
 from __init__ import Producent, EPublication, OriginalFile, Author
 
 
-#= Variables ==================================================================
-
-
-
 #= Functions & objects ========================================================
-def arrayOrWhat(array, what):
-    """
-    If len(array) == 0, return what, else array.
-
-    If there is only one element in array, return just the element.
-    """
-    if len(array) <= 0:
-        return what
-
-    return array if len(array) > 1 else array[0]
-
-
 def toEPublication(marcxml):
+    """
+    Convert MARCXMLRecord object to EPublication named tuple (see __init__.py).
+
+    marcxml -- MARCXMLRecord instance OR string (with <record> tag)
+
+    Returns EPublication named tuple.
+    """
     parsed = marcxml
     if not isinstance(marcxml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(marcxml))
@@ -48,27 +39,29 @@ def toEPublication(marcxml):
     else:
         zpracovatel = ""
 
+    # i know, that this is not PEP8, but you dont want to see it without proper
+    # formating (it looks bad, really bad)
     return EPublication(
-        nazev=parsed.getName(),
-        podnazev=parsed.getSubname(),
-        vazba=parsed.getBinding()[0],
-        cena=parsed.getPrice(),
-        castDil=parsed.getPart(),
-        nazevCasti=parsed.getPartName(),
-        nakladatelVydavatel=parsed.getPublisher(),
-        datumVydani=parsed.getPubDate(),
-        poradiVydani=parsed.getPubOrder(),
-        zpracovatelZaznamu=zpracovatel,
-        kategorieProRIV="",
-        mistoDistribuce=mistoDistribuce,
-        distributor=distributor,
-        datumDistribuce=datumDistribuce,
-        datumProCopyright="",
-        format=parsed.getFormat(),
-        url="",
-        mistoVydani=parsed.getPubPlace(),
-        ISBNSouboruPublikaci=parsed.getISBNs(),
-        autori=map(  # convert Persons to amqp's Authors
+        nazev               = parsed.getName(),
+        podnazev            = parsed.getSubname(),
+        vazba               = parsed.getBinding()[0],
+        cena                = parsed.getPrice(),
+        castDil             = parsed.getPart(),
+        nazevCasti          = parsed.getPartName(),
+        nakladatelVydavatel = parsed.getPublisher(),
+        datumVydani         = parsed.getPubDate(),
+        poradiVydani        = parsed.getPubOrder(),
+        zpracovatelZaznamu  = zpracovatel,
+        kategorieProRIV     = "",
+        mistoDistribuce     = mistoDistribuce,
+        distributor         = distributor,
+        datumDistribuce     = datumDistribuce,
+        datumProCopyright   = "",
+        format              = parsed.getFormat(),
+        url                 = "",
+        mistoVydani         = parsed.getPubPlace(),
+        ISBNSouboruPublikaci= parsed.getISBNs(),
+        autori              = map(  # convert Persons to amqp's Authors
             lambda a: Author(
                 (a.name + " " + a.second_name).strip(),
                 a.surname,
@@ -93,4 +86,4 @@ if __name__ == '__main__':
     # print r.toXML()
 
     # print r.getDataRecords("020", "a")
-    print toEpublication(r)
+    print toEPublication(r)
