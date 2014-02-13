@@ -56,8 +56,7 @@ class Inspector(object):
         pass
 
     def call(self, module_name, method_name, *args):
-        """ calls method from module with *args
-        """
+        """calls method from module with *args"""
         pass
 
     def aleph_success_results(self, export_id):
