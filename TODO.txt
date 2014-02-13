@@ -7,5 +7,9 @@ Create PIP package.
 	http://blog.miguelgrinberg.com/post/the-package-dependency-blues
 	http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
 
-Specify clear interface to module.
-	-> __init__.py?
+Use namedtuples with in same structure as function parameters for calling 
+functions?
+
+Start researching communication.
+
+Unittest for aleph.py.
