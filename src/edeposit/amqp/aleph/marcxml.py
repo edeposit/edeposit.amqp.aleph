@@ -183,6 +183,19 @@ def _undefinedPattern(value, fn, undefined):
     return value
 
 
+def resorted(values):
+    """
+    Sort values, but put numbers after alphabetically sorted words.
+
+    This function is here for outputs, to be diff-compatible with aleph.
+    """
+    values = sorted(values)
+    words = filter(lambda x: not x.isdigit(), values)
+    numbers = filter(lambda x: x.isdigit(), values)
+
+    return words + numbers
+
+
 class Person():
     """
     This class represents informations about persons as they are defined in
@@ -836,7 +849,7 @@ class MARCXMLRecord:
         field_name = "tag" if not self.oai_marc else "id"
 
         output = ""
-        for field_id in sorted(self.controlfields.keys()):
+        for field_id in resorted(self.controlfields.keys()):
             output += Template(template).substitute(
                 TAGNAME=tagname,
                 FIELD_NAME=field_name,
@@ -853,7 +866,7 @@ class MARCXMLRecord:
         field_name = "code" if not self.oai_marc else "label"
 
         output = ""
-        for field_id in sorted(subfields.keys()):
+        for field_id in resorted(subfields.keys()):
             for subfield in subfields[field_id]:
                 output += Template(template).substitute(
                     TAGNAME=tagname,
@@ -877,7 +890,7 @@ class MARCXMLRecord:
         i2_name = self.getI(2)
 
         output = ""
-        for field_id in sorted(self.datafields.keys()):
+        for field_id in resorted(self.datafields.keys()):
             # unpac dicts from array
             for dict_field in self.datafields[field_id]:
                 i1_val = dict_field[i1_name]
