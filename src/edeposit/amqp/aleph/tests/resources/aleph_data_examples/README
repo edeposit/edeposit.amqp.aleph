@@ -1,4 +1,4 @@
-aleph_soruces directory cointains few xml files for test purposes, which are
+aleph_soruces/ directory cointains few xml files for test purposes, which are
 read, parsed and saved to:
 
     parsed_outputs/$(basename).txt -- outputs from EPublication namedtuple
@@ -14,11 +14,19 @@ read, parsed and saved to:
 $(basename) is taken from original xml file using os.path.basename(). See
 to_shelve.py for details.
 
+Files from parsed_outputs/ should be on XML level (not byte level) same as files
+from aleph_soruces/.
+
+Files from shelve_files/ can be used to test to test AMQP communication, as
+they are serialized structures from __init__.py.
+
+parsed_outputs/ are there for humans, just to check, that everything works as
+expected.
+
 
 Shelve example:
 
 >>> import shelve
 >>> f = shelve.open("shelve_files/example.xml.shelve")
->>> f[data]
 >>> f["data"]
 EPublication(nazev='D\xc3\xadt\xc4\x9b, \xc5\xa1kola a matematika :', podnazev='konstruktivistick\xc3\xa9 p\xc5\x99\xc3\xadstupy k vyu\xc4\x8dov\xc3\xa1n\xc3\xad /', vazba='(bro\xc5\xbe.)', cena='', castDil='', nazevCasti='', nakladatelVydavatel='Port\xc3\xa1l,', datumVydani='2009', poradiVydani='2., aktual. vyd.', zpracovatelZaznamu='ABA001', kategorieProRIV='', mistoDistribuce='', distributor='', datumDistribuce='', datumProCopyright='', format='23 cm', url='', mistoVydani='Praha :', ISBNSouboruPublikaci=['978-80-7367-397-0'], autori=[Author(firstName='Milan,', lastName='Hejn\xc3\xbd,', title=''), Author(firstName='Franti\xc5\xa1ek,', lastName='Ku\xc5\x99ina', title='')], originaly=[])
