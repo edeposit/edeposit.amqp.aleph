@@ -1,13 +1,18 @@
-aleph_soruces cointains 5 xml files for test purposes, which are read, parsed
-and saved to:
+aleph_soruces directory cointains few xml files for test purposes, which are
+read, parsed and saved to:
 
-    parsed_outputs/basename.txt -- for outputs from EPublication namedtuple to
-                                   string conversions
+    parsed_outputs/$(basename).txt -- outputs from EPublication namedtuple
+                                      conversion to string
 
-    shelve_files/basename.shelve -- for EPublication named tuples saved to
-                                    shelve unded "data" key
+    shelve_files/$(basename).shelve -- for EPublication named tuples saved to
+                                    shelve under "data" key
 
-    xml_outputs/basename -- outputs from MARCXMLRecord class
+    xml_outputs/$(basename) -- outputs from MARCXMLRecord class converted back
+                               to XML
+
+
+$(basename) is taken from original xml file using os.path.basename(). See
+to_shelve.py for details.
 
 
 Shelve example:
