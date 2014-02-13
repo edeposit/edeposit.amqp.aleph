@@ -21,7 +21,7 @@ def convertToShelve(filename):
     print filename
 
     data = open(filename).read()
-    epub = convertors.toEpublication(data)
+    epub = convertors.toEPublication(data)
 
     filename = os.path.basename(filename)
 

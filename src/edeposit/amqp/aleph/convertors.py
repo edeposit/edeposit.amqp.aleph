@@ -25,7 +25,7 @@ def arrayOrWhat(array, what):
     return array if len(array) > 1 else array[0]
 
 
-def toEpublication(marcxml):
+def toEPublication(marcxml):
     parsed = marcxml
     if not isinstance(marcxml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(marcxml))
@@ -66,10 +66,7 @@ def toEpublication(marcxml):
         datumProCopyright="",
         format=parsed.getFormat(),
         url="",
-        mistoVydani=arrayOrWhat(
-            parsed.getDataRecords("260", "a", False),
-            ""
-        ),
+        mistoVydani=parsed.getPubPlace(),
         ISBNSouboruPublikaci=parsed.getISBNs(),
         autori=map(  # convert Persons to amqp's Authors
             lambda a: Author(
@@ -83,8 +80,8 @@ def toEpublication(marcxml):
     )
 
 
-def fromEpublication(epublication):
-    pass
+def fromEPublication(epublication):
+    raise NotImplementedError("Not implemented yet.")
 
 
 #= Main program ===============================================================
