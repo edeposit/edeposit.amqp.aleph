@@ -57,6 +57,7 @@ setup(
             "unittest2",
             "robotsuite",
             "mock",
+            "robotframework-httplibrary"
         ],
         "docs": [
             "sphinxcontrib-robotdoc",
