@@ -3,12 +3,81 @@
 #
 # Interpreter version: python 2.7
 #
-# TODO:
-#   sphinx doc
-#   dokoumentace pro cely modul (main docsring)
-#   umožnit více bází v dotazu
-#   seznam bazi nekam vyexportovat, případně je vůbec neověřovat?
 #= Imports ====================================================================
+"""
+Aleph webAPI wrapper.
+
+This module allows you to give request to aleph webAPI (defined by ALEPH_URL
+in settings.py).
+
+There are two levels of abstraction:
+
+- Lowlevel -----------------------------------------------------------------
+You can use this functions to access Aleph:
+
+    searchInAleph(base, phrase, considerSimilar, field)
+    getDocumentIDs(aleph_search_result, [number_of_docs])
+    downloadAlephDocument(doc_id, library)
+
+Workflow:
+
+Aleph works in strange way, that he won't allow you to access desired
+information directly.
+
+You have to create search request by calling searchInAleph() first, which
+will return dictionary with few imporant informations about session.
+
+This dictionary can be later used as parameter to function getDocumentIDs(),
+which will give you list of DocumentID named tuples.
+
+Named tuples are used, because to access your document, you won't need just
+document ID number, but also library ID string.
+
+Depending on your system, there may be just only one accessible library, or
+mutiple ones, and then you will be glad, that you get both of this
+informations together.
+
+DocumentID can be used as parameter to downloadAlephDocument().
+
+Lets look at some code:
+
+---
+ids = getDocumentIDs(searchInAleph("nkc", "test", False, "wrd"))
+for id_num, library in ids:
+    XML = downloadAlephDocument(id_num, library)
+
+    # processDocument(XML)
+---
+
+- Highlevel ----------------------------------------------------------------
+So far, there are only getter wrappers:
+
+    getISBNsIDs()
+    getAuthorsBooksIDs()
+    getPublishersBooksIDs()
+
+And counting functions (they are one request to aleph faster than just
+counting results from getters):
+
+    getISBNCount()
+    getAuthorsBooksCount()
+    getPublishersBooksIDsCount()
+
+- Other noteworthy properties ----------------------------------------------
+Properties VALID_ALEPH_BASES and VALID_ALEPH_FIELDS can be specific only to
+our library, but sadly, I dont really know.
+
+List of valid bases can be obtained by calling _getListOfBases(), which
+returns list of strings.
+
+There is also defined exception tree - see AlephException docstring for
+details.
+
+TODO:
+    multiple bases in one request?
+    disable valid fields/bases checking?
+    _getListOfFields()
+"""
 from collections import namedtuple
 from string import Template
 from urllib import quote_plus
@@ -102,10 +171,11 @@ class DocumentNotFoundException(AlephException):
 
 def _getListOfBases():
     """
-    Return list of valid bases as they are used as URL parameters in links at
-    aleph main page.
+    Return list of valid bases as they are used as URL parameters in links
+    at aleph main page.
 
-    This function is here mainly for purposes of unittest (see assert in main).
+    This function is here mainly for purposes of unittest (see assert in
+    main).
     """
     downer = Downloader()
     data = downer.download(ALEPH_URL + "/F/?func=file&file_name=base-list")
@@ -142,8 +212,8 @@ def _tryConvertToInt(s):
     """
     Try convert value from |s| to int.
 
-    Return int(s) if the value was successfully converted, or |s| if conversion
-    failed.
+    Return int(s) if the value was successfully converted, or |s| if
+    conversion failed.
     """
     try:
         return int(s)
@@ -186,8 +256,8 @@ def searchInAleph(base, phrase, considerSimilar, field):
     phrase -- what do you want to search
     base -- which database you want to use
     field -- where you want to look
-    considerSimilar -- fuzzy search, which is not working at all, so don't use
-    it
+    considerSimilar -- fuzzy search, which is not working at all, so don't
+                       use it
 
     Returns:
         aleph_search_record, which is dictionary consisting from those fields:
@@ -220,7 +290,7 @@ def searchInAleph(base, phrase, considerSimilar, field):
         raise InvalidAlephBaseException("Unknown base '" + base + "'!")
 
     if field.lower() not in VALID_ALEPH_FIELDS:
-        raise InvalidAlephFieldException("Unknown field '" + base + "'!")
+        raise InvalidAlephFieldException("Unknown field '" + field + "'!")
 
     param_url = Template(ALEPH_SEARCH_URL_TEMPLATE).substitute(
         PHRASE=quote_plus(phrase),  # urlencode phrase
@@ -256,8 +326,8 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
 
     aleph_search_result -- dict returned from searchInAleph()
     number_of_docs -- how many DocumentIDs from set given by
-                      aleph_search_result should be returned, default -1 for
-                      all of them
+                      aleph_search_result should be returned, default -1
+                      for all of them.
 
     Returned DocumentID can be used as parameters to downloadAlephDocument().
 
@@ -366,23 +436,25 @@ def downloadAlephDocument(doc_id, library):
     return data  # MARCxml of document with given doc_id
 
 
-def searchISBN(isbn, base="nkc"):  # TODO: test olny
-    return searchInAleph(base, isbn, False, "sbn")
+def getISBNsIDs(isbn, base="nkc"):
+    return getDocumentIDs(searchInAleph(base, isbn, False, "sbn"))
 
 
-def searchAuthor(author, base="nkc"):
-    return searchInAleph(base, author, False, "wau")
+def getAuthorsBooksIDs(author, base="nkc"):
+    return getDocumentIDs(searchInAleph(base, author, False, "wau"))
 
 
-#= Main program ===============================================================
-if __name__ == '__main__':
-    doc = getDocumentIDs(searchISBN("978-80-7367-397-0"))[0]
-    print downloadAlephDocument(doc.id, doc.library)
+def getPublishersBooksIDs(publisher, base="nkc"):
+    return getDocumentIDs(searchInAleph(base, publisher, False, "wpb"))
 
-    # check if VALID_ALEPH_BASES is actual (set assures unordered comparison )
-    assert(set(_getListOfBases()) == set(VALID_ALEPH_BASES))
 
-    # this can be kinda specific to Prague library
-    # docid = getDocumentIDs(searchISBN("978-80-7367-397-0"))
-    # assert(len(docid) == 1)
-    # print docid
+def getISBNCount(isbn, base="nkc"):
+    return searchInAleph(base, isbn, False, "sbn")["no_entries"]
+
+
+def getAuthorsBooksCount(author, base="nkc"):
+    return searchInAleph(base, author, False, "wau")["no_entries"]
+
+
+def getPublishersBooksIDsCount(publisher, base="nkc"):
+    return searchInAleph(base, publisher, False, "wpb")["no_entries"]
