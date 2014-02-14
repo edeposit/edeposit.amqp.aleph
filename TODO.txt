@@ -13,3 +13,4 @@ functions?
 Start researching communication.
 
 Unittest for aleph.py.
+	-> Repair tests (they are seriously broken right now)
