@@ -133,8 +133,6 @@ def _deserializeNT(data):
         return tuple(map(lambda x: _deserializeNT(x), data))
 
     elif isinstance(data, dict) and "__nt_name" in data:  # is namedtuple
-        # serialized = _deserializeNT(dict(data._asdict()))
-        # serialized["__nt_name"] = data.__class__.__name__
         class_name = data["__nt_name"]
         del data["__nt_name"]
 
@@ -150,6 +148,9 @@ def _deserializeNT(data):
             )
         )
 
+    elif isinstance(data, unicode):
+        return data.encode("utf-8")
+
     return data
 
 
@@ -161,15 +162,3 @@ def fromJSON(json_data):
     namedtuples.
     """
     return _deserializeNT(json.loads(json_data))
-
-
-#= Main program ===============================================================
-if __name__ == '__main__':
-    r = MARCXMLRecord(open("multi_example.xml").read())
-
-    # print r.datafields["910"]
-    # print r.leader
-    # print r.toXML()
-
-    # print r.getDataRecords("020", "a")
-    print toEPublication(r)
