@@ -87,7 +87,8 @@ class AlephSearchResult(namedtuple("AlephSearchResult",
 class AlephRecord(namedtuple("AlephRecord",
                              ['base',
                               'docNumber',
-                              'xml'])):
+                              'xml',
+                              'epub'])):
     pass
 
 
