@@ -61,7 +61,7 @@ counting results from getters):
 
     getISBNCount()
     getAuthorsBooksCount()
-    getPublishersBooksIDsCount()
+    getPublishersBooksCount()
 
 - Other noteworthy properties ----------------------------------------------
 Properties VALID_ALEPH_BASES and VALID_ALEPH_FIELDS can be specific only to
@@ -456,5 +456,5 @@ def getAuthorsBooksCount(author, base="nkc"):
     return searchInAleph(base, author, False, "wau")["no_entries"]
 
 
-def getPublishersBooksIDsCount(publisher, base="nkc"):
+def getPublishersBooksCount(publisher, base="nkc"):
     return searchInAleph(base, publisher, False, "wpb")["no_entries"]
