@@ -96,7 +96,8 @@ class AlephSearchQuery(namedtuple("AlephQuery",
                                   ['base',
                                    'phrase',
                                    'considerSimilar',
-                                   'field'])):
+                                   'field',
+                                   'UUID'])):
     """
     base ... base in Aleph
          NKC, ...
@@ -107,8 +108,7 @@ class AlephSearchQuery(namedtuple("AlephQuery",
 
 class AlephSearchResult(namedtuple("AlephSearchResult",
                                    ['records',
-                                    'UUID_of_request',
-                                    ])):
+                                    'UUID'])):
     pass
 
 
