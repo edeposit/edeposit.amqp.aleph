@@ -10,9 +10,11 @@ from string import Template
 import pika
 
 
-import aleph
+from __init__ import AlephSearchQuery
 import settings
-import convertors
+
+import aleph
+from convertors import toJSON, fromJSON
 
 
 #= Variables ==================================================================
@@ -24,16 +26,29 @@ def _genRandomID():
     pass
 
 
-def _serialize(structure):
-    pass
-
-
 def _sendRequest(serialized_data, exchange):
     pass
 
 
 def _sendResponse(serialized_data, exchange):
     pass
+
+
+def genericAlephSearch(base, phrase, considerSimilar, field):
+    query = AlephSearchQuery(
+        base=base,
+        phrase=phrase,
+        considerSimilar=considerSimilar,
+        field=field,
+        uuid=_genRandomID()
+    )
+
+    _sendRequest(
+        toJSON(query),
+        settings.INPUT_EXCHANGE_FOR_ALEPH_SEARCH
+    )
+
+    return query.uuid
 
 
 def getISBNCount(isbn):
@@ -60,16 +75,3 @@ if __name__ == '__main__':
     #         )
     #     )
     # )
-
-    data = open("tests/resources/aleph_data_examples/aleph_sources/example.xml").read()
-
-    epub = convertors.toEPublication(data)
-
-    json_data = convertors.toJSON(epub)
-
-    print json_data
-
-    print
-    print
-
-    print convertors.fromJSON(json_data)
