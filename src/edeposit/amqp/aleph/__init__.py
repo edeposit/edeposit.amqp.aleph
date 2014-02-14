@@ -62,36 +62,8 @@ def send_to_aleph(epublication):
 
 
 ###############################################################################
-# Query Aleph #################################################################
+# Export from Aleph ###########################################################
 ###############################################################################
-class AlephQuery(namedtuple("AlephQuery",
-                            ['base',
-                             'phrase',
-                             'considerSimilar',
-                             'field'])):
-    """
-    base ... base in Aleph
-         NKC, ...
-         see:  http://aleph.nkp.cz/F/?func=file&file_name=base-list
-    """
-    pass
-
-
-class AlephSearchResult(namedtuple("AlephSearchResult",
-                                   ['records',
-                                    'UUID_of_request',
-                                    ])):
-    pass
-
-
-class AlephRecord(namedtuple("AlephRecord",
-                             ['base',
-                              'docNumber',
-                              'xml',
-                              'epub'])):
-    pass
-
-
 class AlephExportRequest(namedtuple("AlephExportRequest",
                                     ['epublication',
                                      'linkOfEPublication'])):
@@ -114,4 +86,35 @@ class AlephExportResult(namedtuple("AlephExportResult",
         success   ... whether import was successfull
         message   ... message of error or success
     """
+    pass
+
+
+###############################################################################
+# Query Aleph #################################################################
+###############################################################################
+class AlephSearchQuery(namedtuple("AlephQuery",
+                                  ['base',
+                                   'phrase',
+                                   'considerSimilar',
+                                   'field'])):
+    """
+    base ... base in Aleph
+         NKC, ...
+         see:  http://aleph.nkp.cz/F/?func=file&file_name=base-list
+    """
+    pass
+
+
+class AlephSearchResult(namedtuple("AlephSearchResult",
+                                   ['records',
+                                    'UUID_of_request',
+                                    ])):
+    pass
+
+
+class AlephRecord(namedtuple("AlephRecord",
+                             ['base',
+                              'docNumber',
+                              'xml',
+                              'epub'])):
     pass

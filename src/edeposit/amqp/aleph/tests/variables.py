@@ -53,7 +53,7 @@ epublication = edeposit.amqp.aleph.EPublication(
     # generateISBN='',
 )
 
-search_request = edeposit.amqp.aleph.AlephQuery(
+search_request = edeposit.amqp.aleph.AlephSearchQuery(
     base="nkc",
     phrase="test",
     considerSimilar=False,
