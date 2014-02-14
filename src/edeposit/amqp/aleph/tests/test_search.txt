@@ -7,7 +7,7 @@ Library     XML
 
 *** Keywords ***
 Odeslání žádosti modulem
-    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephQuery}    
+    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephSearchQuery}
     ${request_id}=    Call   edeposit.amqp.aleph.submit_search_request   ${search_request}
 
 Žádost má správný typ
