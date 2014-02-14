@@ -53,6 +53,12 @@ epublication = edeposit.amqp.aleph.EPublication(
     # generateISBN='',
 )
 
+search_request = edeposit.amqp.aleph.AlephQuery(
+    base="nkc",
+    phrase="test",
+    considerSimilar=False,
+    field="wrd"
+)
 
 linkOfEPublication = "http://localhost/epublication-01/"
 
