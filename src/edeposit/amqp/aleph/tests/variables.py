@@ -60,6 +60,13 @@ search_request = edeposit.amqp.aleph.AlephQuery(
     field="wrd"
 )
 
+count_request = edeposit.amqp.aleph.AlephCount(
+    base="nkc",
+    phrase="test",
+    considerSimilar=False,
+    field="wrd"
+)
+
 linkOfEPublication = "http://localhost/epublication-01/"
 
 exportRequest = edeposit.amqp.aleph.AlephExportRequest(

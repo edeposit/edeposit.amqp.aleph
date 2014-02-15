@@ -7,17 +7,17 @@ Library     XML
 
 *** Keywords ***
 Odeslání žádosti modulem
-    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephQuery}    
-    ${request_id}=    Call   edeposit.amqp.aleph.submit_search_request   ${search_request}
-
+    ${request_id}=    Call   edeposit.amqp.aleph.submit_request   ${search_request}
+    [return]  ${request_id}
+        
 Žádost má správný typ
-    Log   ahoj    
+    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephQuery}    
     
 Modul se dotáže Alephu
     Log   ahoj
     
 Modul stáhne detaily dokumentů
-     Log   ahoj
+    Log   ahoj
 
 Modul odešle pole detailu do exchange v RabbitMQ
     Log   v exchange se objevi jedna odpoved. V ni jsou vsechny zaznamy, co Aleph odpovedel.
@@ -31,8 +31,9 @@ Převedení odpovědi na hledání do uživatelské struktury
     ${result}=    Call   edeposit.amqp.aleph.convert_search_amqp_result   ${data}    ${properties}    ${headers}
     Is type of   ${result}   ${edeposit.amqp.aleph.AlephSearchResult}
 
-Žádost o kontrolu ISBN má správný typ
-    Log  Na to je struktura
+Žádost na počet záznamů má správný typ
+    Is type of    ${count_request}     ${edeposit.amqp.aleph.AlephCount}
+
 
 Modul odešle počet záznamů do exchange v RabbitMQ
     Log   definovana struktura
@@ -44,21 +45,21 @@ Převedení odpovědi na počet do uživatelské struktury
     
 *** Test Cases ***
     
-Dotaz na dokument se zadaným ISBN
+Dotaz na záznamy v Alephu
     Žádost má správný typ
-    Odeslání žádosti modulem
+    ${request_id} =  Odeslání žádosti modulem
     Modul se dotáže Alephu
     Modul stáhne detaily dokumentů
     Modul odešle pole detailu do exchange v RabbitMQ
     Načtení jedné zprávy z RabbitMQ fronty
     ${result}=    Převedení odpovědi na hledání do uživatelské struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
 
-Dotaz zda je ISBN uz použito
-    [Documentation]   Aplikaci zajímá počet záznamů pro dané ISBN. modul se dotáže na isbn záznamy. Jestli existují, vrátí počet záznamů.
-    Žádost o kontrolu ISBN má správný typ
+Dotaz na počet záznamů v Alephu
+    [Documentation]   Aplikaci zajímá počet záznamů pro daný dotaz. Vrátí počet záznamů. Podle počtu záznamů aplikace může např. usoudit na existenci ISBN v Alephu
+    Žádost na počet záznamů má správný typ
     Odeslání žádosti modulem
     Modul se dotáže Alephu
     Modul odešle počet záznamů do exchange v RabbitMQ
     Načtení jedné zprávy z RabbitMQ fronty
     ${result}=    Převedení odpovědi na počet do uživatelské struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
-    
+
