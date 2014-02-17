@@ -51,15 +51,15 @@ def genericAlephSearch(base, phrase, considerSimilar, field):
     return query.uuid
 
 
-def getISBNCount(isbn):
+def sendISBNCountRequest(isbn):
     pass
 
 
-def getAuthorsBooksCount(author):
+def sendAuthorsBooksCountRequest(author):
     pass
 
 
-def getPublishersBooksCount(publisher):
+def sendPublishersBooksCountRequest(publisher):
     pass
 
 
