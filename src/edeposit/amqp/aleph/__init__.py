@@ -179,7 +179,8 @@ class GenericQuery(namedtuple("GenericQuery",
 
 class _QueryTemplate:
     """
-    This class is here to just save some effort by using common ancestor.
+    This class is here to just save some effort by using common ancestor with
+    same .getSearchResult() and .getCountResult() definition.
     """
     def getSearchResult(self, UUID):
         records = []
@@ -212,12 +213,20 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"]), _QueryTemplate):
         return aleph.getISBNCount(self.ISBN)
 
 
-class AuthorQuery(namedtuple("AuthorQuery", ["author"])):
-    pass
+class AuthorQuery(namedtuple("AuthorQuery", ["author"]), _QueryTemplate):
+    def _getIDs(self):
+        return aleph.getAuthorsBooksIDs(self.author)
+
+    def _getCount(self):
+        return aleph.getAuthorsBooksCount(self.author)
 
 
-class PublisherQuery(namedtuple("PublisherQuery", ["publisher"])):
-    pass
+class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]), _QueryTemplate):
+    def _getIDs(self):
+        return aleph.getPublishersBooksIDs(self.publisher)
+
+    def _getCount(self):
+        return aleph.getPublishersBooksCount(self.publisher)
 
 
 class CountQuery(namedtuple("CountQuery", ["type"])):
