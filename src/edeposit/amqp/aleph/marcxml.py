@@ -218,7 +218,7 @@ class Person():
         self.title = title
 
 
-class Corporation():
+class Corporation:
     """
     Some informations about corporations (fields 110, 610, 710, 810).
 
@@ -228,7 +228,6 @@ class Corporation():
         .date
     """
     def __init__(self, name, place, date):
-        super(Corporation, self).__init__()
         self.name = name
         self.place = place
         self.date = date
@@ -621,9 +620,12 @@ class MARCXMLRecord:
         if len(self.getDataRecords("020", "a", False)) != 0:
             return map(
                 lambda x: x.strip().split(" ", 1)[1],
-                self.getDataRecords("020", "a", True)
+                filter(
+                    lambda x: "-" in x and " " in x,
+                    self.getDataRecords("020", "a", True)
+                )
             )
-        
+
         return []
 
     def getOriginals(self):
