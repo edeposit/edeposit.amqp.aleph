@@ -336,6 +336,9 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
     """
     downer = Downloader()
 
+    if "set_number" not in aleph_search_result:
+        return []
+
     # set numbers should be probably aligned to some length
     set_number = str(aleph_search_result["set_number"])
     if len(set_number) < 6:
