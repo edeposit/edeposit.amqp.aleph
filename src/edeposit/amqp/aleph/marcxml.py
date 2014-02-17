@@ -389,6 +389,7 @@ class MARCXMLRecord:
         # it is always possible to create blank object and add values into it
         # piece by piece thru .addControlField()/.addDataField() methods.
         if xml is not None:
+            self._original_xml = xml
             self.__parseString(xml)
 
     def addControlField(self, name, value):
@@ -601,16 +602,29 @@ class MARCXMLRecord:
 
     def getISBNs(self):
         """Return list of ISBN strings."""
-        return map(
-            lambda ISBN: ISBN.strip().split(" ", 1)[0],
-            self.getDataRecords("020", "a", True)
-        )
+
+        if len(self.getDataRecords("020", "a", False)) != 0:
+            return map(
+                lambda ISBN: ISBN.strip().split(" ", 1)[0],
+                self.getDataRecords("020", "a", True)
+            )
+
+        if len(self.getDataRecords("901", "i", False)) != 0:
+            return map(
+                lambda ISBN: ISBN.strip().split(" ", 1)[0],
+                self.getDataRecords("901", "i", True)
+            )
+
+        return []
 
     def getBinding(self):
-        return map(
-            lambda x: x.strip().split(" ", 1)[1],
-            self.getDataRecords("020", "a", True)
-        )
+        if len(self.getDataRecords("020", "a", False)) != 0:
+            return map(
+                lambda x: x.strip().split(" ", 1)[1],
+                self.getDataRecords("020", "a", True)
+            )
+        
+        return []
 
     def getOriginals(self):
         """Return list of original names."""
