@@ -5,7 +5,6 @@ from collections import namedtuple
 
 
 import aleph
-import marcxml
 import convertors
 
 
@@ -164,19 +163,6 @@ class CountResult(namedtuple("CountResult",
     pass
 
 
-class GenericQuery(namedtuple("GenericQuery",
-                              ['base',
-                               'phrase',
-                               'considerSimilar',
-                               'field'])):
-    """
-    base ... base in Aleph
-    NKC, ...
-    see:  http://aleph.nkp.cz/F/?func=file&file_name=base-list
-    """
-    pass
-
-
 class _QueryTemplate:
     """
     This class is here to just save some effort by using common ancestor with
@@ -205,6 +191,35 @@ class _QueryTemplate:
         )
 
 
+class GenericQuery(namedtuple("GenericQuery",
+                              ['base',
+                               'phrase',
+                               'considerSimilar',
+                               'field']), _QueryTemplate):
+    """
+    Used for generic queries to aleph.
+
+    For details of parameters, see aleph.py : searchInAleph().
+    """
+    def _getIDs(self):
+        return aleph.getDocumentIDs(
+            aleph.searchInAleph(
+                self.base,
+                self.phrase,
+                self.considerSimilar,
+                self.field
+            )
+        )
+
+    def _getCount(self):
+        return aleph.searchInAleph(
+            self.base,
+            self.phrase,
+            self.considerSimilar,
+            self.field
+        )["no_entries"]
+
+
 class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"]), _QueryTemplate):
     def _getIDs(self):
         return aleph.getISBNsIDs(self.ISBN)
@@ -229,10 +244,10 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]), _QueryTemplate
         return aleph.getPublishersBooksCount(self.publisher)
 
 
-class CountQuery(namedtuple("CountQuery", ["type"])):
+class CountQuery(namedtuple("CountQuery", ["query_type"])):
     """
-    Put one of the Queries to .type properties and it will return just number
-    of records, instead of records itself.
+    Put one of the Queries to .query_type property and it will return just
+    number of records, instead of records itself.
     """
     pass
 
@@ -249,6 +264,17 @@ class SearchRequest(namedtuple("SearchRequest",
 ###############################################################################
 #  Interface for an external world  ###########################################
 ###############################################################################
+
+# Variables ###################################################################
+QUERY_TYPES = [
+    ISBNQuery,
+    AuthorQuery,
+    PublisherQuery,
+    GenericQuery
+]
+
+
+# Functions ###################################################################
 def toAMQPMessage(request):
     """ returns  edeposit.amqp.AMQPMessage """
 
@@ -281,26 +307,17 @@ def reactToAMQPMessage(message):
 
     response = None
     if type(query) == CountQuery:
-        # process count query
-        pass
-    elif type(query) == ISBNQuery:
-        response = SearchResult(
-            records=map(
-                lambda id_n, library:
-                    aleph.downloadAlephDocument(id_n, library),
-                aleph.getISBNsIDs(query.ISBN)
-            ),
-            UUID=decoded.UUID
-        )
-    elif type(query) == AuthorQuery:
-        response = SearchResult(
-            records=map(
-                lambda id_n, library:
-                    aleph.downloadAlephDocument(id_n, library),
-                aleph.getAuthorsBooksIDs(query.Author)
-            ),
-            UUID=decoded.UUID
-        )
+        query = query.query_type  # pick query_type
+
+        if type(query) not in QUERY_TYPES:
+            raise ValueError("Unknown type of query: '" + type(query) + "'!")
+
+        response = query.getCountResult(decoded.UUID)
+
+    elif type(query) in [ISBNQuery, AuthorQuery, PublisherQuery]:
+        response = query.getSearchResult(decoded.UUID)
+    else:
+        raise ValueError("Unknown type of query: '" + type(query) + "'!")
 
 
     if response is not None:
