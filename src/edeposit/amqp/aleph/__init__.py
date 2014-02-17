@@ -4,6 +4,14 @@
 from collections import namedtuple
 
 
+import aleph
+import marcxml
+import convertors
+
+
+from .. import AMQPMessage
+
+
 ###############################################################################
 # Add new record to Aleph #####################################################
 ###############################################################################
@@ -111,7 +119,7 @@ it into SearchRequest wrapper with UUID. Then encode it by calling
 toAMQPMessage() and send the message to the Aleph exchange.
 
 ---
-isbnq = ISBNQuery("0-251-0225-4")
+isbnq = ISBNQuery("80-251-0225-4")
 request = SearchRequest(isbnq, UUID)
 
 amqp.send(
@@ -128,12 +136,32 @@ use this instead of just calling len() to SearchResult.records - it doesn't put
 that much load to Aleph), just wrap the ISBNQuery with CountQuery:
 
 ---
-isbnq = CountQuery(ISBNQuery("0-251-0225-4"))
+isbnq = CountQuery(ISBNQuery("80-251-0225-4"))
 # rest is same..
 ---
 
 and you will get back (after decoding) CountResult.
 """
+
+class AlephRecord(namedtuple("AlephRecord",
+                             ['library',
+                              'docNumber',
+                              'xml',
+                              'epublication'])):
+    pass
+
+
+class SearchResult(namedtuple("SearchResult",
+                              ['records',
+                               'UUID'])):
+    pass
+    """ result of search request """
+
+
+class CountResult(namedtuple("CountResult",
+                             ['num_of_records',
+                              'UUID'])):
+    pass
 
 
 class GenericQuery(namedtuple("GenericQuery",
@@ -149,8 +177,39 @@ class GenericQuery(namedtuple("GenericQuery",
     pass
 
 
-class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"])):
-    pass
+class _QueryTemplate:
+    """
+    This class is here to just save some effort by using common ancestor.
+    """
+    def getSearchResult(self, UUID):
+        records = []
+        for doc_id, library in self._getIDs():
+            xml = aleph.downloadAlephDocument(doc_id, library)
+
+            records.append(
+                AlephRecord(
+                    library,
+                    doc_id,
+                    xml,
+                    convertors.toEPublication(xml)
+                )
+            )
+
+        return SearchResult(records, UUID)
+
+    def getCountResult(self, UUID):
+        return CountResult(
+            self._getCount(),
+            UUID
+        )
+
+
+class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"]), _QueryTemplate):
+    def _getIDs(self):
+        return aleph.getISBNsIDs(self.ISBN)
+
+    def _getCount(self):
+        return aleph.getISBNCount(self.ISBN)
 
 
 class AuthorQuery(namedtuple("AuthorQuery", ["author"])):
@@ -178,33 +237,17 @@ class SearchRequest(namedtuple("SearchRequest",
     """
 
 
-class AlephRecord(namedtuple("AlephRecord",
-                             ['base',
-                              'docNumber',
-                              'xml',
-                              'epublication'])):
-    pass
-
-
-class SearchResult(namedtuple("SearchResult",
-                              ['records',
-                               'UUID'])):
-    pass
-    """ result of search request """
-
-
-class CountResult(namedtuple("CountResult",
-                             ['num_of_records',
-                              'UUID'])):
-    pass
-
-
 ###############################################################################
 #  Interface for an external world  ###########################################
 ###############################################################################
 def toAMQPMessage(request):
     """ returns  edeposit.amqp.AMQPMessage """
-    pass
+
+    return AMQPMessage(
+        data=convertors.toJSON(request),
+        headers="",
+        properties=""
+    )
 
 
 def fromAMQPMessage(message):
@@ -212,4 +255,50 @@ def fromAMQPMessage(message):
     message       is type of edeposit.amqp.AMQPMessage
     returns structure depending on data in message.
     """
-    pass
+    return convertors.fromJSON(message.body)
+
+
+def send_response(response):
+    raise NotImplementedError("send_response() is not yet implemented.")
+
+
+def reactToAMQPMessage(message):
+    decoded = fromAMQPMessage(message)
+
+    if type(decoded) != SearchRequest:  # TODO: pridat podporu exportnich typu
+        raise ValueError("Unknown type of message: '" + type(decoded) + "'!")
+
+    query = decoded.query
+
+    response = None
+    if type(query) == CountQuery:
+        # process count query
+        pass
+    elif type(query) == ISBNQuery:
+        response = SearchResult(
+            records=map(
+                lambda id_n, library:
+                    aleph.downloadAlephDocument(id_n, library),
+                aleph.getISBNsIDs(query.ISBN)
+            ),
+            UUID=decoded.UUID
+        )
+    elif type(query) == AuthorQuery:
+        response = SearchResult(
+            records=map(
+                lambda id_n, library:
+                    aleph.downloadAlephDocument(id_n, library),
+                aleph.getAuthorsBooksIDs(query.Author)
+            ),
+            UUID=decoded.UUID
+        )
+
+
+    if response is not None:
+        send_response(response)
+
+if __name__ == '__main__':
+    a = ISBNQuery("80-251-0225-4")
+    print a.getSearchResult("xex")
+
+    print "ahoj"
