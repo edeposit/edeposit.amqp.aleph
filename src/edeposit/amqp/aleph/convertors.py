@@ -42,12 +42,14 @@ def toEPublication(marcxml):
     else:
         zpracovatel = ""
 
+    binding = parsed.getBinding()
+
     # i know, that this is not PEP8, but you dont want to see it without proper
     # formating (it looks bad, really bad)
     return datastructs.EPublication(
         nazev               = parsed.getName(),
         podnazev            = parsed.getSubname(),
-        vazba               = parsed.getBinding()[0],
+        vazba               = binding[0] if len(binding) > 0 else "",
         cena                = parsed.getPrice(),
         castDil             = parsed.getPart(),
         nazevCasti          = parsed.getPartName(),
