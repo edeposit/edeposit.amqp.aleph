@@ -22,109 +22,13 @@ class AMQPMessage(namedtuple('AMQPMessage',  # TODO: Remove
 
 
 ###############################################################################
-# Add new record to Aleph #####################################################
-###############################################################################
-#
-## Aleph's data wrappers ######################################################
-class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
-    pass
-
-
-class Producent(namedtuple("Producent",
-                           ['title',
-                            'phone',
-                            'fax',
-                            'email',
-                            'url',
-                            'identificator',
-                            'ico'])):
-    pass
-
-
-class EPublication(namedtuple("EPublication",
-                              ['nazev',
-                               'podnazev',
-                               'vazba',
-                               'cena',
-                               'castDil',
-                               'nazevCasti',
-                               'nakladatelVydavatel',
-                               'datumVydani',
-                               'poradiVydani',
-                               'zpracovatelZaznamu',
-                               'kategorieProRIV',
-                               'mistoDistribuce',
-                               'distributor',
-                               'datumDistribuce',
-                               'datumProCopyright',
-                               'format',
-                               'url',
-                               'mistoVydani',
-                               'ISBNSouboruPublikaci',
-                               'autori',
-                               'originaly'])):
-    """
-    see https://e-deposit.readthedocs.org/cs/latest/dm01.html
-    """
-    pass
-
-
-class OriginalFile(namedtuple("OriginalFile",
-                              ['url', 'format', 'file', 'isbns'])):
-    """ type of isbn: ISBN"""
-    pass
-
-
-## Protocol query wrappers ####################################################
-class AlephExport(namedtuple("AlephExport",
-                             ['epublication',
-                              'linkOfEPublication'])):
-    """ epublication ... type of EPublication
-    linkOfEPublication  ... url with epublication
-
-    User will fill this record.
-    """
-    pass
-
-
-class ExportRequest(namedtuple("ExportRequest",
-                               ['export',
-                                'UUID'])):
-    pass
-
-
-class AlephExportResult(namedtuple("AlephExportResult",
-                                   ['docNumber',
-                                    'base',
-                                    'xml',
-                                    'success',
-                                    'message'])):
-    """ docNumber ... docNumber of a record in Aleph
-    base      ... base of Aleph
-    success   ... whether import was successfull
-    message   ... message of error or success
-    """
-    pass
-
-
-class ExportResult(namedtuple("ExportResult",
-                              ['result',
-                               'UUID'])):
-    """
-    ... result is type of AlephExportResult
-    ... UUID is UUID used in ExportRequest
-    """
-    pass
-
-
-###############################################################################
 # Search Aleph ################################################################
 ###############################################################################
 """
 Workflow is pretty simple:
 
 To query Aleph, just create one of the Queries - ISBNQuery for example and put
-it into SearchRequest wrapper with UUID. Then encode it by calling 
+it into SearchRequest wrapper with UUID. Then encode it by calling
 toAMQPMessage() and send the message to the Aleph exchange.
 
 ---
@@ -272,6 +176,102 @@ class SearchRequest(namedtuple("SearchRequest",
 
 
 ###############################################################################
+# Add new record to Aleph #####################################################
+###############################################################################
+#
+## Aleph's data wrappers ######################################################
+class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
+    pass
+
+
+class Producent(namedtuple("Producent",
+                           ['title',
+                            'phone',
+                            'fax',
+                            'email',
+                            'url',
+                            'identificator',
+                            'ico'])):
+    pass
+
+
+class EPublication(namedtuple("EPublication",
+                              ['nazev',
+                               'podnazev',
+                               'vazba',
+                               'cena',
+                               'castDil',
+                               'nazevCasti',
+                               'nakladatelVydavatel',
+                               'datumVydani',
+                               'poradiVydani',
+                               'zpracovatelZaznamu',
+                               'kategorieProRIV',
+                               'mistoDistribuce',
+                               'distributor',
+                               'datumDistribuce',
+                               'datumProCopyright',
+                               'format',
+                               'url',
+                               'mistoVydani',
+                               'ISBNSouboruPublikaci',
+                               'autori',
+                               'originaly'])):
+    """
+    see https://e-deposit.readthedocs.org/cs/latest/dm01.html
+    """
+    pass
+
+
+class OriginalFile(namedtuple("OriginalFile",
+                              ['url', 'format', 'file', 'isbns'])):
+    """ type of isbn: ISBN"""
+    pass
+
+
+## Protocol query wrappers ####################################################
+class AlephExport(namedtuple("AlephExport",
+                             ['epublication',
+                              'linkOfEPublication'])):
+    """ epublication ... type of EPublication
+    linkOfEPublication  ... url with epublication
+
+    User will fill this record.
+    """
+    pass
+
+
+class ExportRequest(namedtuple("ExportRequest",
+                               ['export',
+                                'UUID'])):
+    pass
+
+
+class AlephExportResult(namedtuple("AlephExportResult",
+                                   ['docNumber',
+                                    'base',
+                                    'xml',
+                                    'success',
+                                    'message'])):
+    """ docNumber ... docNumber of a record in Aleph
+    base      ... base of Aleph
+    success   ... whether import was successfull
+    message   ... message of error or success
+    """
+    pass
+
+
+class ExportResult(namedtuple("ExportResult",
+                              ['result',
+                               'UUID'])):
+    """
+    ... result is type of AlephExportResult
+    ... UUID is UUID used in ExportRequest
+    """
+    pass
+
+
+###############################################################################
 #  Interface for an external world  ###########################################
 ###############################################################################
 
@@ -286,7 +286,14 @@ QUERY_TYPES = [
 
 # Functions ###################################################################
 def toAMQPMessage(request):
-    """ returns  edeposit.amqp.AMQPMessage """
+    """
+    Serialize nested structure of objects defined in this module into
+    AMQPMessage.
+
+    request -- tree consisting of namedtuples and other python datatypes
+
+    Return AMQPMessage with filled .body property with serialized data.
+    """
 
     return AMQPMessage(
         data=convertors.toJSON(request),
@@ -296,18 +303,35 @@ def toAMQPMessage(request):
 
 
 def fromAMQPMessage(message):
-    """ returns message of given type
-    message       is type of edeposit.amqp.AMQPMessage
-    returns structure depending on data in message.
+    """
+    Deserialize structures defined in this module from AMQPMessage.
+
+    message -- AMQPMessage, in which .body property is expected to be
+               serialized data.
+
+    Returns nested structure of Requests/Results (see other objects defined
+    here).
     """
     return convertors.fromJSON(message.body)
 
 
-def send_response(response):
-    raise NotImplementedError("send_response() is not yet implemented.")
+def reactToAMQPMessage(message, response_callback):
+    """
+    React to given AMQPMessage. Return data thru given callback function.
 
+    message -- AMQPMessage instance.
+    response_callback -- function taking exactly ONE parameter - AMQPMessage
+                         with response. Function take care of sending the
+                         response thru AMQP.
 
-def reactToAMQPMessage(message):
+    Returns result of response_callback() call.
+
+    Raise:
+        ValueError if bad type of |message| structure is given.
+
+    TODO:
+        React to Export requests.
+    """
     decoded = fromAMQPMessage(message)
 
     if type(decoded) != SearchRequest:  # TODO: pridat podporu exportnich typu
@@ -316,25 +340,12 @@ def reactToAMQPMessage(message):
     query = decoded.query
 
     response = None
-    if type(query) == CountQuery:
-        query = query.query_type  # pick query_type
-
-        if type(query) not in QUERY_TYPES:
-            raise ValueError("Unknown type of query: '" + type(query) + "'!")
-
-        response = query.getCountResult(decoded.UUID)
-
-    elif type(query) in [ISBNQuery, AuthorQuery, PublisherQuery]:
+    if type(query) == CountQuery and query.query_type in QUERY_TYPES:
+        response = query.query_type.getCountResult(decoded.UUID)
+    elif type(query) in QUERY_TYPES:  # react to search requests
         response = query.getSearchResult(decoded.UUID)
     else:
         raise ValueError("Unknown type of query: '" + type(query) + "'!")
 
-
     if response is not None:
-        send_response(response)
-
-if __name__ == '__main__':
-    a = ISBNQuery("80-251-0225-4")
-    print a.getSearchResult("xex")
-
-    print "ahoj"
+        return response_callback(toAMQPMessage(response))
