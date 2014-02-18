@@ -1,29 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# This package may contain traces of nuts
-from collections import namedtuple
-
-
-import aleph
-import convertors
-
-
-# from .. import AMQPMessage
-class AMQPMessage(namedtuple('AMQPMessage',  # TODO: Remove
-                             ['data',
-                              'headers',
-                              'properties'
-                              ])):
-    """
-    data ... serialized main message
-    headers
-    """
-    pass
-
-
-###############################################################################
-# Search Aleph ################################################################
-###############################################################################
+#
+# Interpreter version: python 2.7
+#
 """
 Workflow is pretty simple:
 
@@ -46,34 +25,98 @@ also SearchResult.
 
 If you want to just get count of how many items is there in Aleph (you should
 use this instead of just calling len() to SearchResult.records - it doesn't put
-that much load to Aleph), just wrap the ISBNQuery with CountQuery:
+that much load to Aleph), just wrap the ISBNQuery with CountRequest:
 
 ---
-isbnq = CountQuery(ISBNQuery("80-251-0225-4"))
+isbnq = CountRequest(ISBNQuery("80-251-0225-4"))
 # rest is same..
 ---
 
 and you will get back (after decoding) CountResult.
 """
+#= Imports ====================================================================
+from collections import namedtuple
+
+
+import aleph
+import convertors
+
+
+# from .. import AMQPMessage
+class AMQPMessage(namedtuple('AMQPMessage',  # TODO: Remove
+                             ['data',
+                              'headers',
+                              'properties'
+                              ])):
+    """
+    data ... serialized main message
+    headers
+    """
+    pass
+
+
+# Datatypes for searching in Aleph ############################################
+class CountRequest(namedtuple("CountRequest", ["query", "UUID"])):
+    """
+    Put one of the Queries to .query property and it will return just
+    number of records, instead of records itself.
+
+    This help to saves some of Aleph resources (yeah, it is restricted to give
+    too much queries by licence).
+
+    query -- GenericQuery, ISBNQuery, .. *Query structures in this module
+    UUID -- identification of a query, it will be send back in response
+            structure for user to be able to pair Request/Response
+    """
+    pass
+
+
+class SearchRequest(namedtuple("SearchRequest",
+                               ['query',
+                                'UUID'])):
+    """
+    query -- GenericQuery, ISBNQuery, .. *Query structures in this module
+    UUID -- identification of a query, will be send back in response structure
+    """
+    pass
+
 
 class AlephRecord(namedtuple("AlephRecord",
                              ['library',
                               'docNumber',
                               'xml',
                               'epublication'])):
+    """
+    This structure is returned as reponse to SearchRequest inside SearchResult.
+
+    library -- library string, used for downloading documents from Aleph when
+               you know proper docNumber
+    docNumber -- identificator in Aleph. It is not that much unique as it could
+                 be, but with .library string, you can fetch documents from
+                 Aleph if you know this.
+    xml -- MARC XML source returned from Aleph. Quite complicated stuff.
+    epublication -- parsed .xml to EPublication structure
+    """
     pass
 
 
-class SearchResult(namedtuple("SearchResult",
-                              ['records',
-                               'UUID'])):
+class SearchResult(namedtuple("SearchResult", ['records', 'UUID'])):
+    """
+    This is response structure, which is sent back when SearchRequest is
+    received.
+
+    records -- array of AlephRecord structures
+    UUID -- UUID which is used from SearchRequest.UUID
+    """
     pass
-    """ result of search request """
 
 
 class CountResult(namedtuple("CountResult",
                              ['num_of_records',
                               'UUID'])):
+    """
+    This is returned back to client when he send CountRequest.
+    """
     pass
 
 
@@ -81,6 +124,8 @@ class _QueryTemplate:
     """
     This class is here to just save some effort by using common ancestor with
     same .getSearchResult() and .getCountResult() definition.
+
+    You probably shouldn't use it.
     """
     def getSearchResult(self, UUID):
         records = []
@@ -113,7 +158,7 @@ class GenericQuery(namedtuple("GenericQuery",
     """
     Used for generic queries to aleph.
 
-    For details of parameters, see aleph.py : searchInAleph().
+    For details of base/phrase/.. parameters, see aleph.py : searchInAleph().
     """
     def _getIDs(self):
         return aleph.getDocumentIDs(
@@ -135,6 +180,12 @@ class GenericQuery(namedtuple("GenericQuery",
 
 
 class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"]), _QueryTemplate):
+    """
+    Query for ISBN.
+
+    Note: ISBN is not unique, so you can get back lot of books with same ISBN.
+          some books also have two or more ISBNs.
+    """
     def _getIDs(self):
         return aleph.getISBNsIDs(self.ISBN)
 
@@ -158,28 +209,8 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]), _QueryTemplate
         return aleph.getPublishersBooksCount(self.publisher)
 
 
-class CountQuery(namedtuple("CountQuery", ["query_type"])):
-    """
-    Put one of the Queries to .query_type property and it will return just
-    number of records, instead of records itself.
-    """
-    pass
-
-
-class SearchRequest(namedtuple("SearchRequest",
-                               ['query',
-                                'UUID'])):
-    """
-    query -- GenericQuery, ISBNQuery, .. *Query
-    UUID -- identification of a query in a result response
-    """
-
-
 ###############################################################################
 # Add new record to Aleph #####################################################
-###############################################################################
-#
-## Aleph's data wrappers ######################################################
 class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
     pass
 
@@ -229,7 +260,7 @@ class OriginalFile(namedtuple("OriginalFile",
     pass
 
 
-## Protocol query wrappers ####################################################
+## Export protocol query wrappers #############################################
 class AlephExport(namedtuple("AlephExport",
                              ['epublication',
                               'linkOfEPublication'])):
@@ -271,9 +302,7 @@ class ExportResult(namedtuple("ExportResult",
     pass
 
 
-###############################################################################
-#  Interface for an external world  ###########################################
-###############################################################################
+# Interface for an external world #############################################
 
 # Variables ###################################################################
 QUERY_TYPES = [
@@ -294,7 +323,6 @@ def toAMQPMessage(request):
 
     Return AMQPMessage with filled .body property with serialized data.
     """
-
     return AMQPMessage(
         data=convertors.toJSON(request),
         headers="",
@@ -340,8 +368,8 @@ def reactToAMQPMessage(message, response_callback):
     query = decoded.query
 
     response = None
-    if type(query) == CountQuery and query.query_type in QUERY_TYPES:
-        response = query.query_type.getCountResult(decoded.UUID)
+    if type(query) == CountRequest and query.query in QUERY_TYPES:
+        response = query.query.getCountResult(decoded.UUID)
     elif type(query) in QUERY_TYPES:  # react to search requests
         response = query.getSearchResult(decoded.UUID)
     else:
