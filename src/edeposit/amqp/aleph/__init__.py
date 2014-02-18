@@ -4,11 +4,11 @@
 # Interpreter version: python 2.7
 #
 """
-Workflow is pretty simple:
+- Query workflow --------------------------------------------------------------
 
 To query Aleph, just create one of the Queries - ISBNQuery for example and put
 it into SearchRequest wrapper with UUID. Then encode it by calling
-toAMQPMessage() and send the message to the Aleph exchange.
+toAMQPMessage() and send the message to the Aleph's exchange.
 
 ---
 isbnq = ISBNQuery("80-251-0225-4")
@@ -28,11 +28,45 @@ use this instead of just calling len() to SearchResult.records - it doesn't put
 that much load to Aleph), just wrap the ISBNQuery with CountRequest:
 
 ---
-isbnq = CountRequest(ISBNQuery("80-251-0225-4"))
+isbnq = ISBNQuery("80-251-0225-4")
+request = CountRequest(isbnq, UUID)
+
 # rest is same..
 ---
 
 and you will get back (after decoding) CountResult.
+
+Here is ASCII flow diagram for you:
+
+ISBNQuery      --.   ,-- UUID                        ,--> CountResult
+AuthorQuery    --|   |                               |        |- num_of_records
+PublisherQuery --|   |                               |        `- UUID
+GenericQuery   --|   |                               |
+                 |   |                               |--> SearchResult
+                 V   V                               |        |- AlephRecord
+         Count/SearchRequest                         |        `- UUID
+                   |                                 |
+                   |                                 |
+                   |                         fromAMQPMessage()
+                   |                                 ^
+                   V                                 |
+            toAMQPMessage() ----> AMQP -------> AMQPMessage
+                                 |    ^
+                                 V    |
+                                 |    ^
+                                 V    |
+                                 |    ^
+                                 V    |
+             AMQPMessage <------- AMQP <------ toAMQPMessage()
+                   |                                  ^
+                   |                                  |
+                   V                                  |
+          reactToAMQPMessage() ............... magic_happens()
+
+Neat, isn't it?
+
+- Export workflow -------------------------------------------------------------
+TODO: implement, then write docstring
 """
 #= Imports ====================================================================
 from collections import namedtuple
@@ -159,6 +193,9 @@ class GenericQuery(namedtuple("GenericQuery",
     Used for generic queries to aleph.
 
     For details of base/phrase/.. parameters, see aleph.py : searchInAleph().
+
+    This is used mainly if you want to search by your own parameters and don't
+    want to use prepared wrappers (AuthorQuery/ISBNQuery/..).
     """
     def _getIDs(self):
         return aleph.getDocumentIDs(
@@ -211,6 +248,8 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]), _QueryTemplate
 
 ###############################################################################
 # Add new record to Aleph #####################################################
+# TODO: implement exports
+#
 class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
     pass
 
@@ -249,7 +288,11 @@ class EPublication(namedtuple("EPublication",
                                'autori',
                                'originaly'])):
     """
-    see https://e-deposit.readthedocs.org/cs/latest/dm01.html
+    This structure is returned as result of users SearchRequest. It will be
+    also used in exporting new data to aleph, but that is not implemented yet.
+
+    In case of Search/Count requests, this structure is filled with data from
+    MARC XML record parsed by marcxml.py.
     """
     pass
 
