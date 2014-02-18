@@ -8,7 +8,17 @@ import aleph
 import convertors
 
 
-from .. import AMQPMessage
+# from .. import AMQPMessage
+class AMQPMessage(namedtuple('AMQPMessage',  # TODO: Remove
+                             ['data',
+                              'headers',
+                              'properties'
+                              ])):
+    """
+    data ... serialized main message
+    headers
+    """
+    pass
 
 
 ###############################################################################
