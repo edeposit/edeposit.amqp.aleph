@@ -8,7 +8,7 @@ import json
 
 
 from marcxml import MARCXMLRecord
-import __init__ as datastructs
+from __init__ import EPublication, Author
 
 
 #= Functions & objects ========================================================
@@ -46,7 +46,7 @@ def toEPublication(marcxml):
 
     # i know, that this is not PEP8, but you dont want to see it without proper
     # formating (it looks bad, really bad)
-    return datastructs.EPublication(
+    return EPublication(
         nazev               = parsed.getName(),
         podnazev            = parsed.getSubname(),
         vazba               = binding[0] if len(binding) > 0 else "",
@@ -67,7 +67,7 @@ def toEPublication(marcxml):
         mistoVydani         = parsed.getPubPlace(),
         ISBNSouboruPublikaci= parsed.getISBNs(),
         autori              = map(  # convert Persons to amqp's Authors
-            lambda a: datastructs.Author(
+            lambda a: Author(
                 (a.name + " " + a.second_name).strip(),
                 a.surname,
                 a.title
