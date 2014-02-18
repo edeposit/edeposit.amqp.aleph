@@ -117,7 +117,7 @@ def toJSON(structure):
     """
     Convert structure to json.
 
-    This is necesarry, because standard JSON module can't serialize
+    This is necessary, because standard JSON module can't serialize
     namedtuples.
     """
     return json.dumps(_serializeNT(structure))
@@ -159,7 +159,7 @@ def fromJSON(json_data):
     """
     Convert JSON string back to python structures.
 
-    This is necesarry, because standard JSON module can't serialize
+    This is necessary, because standard JSON module can't serialize
     namedtuples.
     """
     return _deserializeNT(json.loads(json_data))

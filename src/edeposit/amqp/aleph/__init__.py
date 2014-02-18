@@ -96,7 +96,7 @@ class CountRequest(namedtuple("CountRequest", ["query", "UUID"])):
     number of records, instead of records itself.
 
     This help to saves some of Aleph resources (yeah, it is restricted to give
-    too much queries by licence).
+    too much queries by license).
 
     query -- GenericQuery, ISBNQuery, .. *Query structures in this module
     UUID -- identification of a query, it will be send back in response
@@ -121,7 +121,8 @@ class AlephRecord(namedtuple("AlephRecord",
                               'xml',
                               'epublication'])):
     """
-    This structure is returned as reponse to SearchRequest inside SearchResult.
+    This structure is returned as response to SearchRequest inside 
+    SearchResult.
 
     library -- library string, used for downloading documents from Aleph when
                you know proper docNumber
@@ -329,7 +330,7 @@ class AlephExportResult(namedtuple("AlephExportResult",
                                     'message'])):
     """ docNumber ... docNumber of a record in Aleph
     base      ... base of Aleph
-    success   ... whether import was successfull
+    success   ... whether import was successful
     message   ... message of error or success
     """
     pass
