@@ -49,8 +49,8 @@ setup(
         'setuptools'
         "kombu>=3.0.11",
         "librabbitmq>=1.0.3",
-        "pyDHTMLParser>=1.7.2, <2.0.0",
-        "httpkie>=1.0.0, <2.0.0",
+        "pyDHTMLParser>=1.7.4, <2.0.0",
+        "httpkie>=1.1.0, <2.0.0",
     ],
     extras_require={
         "test": [
