@@ -1,7 +1,7 @@
 from strings import Template
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '1.0'
 long_description = """$README
 
 Contributors
@@ -26,14 +26,16 @@ setup(
 
     url='https://github.com/jstavel/edeposit.amqp.aleph',
 
-    author='',
+    author='Edeposit team',
     author_email='',
 
     classifiers=[
-        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "License :: OSI Approved :: GNU General Public License (GPL)"
+        "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    keywords='',
-    license='gpl',
+    # keywords='' ,
+    license='GPL',
 
     packages=find_packages('src'),
     package_dir={'': 'src'},
@@ -47,8 +49,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools'
-        "kombu>=3.0.11",
-        "librabbitmq>=1.0.3",
         "pyDHTMLParser>=1.7.4, <2.0.0",
         "httpkie>=1.1.0, <2.0.0",
     ],
@@ -63,8 +63,5 @@ setup(
             "sphinxcontrib-robotdoc",
             "sphinx",
         ]
-    },
-    # entry_points="""
-    # # -*- Entry points: -*-
-    # """,
+    }
 )
