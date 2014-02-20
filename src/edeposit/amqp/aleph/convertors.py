@@ -8,7 +8,7 @@ import json
 
 
 from marcxml import MARCXMLRecord
-from __init__ import EPublication, Author
+from __init__ import *
 
 
 #= Functions & objects ========================================================
