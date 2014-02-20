@@ -15,8 +15,9 @@ isbnq = ISBNQuery("80-251-0225-4")
 request = SearchRequest(isbnq, UUID)
 
 amqp.send(
-    toAMQPMessage(request)
-    "ALEPH'S_EXCHANGE"
+    message    = convertors.toJSON(request),
+    properties = "..",
+    exchange   = "ALEPH'S_EXCHANGE"
 )
 ---
 
@@ -47,17 +48,17 @@ GenericQuery   --|   |                               |
          Count/SearchRequest                         |        `- UUID
                    |                                 |
                    |                                 |
-                   |                         fromAMQPMessage()
+         convertors.toJSON()               convertors.fromJSON()
                    |                                 ^
                    V                                 |
-            toAMQPMessage() ----> AMQP -------> AMQPMessage
+              AMQPMessage ------> AMQP -------> AMQPMessage
                                  |    ^
                                  V    |
                                  |    ^
                                  V    |
                                  |    ^
                                  V    |
-             AMQPMessage <------- AMQP <------ toAMQPMessage()
+              AMQPMessage <------ AMQP <-------- AMQPMessage
                    |                                  ^
                    |                                  |
                    V                                  |
@@ -74,19 +75,6 @@ from collections import namedtuple
 
 import aleph
 import convertors
-
-
-# from .. import AMQPMessage
-class AMQPMessage(namedtuple('AMQPMessage',  # TODO: Remove
-                             ['data',
-                              'headers',
-                              'properties'
-                              ])):
-    """
-    data ... serialized main message
-    headers
-    """
-    pass
 
 
 # Datatypes for searching in Aleph ############################################
@@ -121,7 +109,7 @@ class AlephRecord(namedtuple("AlephRecord",
                               'xml',
                               'epublication'])):
     """
-    This structure is returned as response to SearchRequest inside 
+    This structure is returned as response to SearchRequest inside
     SearchResult.
 
     library -- library string, used for downloading documents from Aleph when
@@ -358,53 +346,24 @@ QUERY_TYPES = [
 
 
 # Functions ###################################################################
-def toAMQPMessage(request):
-    """
-    Serialize nested structure of objects defined in this module into
-    AMQPMessage.
-
-    request -- tree consisting of namedtuples and other python datatypes
-
-    Return AMQPMessage with filled .body property with serialized data.
-    """
-    return AMQPMessage(
-        data=convertors.toJSON(request),
-        headers="",
-        properties=""
-    )
-
-
-def fromAMQPMessage(message):
-    """
-    Deserialize structures defined in this module from AMQPMessage.
-
-    message -- AMQPMessage, in which .body property is expected to be
-               serialized data.
-
-    Returns nested structure of Requests/Results (see other objects defined
-    here).
-    """
-    return convertors.fromJSON(message.body)
-
-
 def reactToAMQPMessage(message, response_callback):
     """
     React to given AMQPMessage. Return data thru given callback function.
 
-    message -- AMQPMessage instance.
-    response_callback -- function taking exactly ONE parameter - AMQPMessage
+    message -- message encoded in JSON by convertors.toJSON()
+    response_callback -- function taking exactly ONE parameter - message's body
                          with response. Function take care of sending the
-                         response thru AMQP.
+                         response over AMQP.
 
     Returns result of response_callback() call.
 
     Raise:
-        ValueError if bad type of |message| structure is given.
+        ValueError if bad type of `message` structure is given.
 
     TODO:
         React to Export requests.
     """
-    decoded = fromAMQPMessage(message)
+    decoded = convertors.fromJSON(message.body)
 
     if type(decoded) != SearchRequest:  # TODO: pridat podporu exportnich typu
         raise ValueError("Unknown type of message: '" + type(decoded) + "'!")
@@ -420,4 +379,4 @@ def reactToAMQPMessage(message, response_callback):
         raise ValueError("Unknown type of query: '" + type(query) + "'!")
 
     if response is not None:
-        return response_callback(toAMQPMessage(response))
+        return response_callback(convertors.toJSON(response))
