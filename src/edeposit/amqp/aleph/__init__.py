@@ -344,6 +344,37 @@ QUERY_TYPES = [
     GenericQuery
 ]
 
+REQUEST_TYPES = [
+    SearchRequest,
+    CountRequest
+]
+
+
+def iiOfAny(instance, classes):
+    """
+    Returns true, if `instance` is instance of any (iiOfAny) of the `classes`.
+
+    This function doesn't use isinstance() check, it just compares the
+    classnames.
+
+    This can be generaly dangerous, but it is really useful when you are
+    comparing class serialized in one module and deserialized in another.
+
+    This causes, that module paths in class internals are different and
+    isinstance() and type() comparsions thus fails.
+
+    Use this function instead, if you wan't to check what type is your
+    deserialized message.
+
+    instance -- class instance you want to know the type
+    classes -- list of classes, or just the class you want to compare - func
+               automatically retypes nonlist/nontuple parameters to list
+    """
+    if type(classes) not in [list, tuple]:
+        classes = [classes]
+
+    return any(map(lambda x: type(instance).__name__ == x.__name__, classes))
+
 
 # Functions ###################################################################
 def reactToAMQPMessage(message, response_callback):
@@ -363,20 +394,24 @@ def reactToAMQPMessage(message, response_callback):
     TODO:
         React to Export requests.
     """
-    decoded = convertors.fromJSON(message.body)
+    req = convertors.fromJSON(message)
 
-    if type(decoded) != SearchRequest:  # TODO: pridat podporu exportnich typu
-        raise ValueError("Unknown type of message: '" + type(decoded) + "'!")
-
-    query = decoded.query
+    # TODO: pridat podporu exportnich typu
+    if not iiOfAny(req, REQUEST_TYPES):
+        raise ValueError(
+            "Unknown type of request: '" + str(type(req)) + "'!"
+        )
 
     response = None
-    if type(query) == CountRequest and query.query in QUERY_TYPES:
-        response = query.query.getCountResult(decoded.UUID)
-    elif type(query) in QUERY_TYPES:  # react to search requests
-        response = query.getSearchResult(decoded.UUID)
+    if iiOfAny(req, CountRequest) and iiOfAny(req.query, QUERY_TYPES):
+        response = req.query.getCountResult(req.UUID)
+    elif iiOfAny(req, SearchRequest) and iiOfAny(req.query, QUERY_TYPES):
+        response = req.query.getSearchResult(req.UUID)
     else:
-        raise ValueError("Unknown type of query: '" + type(query) + "'!")
+        raise ValueError(
+            "Unknown type of request: '" + str(type(req)) + "' or query: '" +
+            str(type(req.query)) + "'!"
+        )
 
     if response is not None:
         return response_callback(convertors.toJSON(response))
