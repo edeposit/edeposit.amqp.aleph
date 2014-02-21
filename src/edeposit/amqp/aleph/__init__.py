@@ -50,7 +50,7 @@ GenericQuery   --|   |                               |
                    |                                 |
          convertors.toJSON()               convertors.fromJSON()
                    |                                 ^
-                   V                                 |
+                   V             Client              |
               AMQPMessage ------> AMQP -------> AMQPMessage
                                  |    ^
                                  V    |
@@ -59,7 +59,7 @@ GenericQuery   --|   |                               |
                                  |    ^
                                  V    |
               AMQPMessage <------ AMQP <-------- AMQPMessage
-                   |                                  ^
+                   |             Service              ^
                    |                                  |
                    V                                  |
           reactToAMQPMessage() ............... magic_happens()
