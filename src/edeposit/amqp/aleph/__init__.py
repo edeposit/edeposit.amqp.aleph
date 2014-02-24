@@ -98,11 +98,10 @@ class SearchRequest(namedtuple("SearchRequest", ['query'])):
     pass
 
 
-class AlephRecord(namedtuple("AlephRecord",
-                             ['library',
-                              'docNumber',
-                              'xml',
-                              'epublication'])):
+class AlephRecord(namedtuple("AlephRecord", ['library',
+                                             'docNumber',
+                                             'xml',
+                                             'epublication'])):
     """
     This structure is returned as response to SearchRequest inside
     SearchResult.
@@ -162,11 +161,11 @@ class _QueryTemplate:
         return CountResult(self._getCount())
 
 
-class GenericQuery(namedtuple("GenericQuery",
-                              ['base',
-                               'phrase',
-                               'considerSimilar',
-                               'field']), _QueryTemplate):
+class GenericQuery(namedtuple("GenericQuery", ['base',
+                                               'phrase',
+                                               'considerSimilar',
+                                               'field']),
+                   _QueryTemplate):
     """
     Used for generic queries to aleph.
 
@@ -232,39 +231,37 @@ class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
     pass
 
 
-class Producent(namedtuple("Producent",
-                           ['title',
-                            'phone',
-                            'fax',
-                            'email',
-                            'url',
-                            'identificator',
-                            'ico'])):
+class Producent(namedtuple("Producent", ['title',
+                                         'phone',
+                                         'fax',
+                                         'email',
+                                         'url',
+                                         'identificator',
+                                         'ico'])):
     pass
 
 
-class EPublication(namedtuple("EPublication",
-                              ['nazev',
-                               'podnazev',
-                               'vazba',
-                               'cena',
-                               'castDil',
-                               'nazevCasti',
-                               'nakladatelVydavatel',
-                               'datumVydani',
-                               'poradiVydani',
-                               'zpracovatelZaznamu',
-                               'kategorieProRIV',
-                               'mistoDistribuce',
-                               'distributor',
-                               'datumDistribuce',
-                               'datumProCopyright',
-                               'format',
-                               'url',
-                               'mistoVydani',
-                               'ISBNSouboruPublikaci',
-                               'autori',
-                               'originaly'])):
+class EPublication(namedtuple("EPublication", ['nazev',
+                                               'podnazev',
+                                               'vazba',
+                                               'cena',
+                                               'castDil',
+                                               'nazevCasti',
+                                               'nakladatelVydavatel',
+                                               'datumVydani',
+                                               'poradiVydani',
+                                               'zpracovatelZaznamu',
+                                               'kategorieProRIV',
+                                               'mistoDistribuce',
+                                               'distributor',
+                                               'datumDistribuce',
+                                               'datumProCopyright',
+                                               'format',
+                                               'url',
+                                               'mistoVydani',
+                                               'ISBNSouboruPublikaci',
+                                               'autori',
+                                               'originaly'])):
     """
     This structure is returned as result of users SearchRequest. It will be
     also used in exporting new data to aleph, but that is not implemented yet.
@@ -275,34 +272,29 @@ class EPublication(namedtuple("EPublication",
     pass
 
 
-class OriginalFile(namedtuple("OriginalFile",
-                              ['url', 'format', 'file', 'isbns'])):
+class OriginalFile(namedtuple("OriginalFile", ['url',
+                                               'format',
+                                               'file',
+                                               'isbns'])):
     """ type of isbn: ISBN"""
     pass
 
 
 ## Export protocol query wrappers #############################################
-class AlephExport(namedtuple("AlephExport",
-                             ['epublication',
-                              'linkOfEPublication'])):
-    """ epublication ... type of EPublication
-    linkOfEPublication  ... url with epublication
-
-    User will fill this record.
+class ExportRequest(namedtuple("AlephExport", ['epublication',
+                                               'linkOfEPublication'])):
+    """
+    epublication -- type of EPublication
+    linkOfEPublication -- url with epublication
     """
     pass
 
 
-class ExportRequest(namedtuple("ExportRequest", ['export'])):
-    pass
-
-
-class AlephExportResult(namedtuple("AlephExportResult",
-                                   ['docNumber',
-                                    'base',
-                                    'xml',
-                                    'success',
-                                    'message'])):
+class AlephExportResult(namedtuple("AlephExportResult", ['docNumber',
+                                                         'base',
+                                                         'xml',
+                                                         'success',
+                                                         'message'])):
     """ docNumber ... docNumber of a record in Aleph
     base      ... base of Aleph
     success   ... whether import was successful
