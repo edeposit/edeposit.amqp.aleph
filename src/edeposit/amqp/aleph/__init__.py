@@ -315,7 +315,8 @@ QUERY_TYPES = [
 
 REQUEST_TYPES = [
     SearchRequest,
-    CountRequest
+    CountRequest,
+    ExportRequest
 ]
 
 
@@ -376,6 +377,8 @@ def reactToAMQPMessage(message, response_callback, UUID):
         response = req.query.getCountResult()
     elif iiOfAny(req, SearchRequest) and iiOfAny(req.query, QUERY_TYPES):
         response = req.query.getSearchResult()
+    if iiOfAny(req, ExportRequest):
+        raise NotImplementedError("Not implemented yet.")
     else:
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "' or query: '" +
