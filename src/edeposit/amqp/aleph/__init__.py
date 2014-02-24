@@ -7,12 +7,12 @@
 - Query workflow --------------------------------------------------------------
 
 To query Aleph, just create one of the Queries - ISBNQuery for example and put
-it into SearchRequest wrapper with UUID. Then encode it by calling
-toAMQPMessage() and send the message to the Aleph's exchange.
+it into SearchRequest wrapper. Then encode it by calling toAMQPMessage() and
+send the message to the Aleph's exchange.
 
 ---
 isbnq = ISBNQuery("80-251-0225-4")
-request = SearchRequest(isbnq, UUID)
+request = SearchRequest(isbnq)
 
 amqp.send(
     message    = convertors.toJSON(request),
@@ -24,13 +24,13 @@ amqp.send(
 and you will get back AMQP message, and after decoding with fromAMQPMessage()
 also SearchResult.
 
-If you want to just get count of how many items is there in Aleph (you should
-use this instead of just calling len() to SearchResult.records - it doesn't put
-that much load to Aleph), just wrap the ISBNQuery with CountRequest:
+If you want to just get count of how many items is there in Aleph, just wrap
+the ISBNQuery with CountRequest (you should use this instead of just calling
+len() to SearchResult.records - it doesn't put that much load to Aleph):
 
 ---
 isbnq = ISBNQuery("80-251-0225-4")
-request = CountRequest(isbnq, UUID)
+request = CountRequest(isbnq)
 
 # rest is same..
 ---
@@ -39,13 +39,13 @@ and you will get back (after decoding) CountResult.
 
 Here is ASCII flow diagram for you:
 
-ISBNQuery      --.   ,-- UUID                        ,--> CountResult
-AuthorQuery    --|   |                               |        |- num_of_records
-PublisherQuery --|   |                               |        `- UUID
-GenericQuery   --|   |                               |
-                 |   |                               |--> SearchResult
-                 V   V                               |        |- AlephRecord
-         Count/SearchRequest                         |        `- UUID
+ISBNQuery      ----.                                 ,--> CountResult
+AuthorQuery    ----|                                 |        `- num_of_records
+PublisherQuery ----|                                 |
+GenericQuery   ----|                                 |
+                   |                                 |--> SearchResult
+                   V                                 |        `- AlephRecord
+         Count/SearchRequest                         |
                    |                                 |
                    |                                 |
          convertors.toJSON()               convertors.fromJSON()
@@ -78,7 +78,7 @@ import convertors
 
 
 # Datatypes for searching in Aleph ############################################
-class CountRequest(namedtuple("CountRequest", ["query", "UUID"])):
+class CountRequest(namedtuple("CountRequest", ["query"])):
     """
     Put one of the Queries to .query property and it will return just
     number of records, instead of records itself.
@@ -87,18 +87,13 @@ class CountRequest(namedtuple("CountRequest", ["query", "UUID"])):
     too much queries by license).
 
     query -- GenericQuery, ISBNQuery, .. *Query structures in this module
-    UUID -- identification of a query, it will be send back in response
-            structure for user to be able to pair Request/Response
     """
     pass
 
 
-class SearchRequest(namedtuple("SearchRequest",
-                               ['query',
-                                'UUID'])):
+class SearchRequest(namedtuple("SearchRequest", ['query'])):
     """
     query -- GenericQuery, ISBNQuery, .. *Query structures in this module
-    UUID -- identification of a query, will be send back in response structure
     """
     pass
 
@@ -123,20 +118,17 @@ class AlephRecord(namedtuple("AlephRecord",
     pass
 
 
-class SearchResult(namedtuple("SearchResult", ['records', 'UUID'])):
+class SearchResult(namedtuple("SearchResult", ['records'])):
     """
     This is response structure, which is sent back when SearchRequest is
     received.
 
     records -- array of AlephRecord structures
-    UUID -- UUID which is used from SearchRequest.UUID
     """
     pass
 
 
-class CountResult(namedtuple("CountResult",
-                             ['num_of_records',
-                              'UUID'])):
+class CountResult(namedtuple("CountResult", ['num_of_records'])):
     """
     This is returned back to client when he send CountRequest.
     """
@@ -150,7 +142,7 @@ class _QueryTemplate:
 
     You probably shouldn't use it.
     """
-    def getSearchResult(self, UUID):
+    def getSearchResult(self):
         records = []
         for doc_id, library in self._getIDs():
             xml = aleph.downloadAlephDocument(doc_id, library)
@@ -164,13 +156,10 @@ class _QueryTemplate:
                 )
             )
 
-        return SearchResult(records, UUID)
+        return SearchResult(records)
 
-    def getCountResult(self, UUID):
-        return CountResult(
-            self._getCount(),
-            UUID
-        )
+    def getCountResult(self):
+        return CountResult(self._getCount())
 
 
 class GenericQuery(namedtuple("GenericQuery",
@@ -304,9 +293,7 @@ class AlephExport(namedtuple("AlephExport",
     pass
 
 
-class ExportRequest(namedtuple("ExportRequest",
-                               ['export',
-                                'UUID'])):
+class ExportRequest(namedtuple("ExportRequest", ['export'])):
     pass
 
 
@@ -324,12 +311,9 @@ class AlephExportResult(namedtuple("AlephExportResult",
     pass
 
 
-class ExportResult(namedtuple("ExportResult",
-                              ['result',
-                               'UUID'])):
+class ExportResult(namedtuple("ExportResult", ['result'])):
     """
     ... result is type of AlephExportResult
-    ... UUID is UUID used in ExportRequest
     """
     pass
 
@@ -377,7 +361,7 @@ def iiOfAny(instance, classes):
 
 
 # Functions ###################################################################
-def reactToAMQPMessage(message, response_callback):
+def reactToAMQPMessage(message, response_callback, UUID):
     """
     React to given AMQPMessage. Return data thru given callback function.
 
@@ -404,9 +388,9 @@ def reactToAMQPMessage(message, response_callback):
 
     response = None
     if iiOfAny(req, CountRequest) and iiOfAny(req.query, QUERY_TYPES):
-        response = req.query.getCountResult(req.UUID)
+        response = req.query.getCountResult()
     elif iiOfAny(req, SearchRequest) and iiOfAny(req.query, QUERY_TYPES):
-        response = req.query.getSearchResult(req.UUID)
+        response = req.query.getSearchResult()
     else:
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "' or query: '" +
@@ -414,4 +398,4 @@ def reactToAMQPMessage(message, response_callback):
         )
 
     if response is not None:
-        return response_callback(convertors.toJSON(response))
+        return response_callback(convertors.toJSON(response), UUID)
