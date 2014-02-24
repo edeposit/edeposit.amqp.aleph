@@ -15,7 +15,7 @@ isbnq = ISBNQuery("80-251-0225-4")
 request = SearchRequest(isbnq)
 
 amqp.send(
-    message    = convertors.toJSON(request),
+    message    = serialize(request),
     properties = "..",
     exchange   = "ALEPH'S_EXCHANGE"
 )
@@ -48,7 +48,7 @@ GenericQuery   ----|                                 |
          Count/SearchRequest                         |
                    |                                 |
                    |                                 |
-         convertors.toJSON()               convertors.fromJSON()
+              serialize()                      deserialize()
                    |                                 ^
                    V             Client              |
               AMQPMessage ------> AMQP -------> AMQPMessage
@@ -320,6 +320,20 @@ REQUEST_TYPES = [
 ]
 
 
+def serialize(data):
+    """
+    Serialize class hierarchy into JSON.
+    """
+    return convertors.toJSON(data)
+
+
+def deserialize(data):
+    """
+    Deserialize classes from JSON data.
+    """
+    return convertors.fromJSON(data)
+
+
 def iiOfAny(instance, classes):
     """
     Returns true, if `instance` is instance of any (iiOfAny) of the `classes`.
@@ -351,7 +365,7 @@ def reactToAMQPMessage(message, response_callback, UUID):
     """
     React to given AMQPMessage. Return data thru given callback function.
 
-    message -- message encoded in JSON by convertors.toJSON()
+    message -- message encoded in JSON by serialize()
     response_callback -- function taking exactly ONE parameter - message's body
                          with response. Function take care of sending the
                          response over AMQP.
@@ -364,7 +378,7 @@ def reactToAMQPMessage(message, response_callback, UUID):
     TODO:
         React to Export requests.
     """
-    req = convertors.fromJSON(message)
+    req = deserialize(message)
 
     # TODO: pridat podporu exportnich typu
     if not iiOfAny(req, REQUEST_TYPES):
@@ -377,7 +391,7 @@ def reactToAMQPMessage(message, response_callback, UUID):
         response = req.query.getCountResult()
     elif iiOfAny(req, SearchRequest) and iiOfAny(req.query, QUERY_TYPES):
         response = req.query.getSearchResult()
-    if iiOfAny(req, ExportRequest):
+    elif iiOfAny(req, ExportRequest):
         raise NotImplementedError("Not implemented yet.")
     else:
         raise ValueError(
@@ -386,4 +400,4 @@ def reactToAMQPMessage(message, response_callback, UUID):
         )
 
     if response is not None:
-        return response_callback(convertors.toJSON(response), UUID)
+        return response_callback(serialize(response), UUID)
