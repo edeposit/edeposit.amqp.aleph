@@ -5,7 +5,7 @@ This package provides an AMQP middle-ware for communication with Aleph. Aleph is
 system used in libraries to store meta-data about books and authors.
 
 You can read [some documentation](http://edeposit-amqp-aleph.readthedocs.org/cs/latest/),
-but for details, but that is based on acceptance test and not really actual.
+but that is based on acceptance test and not really actual.
 
 Actual documentation can be found in docstrings in each <code>.py</code> source
 file.
