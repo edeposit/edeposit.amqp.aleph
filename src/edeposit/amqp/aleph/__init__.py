@@ -290,22 +290,15 @@ class ExportRequest(namedtuple("AlephExport", ['epublication',
     pass
 
 
-class AlephExportResult(namedtuple("AlephExportResult", ['docNumber',
-                                                         'base',
-                                                         'xml',
-                                                         'success',
-                                                         'message'])):
+class ExportResult(namedtuple("AlephExportResult", ['docNumber',
+                                                    'base',
+                                                    'xml',
+                                                    'success',
+                                                    'message'])):
     """ docNumber ... docNumber of a record in Aleph
     base      ... base of Aleph
     success   ... whether import was successful
     message   ... message of error or success
-    """
-    pass
-
-
-class ExportResult(namedtuple("ExportResult", ['result'])):
-    """
-    ... result is type of AlephExportResult
     """
     pass
 
