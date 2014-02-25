@@ -8,7 +8,7 @@
 #
 #= Imports ====================================================================
 """
-Module for parsing and highlevel processing of MARC XML records.
+Module for parsing and high-level processing of MARC XML records.
 
 About format and how the class work; Standard MARC record is made from
 three parts:
@@ -58,7 +58,7 @@ which is little bit more complicated dictionary. Complicated is mainly
 because tag parameter is not unique, so there can be more <datafield>s with
 same tag!
 
-scode is always one character (ascii lowercase), or number.
+scode is always one character (ASCII lowercase), or number.
 
 ---
 MARCXMLRecord.datafields = {
@@ -179,7 +179,7 @@ from dhtmlparser import HTMLElement
 #= Functions & objects ========================================================
 def _undefinedPattern(value, fn, undefined):
     """
-    If fn(value) == True, return |undefined|, else |value|.
+    If fn(value) == True, return `undefined`, else `value`.
     """
     if fn(value):
         return undefined
@@ -319,7 +319,7 @@ class MARCXMLRecord:
     cases thru MARC standard.
 
     Dict structure is not that hard to understand, but kinda long to access,
-    so there is also little bit more higlevel abstraction access methods.
+    so there is also little bit more high-level abstraction access methods.
 
     - Lowlevel abstraction -------------------------------------------------
     To access data little bit easier, there are defined two methods to
@@ -340,14 +340,14 @@ class MARCXMLRecord:
     works same way as accessing .controlfields[controlfield]
 
     .getDataRecords(datafield, subfield, throw_exceptions) return list of
-    MarcSubrecord* objects with informations from section |datafield|
-    subsection |subfield|.
+    MarcSubrecord* objects with informations from section `datafield`
+    subsection `subfield`.
 
     If throw_exceptions parameter is set to False, method returns empty list
     instead of throwing KeyError.
 
     *As I said, function returns list of MarcSubrecord objects. They are
-    almost same thing as normal strings (they are actually subclassed 
+    almost same thing as normal strings (they are actually subclassed
     strings), but defines few important methods, which can make your life
     little bit easier:
 
