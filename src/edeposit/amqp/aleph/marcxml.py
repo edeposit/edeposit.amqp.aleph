@@ -235,7 +235,19 @@ class Corporation:
 
 class MarcSubrecord(str):
     """
-    TODO
+    This class is used to stored data returned from some of getters in
+    MARCXMLRecord.
+
+    It looks kinda like overshot, but when you are parsing the MARC XML,
+    values from subrecords, you need to know the context in which the subrecord
+    is put.
+
+    Specifically the i1/i2 values, but sometimes is usefull to have acces even
+    to the other subfields from this subrecord.
+
+    This class provides this acces thru .getI1()/.getI2() and
+    .getOtherSubfiedls() getters. As a bonus, it is also fully convertable to
+    string, in which case only the value of subrecord is preserved.
     """
     def __new__(self, arg, ind1, ind2, other_subfields):
         return str.__new__(self, arg)
