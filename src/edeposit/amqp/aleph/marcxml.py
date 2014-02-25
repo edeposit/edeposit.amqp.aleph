@@ -958,9 +958,9 @@ $DATA_FIELDS
 """
 
         # serialize leader, if it is present
-        leader = ""
-        if not self.oai_marc:
-            leader = "<leader>" + self.leader + "</leader>"
+        leader = self.leader if self.leader is not None else ""
+        if not self.oai_marc and leader != "":  # print only visible leaders
+            leader = "<leader>" + leader + "</leader>"
 
         return Template(marcxml_template).substitute(
             LEADER=leader.strip(),
