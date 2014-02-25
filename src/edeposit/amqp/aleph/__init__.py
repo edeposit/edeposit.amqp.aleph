@@ -285,7 +285,7 @@ class ExportRequest(namedtuple("AlephExport", ['epublication',
                                                'linkOfEPublication'])):
     """
     epublication -- type of EPublication
-    linkOfEPublication -- url with epublication
+    linkOfEPublication -- url of epublication
     """
     pass
 
@@ -295,10 +295,11 @@ class ExportResult(namedtuple("AlephExportResult", ['docNumber',
                                                     'xml',
                                                     'success',
                                                     'message'])):
-    """ docNumber ... docNumber of a record in Aleph
-    base      ... base of Aleph
-    success   ... whether import was successful
-    message   ... message of error or success
+    """
+    docNumber -- docNumber of a record in Aleph
+    base      --      base of Aleph
+    success   --   whether import was successful
+    message   --   message of error or success
     """
     pass
 
