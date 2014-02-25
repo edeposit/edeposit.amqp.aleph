@@ -235,8 +235,8 @@ class Corporation:
 
 class MarcSubrecord(str):
     """
-    This class is used to stored data returned from some of getters in
-    MARCXMLRecord.
+    This class is used to stored data returned from .getDataRecords() method
+    from MARCXMLRecord.
 
     It looks kinda like overshot, but when you are parsing the MARC XML,
     values from subrecords, you need to know the context in which the subrecord
