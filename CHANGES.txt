@@ -1,8 +1,16 @@
 Changelog
 =========
 
+1.1.0
+
+- Project released at PYPI
+
+1.0 (unrelease)
+---------------
+
+- Communication with Aleph is now working
+
 0.1-dev (unreleased)
 --------------------
 
 - Package created using templer
-  []

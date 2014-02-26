@@ -1,28 +1,19 @@
-from string import Template
 from setuptools import setup, find_packages
 
-version = '1.0'
-long_description = """$README
 
-Contributors
-============
-$CONTRIBUTORS
-
-Changes
-=======
-$CHANGES
-"""
+version = '1.1.0'
+long_description = "\n\n".join([
+    open('README.rst').read(),
+    open('CONTRIBUTORS.txt').read(),
+    open('CHANGES.txt').read()
+])
 
 
 setup(
     name='edeposit.amqp.aleph',
     version=version,
     description="E-Deposit AMQP module providing communication with Aleph",
-    long_description=Template(long_description).substitute(
-        README=open('README.rst').read(),
-        CONTRIBUTORS=open('CONTRIBUTORS.txt').read(),
-        CHANGES=open('CHANGES.txt').read()
-    ),
+    long_description=long_description,
 
     url='https://github.com/jstavel/edeposit.amqp.aleph',
 
