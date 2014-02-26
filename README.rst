@@ -7,9 +7,18 @@ authors.
 
 You can read `some
 documentation <http://edeposit-amqp-aleph.readthedocs.org/cs/latest/>`__,
-but that is based on acceptance test and not really actual.
+but that is based on acceptance test and it's  not really actual.
 
-Actual documentation can be found in docstrings in each .py source file.
+Full documentation can be found in docstrings in each .py source file.
+
+Installation
+------------
+
+Module is hosted at PYPI and can be easily installed:
+
+    pip install edeposit.amqp.aleph
+
+Sources can be found at github: https://github.com/jstavel/edeposit.amqp.aleph
 
 Acceptance tests
 ----------------
