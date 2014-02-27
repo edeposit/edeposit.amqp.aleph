@@ -25,7 +25,6 @@ setup(
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    # keywords='' ,
     license='GPL2+',
 
     packages=find_packages('src'),

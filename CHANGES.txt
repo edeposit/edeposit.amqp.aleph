@@ -6,8 +6,8 @@ Changelog
 
 - Project released at PYPI
 
-1.0 (unrelease)
----------------
+1.0 (unreleased)
+----------------
 
 - Communication with Aleph is now working
 
