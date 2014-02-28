@@ -240,7 +240,8 @@ class AuthorQuery(namedtuple("AuthorQuery", ["author"]), _QueryTemplate):
         return aleph.getAuthorsBooksCount(self.author)
 
 
-class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]), _QueryTemplate):
+class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]),
+                     _QueryTemplate):
     def _getIDs(self):
         return aleph.getPublishersBooksIDs(self.publisher)
 
