@@ -458,6 +458,9 @@ class MARCXMLRecord:
             self.datafields[name] = [subfields_dict]
 
     def getControlRecord(self, controlfield):
+        """
+        Return record from given `controlfield`. Returned type: str.
+        """
         return self.controlfields[controlfield]
 
     def getDataRecords(self, datafield, subfield, throw_exceptions=True):
@@ -959,6 +962,12 @@ class MARCXMLRecord:
         return output
 
     def toXML(self):
+        """
+        Convert object back to XML string.
+
+        Returned string should be same as parsed, if everything works as
+        expected.
+        """
         marcxml_template = """<record xmlns="http://www.loc.gov/MARC21/slim/"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.loc.gov/MARC21/slim
