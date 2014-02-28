@@ -4,6 +4,14 @@
 # Interpreter version: python 2.7
 #
 #= Imports ====================================================================
+"""
+This module exists to provide ability to convert from AMQP data structures to
+Aleph's data structures.
+
+It can convert MARCXMLRecord to EPublication simplified data structure.
+
+It can also serialize any namedtuple to JSON.
+"""
 import json
 
 
@@ -76,10 +84,6 @@ def toEPublication(marcxml):
         ),
         originaly=parsed.getOriginals(),
     )
-
-
-def fromEPublication(epublication):
-    raise NotImplementedError("Not implemented yet.")
 
 
 def _serializeNT(data):
