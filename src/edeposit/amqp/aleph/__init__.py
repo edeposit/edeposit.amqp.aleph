@@ -73,6 +73,7 @@ TODO: implement, then write docstring
 from collections import namedtuple
 
 
+import isbn
 import aleph
 import convertors
 
@@ -87,13 +88,37 @@ class CountRequest(namedtuple("CountRequest", ["query"])):
     too much queries by license).
 
     query -- GenericQuery, ISBNQuery, .. *Query structures in this module
+
+    reactToAMQPMessage() returns CountResult as response.
     """
     pass
 
 
 class SearchRequest(namedtuple("SearchRequest", ['query'])):
     """
+    Perform search in Aleph with given query.
+
     query -- GenericQuery, ISBNQuery, .. *Query structures in this module
+
+    reactToAMQPMessage() returns SearchResult as response.
+    """
+    pass
+
+
+class ISBNValidationRequest(namedtuple("ISBNValidationRequest", ['ISBN'])):
+    """
+    Validate given ISBN.
+
+    reactToAMQPMessage() returns ISBNValidationResult as response.
+    """
+    pass
+
+
+class ISBNValidationResult(namedtuple("ISBNValidationResult", ["is_valid"])):
+    """
+    Response to ISBNValidationRequest.
+
+    is_valid -- bool
     """
     pass
 
@@ -317,7 +342,8 @@ QUERY_TYPES = [
 REQUEST_TYPES = [
     SearchRequest,
     CountRequest,
-    ExportRequest
+    ExportRequest,
+    ISBNValidationRequest
 ]
 
 
@@ -394,6 +420,8 @@ def reactToAMQPMessage(message, response_callback, UUID):
         response = req.query.getSearchResult()
     elif iiOfAny(req, ExportRequest):
         raise NotImplementedError("Not implemented yet.")
+    elif iiOfAny(req, ISBNValidationRequest):
+        response = ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
     else:
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "' or query: '" +
