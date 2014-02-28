@@ -3,6 +3,10 @@
 #
 # Interpreter version: python 2.7
 #
+"""
+This module is providing funcionality to validate ISBN checksums and also
+allows to compute ISBN checksum digits.
+"""
 
 
 #= Functions & objects ========================================================
@@ -92,14 +96,3 @@ def is_valid_isbn(isbn):
 
     return False
 
-
-#= Main program ===============================================================
-if __name__ == '__main__':
-    assert is_valid_isbn("0-306-40615-2")
-    assert is_valid_isbn("0-9752298-0-X")
-    assert not is_valid_isbn("0-9752298-0-1")
-
-    assert is_valid_isbn("978-0-306-40615-7")
-    assert not is_valid_isbn("978-0-306-40115-7")
-
-    assert not is_valid_isbn("978-80-7302-134-x")
