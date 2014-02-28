@@ -4,6 +4,7 @@
 # Interpreter version: python 2.7
 #
 #= Imports ====================================================================
+import isbn
 import convertors
 from marcxml import MARCXMLRecord
 
@@ -176,10 +177,21 @@ http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
     # test m.__str__() equality with original XML
     assert set(xml.splitlines()) == set(str(m).splitlines())
 
+def testISBN():
+    assert isbn.is_valid_isbn("0-306-40615-2")
+    assert isbn.is_valid_isbn("0-9752298-0-X")
+    assert not isbn.is_valid_isbn("0-9752298-0-1")
+
+    assert isbn.is_valid_isbn("978-0-306-40615-7")
+    assert not isbn.is_valid_isbn("978-0-306-40115-7")
+
+    assert not isbn.is_valid_isbn("978-80-7302-134-x")
+
 
 #= Main program ===============================================================
 if __name__ == '__main__':
     testJSONConvertor()
     testMARCXML()
+    testISBN()
 
     print "Everything is ok."
