@@ -1,64 +1,79 @@
 *** Settings ***
-Metadata    name  "Použití knihovny"
+Metadata    name  "Test vyhledávání v Alephu"
 Library     inspector.Inspector
 Library     OperatingSystem
-Variables   variables.py
 Library     XML
+Variables   inspector.py
+
+
+
+*** Variables ***
+${vladci_isbn_query} =                 ${aleph.ISBNQuery("80-85892-15-4")}
+${unix_isbn_validation_request} =      ${aleph.ISBNValidationRequest("80-251-0225-4")}
+
+
 
 *** Keywords ***
-Odeslání žádosti modulem
-    Is type of    ${search_request}     ${edeposit.amqp.aleph.AlephSearchQuery}
-    ${request_id}=    Call   edeposit.amqp.aleph.submit_search_request   ${search_request}
-
 Žádost má správný typ
-    Log   ahoj    
-    
-Modul se dotáže Alephu
-    Log   ahoj
-    
-Modul stáhne detaily dokumentů
-     Log   ahoj
+    [Arguments]    ${element}          ${reference}
+    Is type of     ${element}          ${reference}
 
-Modul odešle pole detailu do exchange v RabbitMQ
-    Log   v exchange se objevi jedna odpoved. V ni jsou vsechny zaznamy, co Aleph odpovedel.
-        
-Načtení jedné zprávy z RabbitMQ fronty
-    Log       Aplikace nacte jednu zpravu. Zprava je zakodovana do transportniho formatu.
-    
-Převedení odpovědi na hledání do uživatelské struktury
-    [Arguments]    ${data}   ${properties}   ${headers}
-    [documentation]  Odpověd obsahuje všechny záznamy co Aleph odpověděl. Tj. jedna odpověd na jeden dotaz.
-    ${result}=    Call   edeposit.amqp.aleph.convert_search_amqp_result   ${data}    ${properties}    ${headers}
-    Is type of   ${result}   ${edeposit.amqp.aleph.AlephSearchResult}
+Dotaz do Alephu
+    [Arguments]    ${isbn_request}
+    ${result} =    Aleph request       ${isbn_request}
+    Log            ${result}
+    [Return]       ${result}
 
-Žádost o kontrolu ISBN má správný typ
-    Log  Na to je struktura
+ISBN je validní
+    [Arguments]    ${isbn_response}
+    Is true        ${isbn_response.is_valid}
 
-Modul odešle počet záznamů do exchange v RabbitMQ
-    Log   definovana struktura
+ISBN není validní
+    [Arguments]    ${isbn_response}
+    Is false       ${isbn_response.is_valid}
 
-Převedení odpovědi na počet do uživatelské struktury
-    [Arguments]    ${data}   ${properties}   ${headers}
-    [documentation]  Odpověd obsahuje počet záznamů a odpovídající dotaz. Také tam je uuid_of_request. Pro jistotu.
-    Log   Vrátí uživatelskou strukturu
-    
+Zkonvertuj dotaz
+    [Arguments]            ${request}  ${type}
+    ${result} =            Call        ${type}        ${request}
+    Log                    ${result}
+    Žádost má správný typ  ${result}   ${type}
+    [Return]               ${result}
+
+
+
 *** Test Cases ***
-    
-Dotaz na dokument se zadaným ISBN
-    Žádost má správný typ
-    Odeslání žádosti modulem
-    Modul se dotáže Alephu
-    Modul stáhne detaily dokumentů
-    Modul odešle pole detailu do exchange v RabbitMQ
-    Načtení jedné zprávy z RabbitMQ fronty
-    ${result}=    Převedení odpovědi na hledání do uživatelské struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
+Dotaz na validaci ISBN
+    [Documentation]         Tento dotaz nejde do Alephu, jedná se jen o test validnosti checksumu.
+    Žádost má správný typ   ${unix_isbn_validation_request}  ${aleph.ISBNValidationRequest}
+    ${result} =             Dotaz do Alephu  ${unix_isbn_validation_request}
+    ISBN je validní         ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("80-251-0225-x")}
+    ISBN není validní       ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("80-251-0225")}
+    ISBN není validní       ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-0-306-40615-7")}
+    ISBN je validní         ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-0-306-40115-7")}
+    ISBN není validní       ${result}
 
-Dotaz zda je ISBN uz použito
-    [Documentation]   Aplikaci zajímá počet záznamů pro dané ISBN. modul se dotáže na isbn záznamy. Jestli existují, vrátí počet záznamů.
-    Žádost o kontrolu ISBN má správný typ
-    Odeslání žádosti modulem
-    Modul se dotáže Alephu
-    Modul odešle počet záznamů do exchange v RabbitMQ
-    Načtení jedné zprávy z RabbitMQ fronty
-    ${result}=    Převedení odpovědi na počet do uživatelské struktury    ${amqp_data}   ${amqp_properties}   ${amqp_headers}
-    
+ISBN dotaz na počet záznamů Vládců strachu
+    Žádost má správný typ   ${vladci_isbn_query}      ${aleph.ISBNQuery}
+    ${result} =             Zkonvertuj dotaz          ${vladci_isbn_query}  ${aleph.CountRequest}
+    ${result} =             Dotaz do Alephu           ${result}
+    Greater or equal than   ${result.num_of_records}  1
+
+ISBN dotaz na záznam Vládců strachu
+    Žádost má správný typ   ${vladci_isbn_query}      ${aleph.ISBNQuery}
+    ${result} =             Zkonvertuj dotaz          ${vladci_isbn_query}  ${aleph.SearchRequest}
+    ${result} =             Dotaz do Alephu           ${result}
+
+    Log                     Zkontroluj počet záznamů
+    ${len} =                Length                    ${result.records}
+    Greater or equal than   ${len}                    1
+
+    Log                     Zkontroluj, zda odpovídá autor
+    Author partialy in any epub                       Kulhánek              ${result.records}
+
+Test konverzních funkcí v MARCXML
+    Test Marc XML deserialization
+    Test JSON convertor
