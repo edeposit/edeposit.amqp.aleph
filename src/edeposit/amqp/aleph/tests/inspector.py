@@ -2,7 +2,7 @@
 
 #
 # library for Robot Framework to inspect python modules
-# 
+#
 
 import imp
 import edeposit.amqp.aleph as aleph

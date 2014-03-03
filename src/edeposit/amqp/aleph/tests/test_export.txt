@@ -1,0 +1,19 @@
+*** Settings ***
+Metadata    name  "Použití knihovny"
+Library     inspector.Inspector
+Library     OperatingSystem
+Variables   inspector.py
+
+
+*** Variables ***
+
+
+
+*** Keywords ***
+
+
+
+*** Test Cases ***
+Export do Alephu
+    Fail  Not implemented yet.
+
