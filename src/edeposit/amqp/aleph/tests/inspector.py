@@ -24,14 +24,16 @@ class Inspector(object):
         #import sys, pdb; pdb.Pdb(stdout=sys.__stdout__).set_trace()
         module = imp.load_source("module", modulePath)
         value = getattr(module, name)
-        if not value:
-            raise AssertionError(
-                "module: %s has no variable '%s'" % (self.modulePath, name)
-            )
+        # if not value:
+        #     raise AssertionError(
+        #         "module: %s has no variable '%s'" % (self.modulePath, name)
+        #     )
+        return value
 
     def is_type_of(self, element, reference):
-        if type(element) != reference:
-            raise AssertionError("wrong type")
+        return type(element) != reference:
+        # if type(element) != reference:
+        #     raise AssertionError("wrong type")
 
     def testedlibrary_send_to_aleph(self, epublication):
         return edeposit.amqp.aleph.send_to_aleph(epublication)

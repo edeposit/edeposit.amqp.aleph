@@ -3,31 +3,23 @@ Library     inspector.Inspector
 Library     OperatingSystem
 Variables   variables.py
 
+*** Variables ***
+${SETTINGS_PATH}             src/edeposit/amqp/aleph/settings.py
+
 *** Test Cases ***
 Konfigurační soubor
-    Should Exist       src/edeposit/amqp/aleph/settings.py        
+    Should Exist           ${SETTINGS_PATH}
+    [Documentation]        Otestuj, zda konfigurační soubor existuje.
 
 Cesta k alephu
-    Variable presented          src/edeposit/amqp/aleph/settings.py             ALEPH_URL 
-    
-Adresář pro export do Alephu
-    Variable presented          src/edeposit/amqp/aleph/settings.py             PATH_OF_EXPORT_DIRECTORY
+    Variable Presented     ${SETTINGS_PATH}     ALEPH_URL
 
-Adresář pro zalohu exportu do Alephu
-    Variable presented          src/edeposit/amqp/aleph/settings.py             PATH_OF_BACKUP_DIRECTORY
+    [Documentation]        URL přes kterou je možné vyhledávat v Alephu.
 
-Konfigurace pro vstupní exchange v RabbitMQ
-    [Documentation]          Jméno exchange, kam se budou posílat žádosti na export do Alephu
-    Variable presented       src/edeposit/amqp/aleph/settings.py              INPUT_EXCHANGE_FOR_ALEPH_IMPORT
 
-Konfigurace pro exchange v RabbitMQ pro odpovědi
-    [Documentation]          Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na import dat.
-    Variable presented       src/edeposit/amqp/aleph/settings.py               OUTPUT_EXCHANGE_FOR_ALEPH_IMPORT_RESPONSE
 
-Konfigurace pro vstupní exchange v RabbitMQ pro dotazy
-    [Documentation]          Jméno exchange, kam se budou posílat žádosti na dotazy do Alephu
-    Variable presented       src/edeposit/amqp/aleph/settings.py              INPUT_EXCHANGE_FOR_ALEPH_SEARCH
+#Adresář pro export do Alephu
+#    Variable presented     ${SETTINGS_PATH}     PATH_OF_EXPORT_DIRECTORY
 
-Konfigurace pro exchange v RabbitMQ pro odpovědi na dotazy do Alephu
-    [Documentation]          Jméno exchange ve které se budou objevovat odpovědi z Alephu. Odpovědi na dotazy do Alephu.
-    Variable presented       src/edeposit/amqp/aleph/settings.py               OUTPUT_EXCHANGE_FOR_ALEPH_SEARCH_RESPONSE
+#Adresář pro zalohu exportu do Alephu
+#    Variable presented     ${SETTINGS_PATH}     PATH_OF_BACKUP_DIRECTORY
