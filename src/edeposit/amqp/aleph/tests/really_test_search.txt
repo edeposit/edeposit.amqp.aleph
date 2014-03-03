@@ -1,0 +1,43 @@
+*** Settings ***
+Metadata    name  "Test vyhledávání v alephu"
+Library     inspector.Inspector
+Library     OperatingSystem
+Variables   variables.py
+Library     XML
+
+
+
+*** Keywords ***
+Žádost má správný typ
+    [Arguments]    ${element}    ${reference}
+    Is type of     ${element}    ${reference}
+
+Dotaz na validaci ISBN
+    [Arguments]    ${isbn_request}
+    ${result} =    Aleph request    ${isbn_request}
+    Log            ${result}
+    [Return]       ${result}
+
+ISBN je validní
+    [Arguments]    ${isbn_response}
+    Is true        ${isbn_response.is_valid}
+
+ISBN není validní
+    [Arguments]    ${isbn_response}
+    Is false       ${isbn_response.is_valid}
+
+
+
+*** Test Cases ***
+Dotaz na validaci ISBN
+    [Documentation]         Tento dotaz nejde do Alephu, jedná se jen o validaci checksumu.
+    Žádost má správný typ   ${unix_isbn_request}  ${aleph.ISBNValidationRequest}
+    ${result} =             Dotaz na validaci ISBN  ${unix_isbn_request}
+    ISBN je validní         ${result}
+
+Test validátoru ISBN
+    [Documentation]         Otestuje, zda validace ISBN checksumu odmítá nevalidní ISBN.
+    ${result} =             Dotaz na validaci ISBN  ${aleph.ISBNValidationRequest("80-251-0225-x")}
+    ISBN není validní       ${result}
+    ${result} =             Dotaz na validaci ISBN  ${aleph.ISBNValidationRequest("80-251-0225")}
+    ISBN není validní       ${result}

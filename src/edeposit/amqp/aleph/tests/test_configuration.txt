@@ -9,6 +9,7 @@ ${SETTINGS_PATH}             src/edeposit/amqp/aleph/settings.py
 *** Test Cases ***
 Konfigurační soubor
     Should Exist           ${SETTINGS_PATH}
+
     [Documentation]        Otestuj, zda konfigurační soubor existuje.
 
 Cesta k alephu
