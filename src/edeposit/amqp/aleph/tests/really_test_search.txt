@@ -45,6 +45,10 @@ Dotaz na validaci ISBN
     ISBN není validní       ${result}
     ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("80-251-0225")}
     ISBN není validní       ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-0-306-40615-7")}
+    ISBN je validní         ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-0-306-40115-7")}
+    ISBN není validní       ${result}
 
 ISBN dotaz na počet záznamů Vládců strachu
     Žádost má správný typ   ${vladci_isbn_query}      ${aleph.ISBNQuery}
@@ -63,3 +67,7 @@ ISBN dotaz na záznam Vládců strachu
 
     Log                     Zkontroluj, zda odpovídá autor
     Author partialy in any epub                       Kulhánek              ${result.records}
+
+Test konverzních funkcí v MARCXML
+    Test Marc XML deserialization
+    Test JSON convertor

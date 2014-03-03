@@ -13,7 +13,9 @@ import variables
 import os.path
 
 
-BASE_PATH = os.path.basename(__file__)
+BASE_PATH = os.path.dirname(__file__)
+EXAMPLE_PATH = BASE_PATH + "/"
+EXAMPLE_PATH += "resources/aleph_data_examples/xml_outputs/example4.xml"
 
 
 class Inspector(object):
@@ -74,40 +76,41 @@ class Inspector(object):
 
             return self.value_partialy_in_any_epub(author, ident, epub)
 
+    def test_Marc_XML_deserialization(self):
+        xml = ""
+        with open(EXAMPLE_PATH) as f:
+            xml = f.read()
 
-    # def isbn_is_valid(self, isbn_request):
-    #     retualep.reactToAMQPMessage(isbn_request)
+        m = aleph.marcxml.MARCXMLRecord(xml)
 
-    # def testedlibrary_send_to_aleph(self, epublication):
-    #     return edeposit.amqp.aleph.send_to_aleph(epublication)
+        # test getters
+        assert m.getAuthors()[0].name == "Eric S."
+        assert m.getAuthors()[0].surname == "Raymond"
+        assert m.getISBNs()[0] == "80-251-0225-4"
+        assert "brož." in m.getBinding()[0]
+        assert len(m.getCorporations()) == 0
+        assert len(m.getDistributors()) == 0
+        assert m.getFormat() == "23 cm"
+        assert m.getName() == "Umění programování v UNIXu /"
+        assert m.getSubname() == ""
+        assert m.getPrice() == "Kč 590,00"
+        assert m.getPart() == ""
+        assert m.getPartName() == ""
+        assert m.getPart() == ""
+        assert m.getPublisher() == "Computer Press,"
+        assert m.getPubDate() == "2004"
+        assert m.getPubOrder() == "1. vyd."
+        assert m.getOriginals()[0] == "Art of UNIX programming"
 
-    # def testedlibrary_handle_aleph_response(self, epublication):
-    #     return edeposit.amqp.aleph.handle_aleph_response(epublication)
+        # test m.__str__() equality with original XML
+        assert set(xml.splitlines()) == set(str(m).splitlines())
 
-    # def testedLibrary_id_conforms_naming_way(self, epublicationDirectory):
-    #     """ id je ve tvaru: 2014-01-01-agafdsX. A je to zaroven adresar. """
-    #     if not re.search("[0-9]{4}-[0-9]{2}-[0-9]{2}-.+", epublicationDirectory):
-    #         AssertionError("epublication directory doesnot conform naming way")
+    def test_JSON_convertor(self):
+        data = ""
+        with open(EXAMPLE_PATH) as f:
+            data = f.read()
 
-    # def aleph_AcceptedEPublication(self, directory):
-    #     """ created responses the same way as Aleph creates it """
-    #     pass
+        epub = aleph.convertors.toEPublication(data)
+        epub2 = aleph.convertors.fromJSON(aleph.convertors.toJSON(epub))
 
-    # def aleph_RejectedEPublication(self, directory):
-    #     """ created responses the same way as Aleph creates it """
-    #     pass
-
-    # def call(self, module_name, method_name, *args):
-    #     """calls method from module with *args"""
-    #     pass
-
-    # def aleph_success_results(self, export_id):
-    #     """ this test function saves into export directory files:
-    #     - aleph-record.xml
-    #     - aleph-success
-    #     """
-    #     directory = os.path.join(variables.PATH_OF_EXPORT_DIRECTORY, export_id)
-    #     shutil.copyfile(os.path.join(BASE_PATH, "aleph-record.xml"),
-    #                     os.path.join(directory, "aleph-record.xml"))
-    #     shutil.copyfile(os.path.join(BASE_PATH, "aleph-success"),
-    #                     os.path.join(directory, "aleph-success"))
+        assert(epub == epub2)
