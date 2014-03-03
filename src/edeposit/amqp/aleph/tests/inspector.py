@@ -63,7 +63,7 @@ class Inspector(object):
 
         if not any(map(lambda x: value in x, fields)):
             raise AssertionError(
-                "Epublications doesn't have your value '%s'!" % (velue)
+                "Epublications doesn't have your value '%s'!" % (value)
             )
 
     def author_partialy_in_any_epub(self, author, epub):
