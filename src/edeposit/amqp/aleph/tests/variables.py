@@ -3,16 +3,9 @@ import edeposit.amqp.aleph as aleph
 from edeposit.amqp.aleph.settings import *
 
 
-unix_isbn_request = aleph.ISBNValidationRequest("80-251-0225-4")
-vladci_isbn = aleph.ISBNValidationRequest("80-85892-15-4")
+unix_isbn_validation_request = aleph.ISBNValidationRequest("80-251-0225-4")
+vladci_isbn_query = aleph.ISBNQuery("80-85892-15-4")
 
-
-def blank_fn(arg1, arg2):
-    return arg1, arg2
-
-blank_fn_handler = blank_fn
-
-UUID = "1"
 
 
 

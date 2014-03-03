@@ -46,6 +46,33 @@ class Inspector(object):
             "0"
         )
 
+    def greater_or_equal_than(self, lvalue, rvalue):
+        if int(lvalue) < int(rvalue):
+            raise AssertionError(str(lvalue) + " is not >= " + str(rvalue))
+
+    def length(self, val):
+        return len(val)
+
+    def value_partialy_in_any_epub(self, value, field_ident_fn, epub):
+        if type(epub) != list:
+            epub = [epub]
+
+        fields = map(lambda e: field_ident_fn(e), epub)
+        if len(fields) > 0 and type(fields[0]) == list:
+            fields = sum(fields, [])
+
+        if not any(map(lambda x: value in x, fields)):
+            raise AssertionError(
+                "Epublications doesn't have your value '%s'!" % (velue)
+            )
+
+    def author_partialy_in_any_epub(self, author, epub):
+            ident = lambda epub: map(
+                lambda a: a.lastName.decode("utf-8"),
+                epub.epublication.autori
+            )
+
+            return self.value_partialy_in_any_epub(author, ident, epub)
 
 
     # def isbn_is_valid(self, isbn_request):
