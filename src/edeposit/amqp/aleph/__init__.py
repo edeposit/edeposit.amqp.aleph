@@ -42,13 +42,13 @@ Here is ASCII flow diagram for you:
 ISBNQuery      ----.                                 ,--> CountResult
 AuthorQuery    ----|                                 |        `- num_of_records
 PublisherQuery ----|                                 |
-GenericQuery   ----|                                 |
-                   |                                 |--> SearchResult
-                   V                                 |        `- AlephRecord
-         Count/SearchRequest                         |
-                   |                                 |
-                   |                                 |
-              serialize()                      deserialize()
+GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
+                   |                |                |        `- AlephRecord
+                   V                |                |
+         Count/SearchRequest        |                |--> ISBNValidationResult
+                   |                |                |        `- ISBN
+                   V                |                |
+              serialize()<----------'           deserialize()
                    |                                 ^
                    V             Client              |
               AMQPMessage ------> AMQP -------> AMQPMessage
