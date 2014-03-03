@@ -1,9 +1,15 @@
 *** Settings ***
-Metadata    name  "Test vyhledávání v alephu"
+Metadata    name  "Test vyhledávání v Alephu"
 Library     inspector.Inspector
 Library     OperatingSystem
-Variables   variables.py
 Library     XML
+Variables   inspector.py
+
+
+
+*** Variables ***
+${vladci_isbn_query} =                 ${aleph.ISBNQuery("80-85892-15-4")}
+${unix_isbn_validation_request} =      ${aleph.ISBNValidationRequest("80-251-0225-4")}
 
 
 

@@ -7,9 +7,6 @@
 import imp
 import edeposit.amqp.aleph as aleph
 
-import inspect
-import shutil
-import variables
 import os.path
 
 

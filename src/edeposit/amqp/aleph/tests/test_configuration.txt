@@ -1,7 +1,7 @@
 *** Settings ***
 Library     inspector.Inspector
 Library     OperatingSystem
-Variables   variables.py
+Variables   inspector.py
 
 *** Variables ***
 ${SETTINGS_PATH}             src/edeposit/amqp/aleph/settings.py
