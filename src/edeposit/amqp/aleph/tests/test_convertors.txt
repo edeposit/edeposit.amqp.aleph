@@ -1,0 +1,18 @@
+*** Settings ***
+Metadata    name  "Test konvertorů"
+Library     inspector.Inspector
+Library     OperatingSystem
+Library     XML
+Variables   inspector.py
+
+
+*** Keywords ***
+
+
+
+*** Test Cases ***
+Otestuj serializaci/deserializaci Marc XML/OAI
+    Test Marc XML deserialization
+
+Otestuj JSON konvertor
+    Test JSON convertor

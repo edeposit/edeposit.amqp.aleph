@@ -73,7 +73,3 @@ ISBN dotaz na záznam Vládců strachu
 
     Log                     Zkontroluj, zda odpovídá autor
     Author partialy in any epub                       Kulhánek              ${result.records}
-
-Test konverzních funkcí v MARCXML
-    Test Marc XML deserialization
-    Test JSON convertor
