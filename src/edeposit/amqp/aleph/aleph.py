@@ -442,7 +442,7 @@ def downloadMARCOAI(doc_id, base):
     Returns: MARC XML unicode string.
 
     Raise:
-        LibraryNotFoundException
+        InvalidAlephBaseException
         DocumentNotFoundException
     """
     downer = Downloader()
