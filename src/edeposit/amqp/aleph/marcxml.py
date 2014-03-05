@@ -170,6 +170,7 @@ http://www.openarchives.org/OAI/oai_marc.xsd
 
 """
 from string import Template
+from collections import namedtuple
 
 
 import dhtmlparser
@@ -200,7 +201,10 @@ def resorted(values):
     return words + numbers
 
 
-class Person():
+class Person(namedtuple("Person", ["name",
+                                   "second_name",
+                                   "surname",
+                                   "title"])):
     """
     This class represents informations about persons as they are defined in
     MARC standards.
@@ -211,14 +215,10 @@ class Person():
         .surname
         .title
     """
-    def __init__(self, name, second_name, surname, title):
-        self.name = name
-        self.second_name = second_name
-        self.surname = surname
-        self.title = title
+    pass
 
 
-class Corporation:
+class Corporation(namedtuple("Corporation", ["name", "place", "date"])):
     """
     Some informations about corporations (fields 110, 610, 710, 810).
 
@@ -227,10 +227,6 @@ class Corporation:
         .place
         .date
     """
-    def __init__(self, name, place, date):
-        self.name = name
-        self.place = place
-        self.date = date
 
 
 class MarcSubrecord(str):
