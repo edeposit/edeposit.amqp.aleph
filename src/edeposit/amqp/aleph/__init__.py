@@ -123,7 +123,8 @@ class ISBNValidationResult(namedtuple("ISBNValidationResult", ["is_valid"])):
     pass
 
 
-class AlephRecord(namedtuple("AlephRecord", ['library',
+class AlephRecord(namedtuple("AlephRecord", ['base',
+                                             'library',
                                              'docNumber',
                                              'xml',
                                              'epublication'])):
@@ -131,6 +132,7 @@ class AlephRecord(namedtuple("AlephRecord", ['library',
     This structure is returned as response to SearchRequest inside
     SearchResult.
 
+    base -- from which base was this record pulled
     library -- library string, used for downloading documents from Aleph when
                you know proper docNumber
     docNumber -- identificator in Aleph. It is not that much unique as it could
@@ -168,11 +170,12 @@ class _QueryTemplate:
     """
     def getSearchResult(self):
         records = []
-        for doc_id, library in self._getIDs():
-            xml = aleph.downloadAlephDocument(doc_id, library)
+        for doc_id, library, base in self._getIDs():
+            xml = aleph.downloadMARCXML(doc_id, library)
 
             records.append(
                 AlephRecord(
+                    base,
                     library,
                     doc_id,
                     xml,
@@ -406,7 +409,7 @@ def reactToAMQPMessage(message, response_callback, UUID):
     TODO:
         React to Export requests.
     """
-    req = deserialize(message)
+    req = deserialize(message) if type(message) == str else message
 
     # TODO: pridat podporu exportnich typu
     if not iiOfAny(req, REQUEST_TYPES):

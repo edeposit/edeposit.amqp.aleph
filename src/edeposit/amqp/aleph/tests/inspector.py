@@ -66,12 +66,12 @@ class Inspector(object):
             )
 
     def author_partialy_in_any_epub(self, author, epub):
-            ident = lambda epub: map(
-                lambda a: a.lastName.decode("utf-8"),
-                epub.epublication.autori
-            )
+        ident = lambda epub: map(
+            lambda a: a.lastName.decode("utf-8"),
+            epub.epublication.autori
+        )
 
-            return self.value_partialy_in_any_epub(author, ident, epub)
+        return self.value_partialy_in_any_epub(author, ident, epub)
 
     def test_Marc_XML_deserialization(self):
         xml = ""
