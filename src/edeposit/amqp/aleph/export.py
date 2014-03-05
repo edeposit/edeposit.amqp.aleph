@@ -114,6 +114,8 @@ class ExportData:
         self.__POST["P1501IST1_a"] = maping[3]
 
     def get_POST_data(self):
+        self._postprocess()
+
         return self.__POST
 
 
