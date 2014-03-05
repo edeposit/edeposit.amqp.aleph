@@ -8,19 +8,10 @@ ${SETTINGS_PATH}             src/edeposit/amqp/aleph/settings.py
 
 *** Test Cases ***
 Konfigurační soubor
+    [Documentation]        Otestuj, zda konfigurační soubor existuje.
     Should Exist           ${SETTINGS_PATH}
 
-    [Documentation]        Otestuj, zda konfigurační soubor existuje.
 
 Cesta k alephu
-    Variable Presented     ${SETTINGS_PATH}     ALEPH_URL
-
     [Documentation]        URL přes kterou je možné vyhledávat v Alephu.
-
-
-
-#Adresář pro export do Alephu
-#    Variable presented     ${SETTINGS_PATH}     PATH_OF_EXPORT_DIRECTORY
-
-#Adresář pro zalohu exportu do Alephu
-#    Variable presented     ${SETTINGS_PATH}     PATH_OF_BACKUP_DIRECTORY
+    Variable Presented     ${SETTINGS_PATH}     ALEPH_URL
