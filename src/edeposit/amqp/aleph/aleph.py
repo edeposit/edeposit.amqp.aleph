@@ -5,10 +5,10 @@
 #
 #= Imports ====================================================================
 """
-Aleph webAPI wrapper.
+Aleph X-Service wrapper.
 
-This module allows you to give request to aleph webAPI (defined by ALEPH_URL
-in settings.py).
+This module allows you to query Aleph's X-Services module (Aleph server is
+defined by ALEPH_URL in settings.py).
 
 There are two levels of abstraction:
 
@@ -17,7 +17,8 @@ You can use this functions to access Aleph:
 
     searchInAleph(base, phrase, considerSimilar, field)
     getDocumentIDs(aleph_search_result, [number_of_docs])
-    downloadAlephDocument(doc_id, library)
+    downloadMARCXML(doc_id, library)
+    downloadMARCOAI(doc_id, base)
 
 Workflow:
 
@@ -37,14 +38,14 @@ Depending on your system, there may be just only one accessible library, or
 mutiple ones, and then you will be glad, that you get both of this
 informations together.
 
-DocumentID can be used as parameter to downloadAlephDocument().
+DocumentID can be used as parameter to downloadMARCXML().
 
 Lets look at some code:
 
 ---
 ids = getDocumentIDs(searchInAleph("nkc", "test", False, "wrd"))
 for id_num, library in ids:
-    XML = downloadAlephDocument(id_num, library)
+    XML = downloadMARCXML(id_num, library)
 
     # processDocument(XML)
 ---
@@ -94,26 +95,8 @@ from httpkie import Downloader
 ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE&adjacent=$SIMILAR"
 ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER&start_point=1&no_docs=$NUMBER_OF_DOCS"
 ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
+ALEPH_GET_OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
 
-VALID_ALEPH_BASES = [  # see getListOfBases() for details
-    'ksl',
-    'nkc',
-    'nkok',
-    'anl',
-    'nak',
-    'mobil-nkc',
-    'stt',
-    'kkl',
-    'aut-z',
-    'cnb',
-    'aut',
-    'skc',
-    'slk',
-    'ktd',
-    'adr',
-    'kzk',
-    'skcp'
-]
 
 VALID_ALEPH_FIELDS = [
     "wrd",  # slova ze všech popisných údaju
@@ -130,7 +113,7 @@ VALID_ALEPH_FIELDS = [
     "sg"  # signatura
 ]
 
-DocumentID = namedtuple("DocumentID", ["id", "library"])
+DocumentID = namedtuple("DocumentID", ["id", "library", "base"])
 dhtmlparser.NONPAIR_TAGS = []  # used for parsing XML - see documentation
 
 
@@ -151,22 +134,22 @@ class AlephException(Exception):
 
 class InvalidAlephBaseException(AlephException):
     def __init__(self, message):
-        super(self, message)
+        super(InvalidAlephBaseException, self).__init__(message)
 
 
 class InvalidAlephFieldException(AlephException):
     def __init__(self, message):
-        super(self, message)
+        super(InvalidAlephFieldException, self).__init__(message)
 
 
 class LibraryNotFoundException(AlephException):
     def __init__(self, message):
-        super(self, message)
+        super(LibraryNotFoundException, self).__init__(message)
 
 
 class DocumentNotFoundException(AlephException):
     def __init__(self, message):
-        super(self, message)
+        super(DocumentNotFoundException, self).__init__(message)
 
 
 def _getListOfBases():
@@ -286,9 +269,6 @@ def searchInAleph(base, phrase, considerSimilar, field):
     """
     downer = Downloader()
 
-    if base.lower() not in VALID_ALEPH_BASES:
-        raise InvalidAlephBaseException("Unknown base '" + base + "'!")
-
     if field.lower() not in VALID_ALEPH_FIELDS:
         raise InvalidAlephFieldException("Unknown field '" + field + "'!")
 
@@ -310,6 +290,9 @@ def searchInAleph(base, phrase, considerSimilar, field):
     # convert aleph result into dictionary
     result = _alephResultToDict(find)
 
+    # add informations about base into result
+    result["base"] = base
+
     if "error" in result:
         if result["error"] == "empty set":
             result["no_entries"] = 0  # empty set have 0 entries
@@ -329,7 +312,7 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
                       aleph_search_result should be returned, default -1
                       for all of them.
 
-    Returned DocumentID can be used as parameters to downloadAlephDocument().
+    Returned DocumentID can be used as parameters to downloadMARCXML().
 
     Raise:
         AlephException
@@ -352,7 +335,7 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
     set_data = downer.download(
         ALEPH_URL + Template(ALEPH_GET_SET_URL_TEMPLATE).substitute(
             SET_NUMBER=set_number,
-            NUMBER_OF_DOCS=number_of_docs
+            NUMBER_OF_DOCS=number_of_docs,
         )
     )
 
@@ -373,7 +356,11 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
         if isinstance(documents["doc-number"], list):
             ids.extend(
                 map(
-                    lambda x: DocumentID(x, documents["set-library"]),
+                    lambda x: DocumentID(
+                        x,
+                        documents["set-library"],
+                        aleph_search_result["base"]
+                    ),
                     set(documents["doc-number"])
                 )
             )
@@ -381,22 +368,23 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
             ids.append(
                 DocumentID(
                     documents["doc-number"],
-                    documents["set-library"]
+                    documents["set-library"],
+                    aleph_search_result["base"]
                 )
             )
 
     return ids
 
 
-def downloadAlephDocument(doc_id, library):
+def downloadMARCXML(doc_id, library):
     """
-    Download document with given ID from given library.
+    Download MARC XML document with given `doc_id` from given `library`.
 
     doc_id -- document id (you will get this from getDocumentIDs())
     library -- NKC01 in our case, but don't worry, getDocumentIDs() adds
                library specification into DocumentID named tuple.
 
-    Returns: MARCXML unicode string.
+    Returns: MARC XML unicode string.
 
     Raise:
         LibraryNotFoundException
@@ -437,6 +425,51 @@ def downloadAlephDocument(doc_id, library):
             )
 
     return data  # MARCxml of document with given doc_id
+
+
+def downloadMARCOAI(doc_id, base):
+    """
+    Download MARC OAI document with given `doc_id` from given (logical) `base`.
+
+    Funny part is, that some documents can be obtained only with this function
+    in their full text.
+
+    doc_id -- document id (you will get this from getDocumentIDs())
+    base -- base from which you want to download Aleph document - this seems to
+            be duplicite with searchInAleph()' parameters, but it's just
+            somethin Aleph's X-Services want, so ..
+
+    Returns: MARC XML unicode string.
+
+    Raise:
+        LibraryNotFoundException
+        DocumentNotFoundException
+    """
+    downer = Downloader()
+
+    data = downer.download(
+        ALEPH_URL + Template(ALEPH_GET_OAI_DOC_URL_TEMPLATE).substitute(
+            DOC_ID=doc_id,
+            BASE=base
+        )
+    )
+
+    dom = dhtmlparser.parseString(data)
+
+    # check for errors
+    error = dom.find("error")
+    if len(error) > 0:
+        if "Error reading document" in error[0].getContent():
+            raise DocumentNotFoundException(
+                str(error[0].getContent())
+            )
+        else:
+            raise InvalidAlephBaseException(
+                error[0].getContent() + "\n" +
+                "The base you are trying to access probably doesn't exist."
+            )
+
+    return data
 
 
 def getISBNsIDs(isbn, base="nkc"):
