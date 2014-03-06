@@ -18,6 +18,10 @@
 #sys.path.insert(0, os.path.abspath('.'))
 
 # -- General configuration -----------------------------------------------------
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('.') + '/../src/edeposit/amqp')
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.0'
@@ -36,6 +40,7 @@ extensions = [
 
 # Napoleon settings
 napoleon_google_docstring = True
+napoleon_numpy_docstring = False
 napoleon_include_private_with_doc = False
 napoleon_include_special_with_doc = True
 
