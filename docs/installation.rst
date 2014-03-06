@@ -12,12 +12,12 @@ Modul je k dispozici na `PYPI repozitáři <https://pypi.python.org/pypi/edeposi
 
 
 .. robot_variables::
-   :source: ../src/edeposit/amqp/aleph/tests/test_installation.txt
+   :source: ../src/edeposit/amqp/aleph/tests/test_package.txt
 
 .. robot_tests::
-   :source: ../src/edeposit/amqp/aleph/tests/test_installation.txt
+   :source: ../src/edeposit/amqp/aleph/tests/test_package.txt
 
 .. robot_keywords::
-   :source: ../src/edeposit/amqp/aleph/tests/test_installation.txt
+   :source: ../src/edeposit/amqp/aleph/tests/test_package.txt
 
 

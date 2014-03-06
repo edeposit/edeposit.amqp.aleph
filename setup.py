@@ -51,6 +51,7 @@ setup(
         ],
         "docs": [
             "sphinxcontrib-robotdoc",
+            "sphinxcontrib-napoleon",
             "sphinx",
         ]
     }
