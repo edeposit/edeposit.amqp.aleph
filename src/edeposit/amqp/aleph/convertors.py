@@ -55,6 +55,7 @@ def toEPublication(marcxml):
     # i know, that this is not PEP8, but you dont want to see it without proper
     # formating (it looks bad, really bad)
     return EPublication(
+        ISBN                = parsed.getISBNs(),
         nazev               = parsed.getName(),
         podnazev            = parsed.getSubname(),
         vazba               = binding[0] if len(binding) > 0 else "",
@@ -73,7 +74,7 @@ def toEPublication(marcxml):
         format              = parsed.getFormat(),
         url                 = "",
         mistoVydani         = parsed.getPubPlace(),
-        ISBNSouboruPublikaci= parsed.getISBNs(),
+        ISBNSouboruPublikaci= "",
         autori              = map(  # convert Persons to amqp's Authors
             lambda a: Author(
                 (a.name + " " + a.second_name).strip(),

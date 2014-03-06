@@ -270,7 +270,8 @@ class Producent(namedtuple("Producent", ['title',
     pass
 
 
-class EPublication(namedtuple("EPublication", ['nazev',
+class EPublication(namedtuple("EPublication", ["ISBN",
+                                               'nazev',
                                                'podnazev',
                                                'vazba',
                                                'cena',
@@ -297,6 +298,8 @@ class EPublication(namedtuple("EPublication", ['nazev',
 
     In case of Search/Count requests, this structure is filled with data from
     MARC XML record parsed by marcxml.py.
+
+    .autori -- list of Author objects
     """
     pass
 
