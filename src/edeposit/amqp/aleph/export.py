@@ -6,6 +6,7 @@
 #= Imports ====================================================================
 import isbn
 import settings
+from __init__ import EPublication
 
 from httpkie import Downloader()
 
@@ -26,7 +27,7 @@ class InvalidISBNException(ExportException):
 
 
 class ExportData:
-    def __init__(self):
+    def __init__(self, epub):
         self.__POST = {
             "sid": settings.EDEPOSIT_EXPORT_SIGNATURE,
             "P0100LDR__": "-----nam-a22------a-4500",
@@ -61,7 +62,7 @@ class ExportData:
             # "REPEAT": "Y",        # predvyplnit zaznam
         }
 
-        self. mapping = {
+        self.mapping = {
             "mapa": [
                 "-----nem-a22------a-4500",
                 "MP",
@@ -93,14 +94,17 @@ class ExportData:
         }
         self.mapping["DVD"] = self.mapping["CD-ROM"]
 
+        self._import_epublication(epub)
+
     def _postprocess(self):
-        isbn_ = self.__POST["P0601010__a"]
-        self.__POST["P0601010__a"] = isbn_.upper()
+        isbn_ = self.__POST["P0601010__a"].upper()
+        self.__POST["P0601010__a"] = isbn_
 
         if not isbn.is_valid_isbn(isbn_):
             raise InvalidISBNException("%s is has invalid checksum!" % isbn_)
 
         self.__POST["P0601010__b"] = "soubor : " + isbn_
+        self.__POST["P1601ISB__a"] = isbn_
 
         # some fields need to be remapped (depends on type of media)
         self._apply_mapping(
@@ -109,9 +113,40 @@ class ExportData:
 
     def _apply_mapping(self, mapping):
         self.__POST["P0100LDR__"] = maping[0]
-        self.__POST["P0502010__b"] = maping[1]
-        self.__POST["P07022001_b"] = maping[2]
-        self.__POST["P1501IST1_a"] = maping[3]
+        self.__POST["P0200FMT__"] = maping[1]
+        self.__POST["P0502010__b"] = maping[2]
+        self.__POST["P07022001_b"] = maping[3]
+        self.__POST["P1501IST1_a"] = maping[4]
+
+    def _import_epublication(self, epub):
+        self.__POST["P0501010__a"] = epub.ISBN
+        self.__POST["P07012001_a"] = epub.nazev
+        self.__POST["P07032001_e"] = epub.podnazev
+        self.__POST["P0502010__b"] = epub.vazba  # TODO: přidat nějaké ověřování
+        self.__POST["P0504010__d"] = epub.cena
+        self.__POST["P07042001_h"] = epub.castDil
+        self.__POST["P07052001_i"] = epub.nazevCasti
+        self.__POST["P0902210__c"] = epub.nakladatelVydavatel
+        self.__POST["P0903210__d"] = epub.datumVydani
+        self.__POST["P0801205__a"] = epub.poradiVydani
+        self.__POST["P1502IST1_b"] = epub.zpracovatelZaznamu
+        # self.__POST[""] = epub.kategorieProRIV  # TODO: wtf?
+        self.__POST[""] = epub.datumProCopyright  # wut
+        self.__POST["P0503010__x"] = epub.format
+        self.__POST["P110185640u"] = epub.url
+        self.__POST["P0901210__a"] = epub.mistoVydani
+        self.__POST["P0601010__a"] = epub.ISBNSouboruPublikaci
+
+        # self.__POST[""] = epub.mistoDistribuce
+        # self.__POST[""] = epub.distributor
+        # self.__POST[""] = epub.datumDistribuce
+
+        authors = [x.lastName + ", " + x.firstName for x in epub.autori]
+        authors_fields = ["P1301ZAK__b", "P1302ZAK__c", "P1303ZAK__c"]
+        map(
+            lambda field, author: self.__POST[field]=author,
+            zip(authors_fields, authors)
+        )
 
     def get_POST_data(self):
         self._postprocess()
@@ -119,11 +154,15 @@ class ExportData:
         return self.__POST
 
 
-
 def exportEpublication(epub):
     addr = "http://aleph.nkp.cz/aleph-cgi/isxn"
+
+    POST = ExportData(epub).get_POST_data()
+
+    print POST
 
 
 #= Main program ===============================================================
 if __name__ == '__main__':
     pass
+
