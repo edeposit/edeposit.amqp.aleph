@@ -6,7 +6,7 @@
 #= Imports ====================================================================
 import isbn
 import settings
-# from __init__ import EPublication, FormatEnum, Author
+from datastructures import FormatEnum
 
 from httpkie import Downloader
 
@@ -58,7 +58,7 @@ class ExportData:
             "P0801205__a": "",    # Pořadí vydání
             "P1501IST1_a": "ow",  # Zpracovatel záznamu (hidden)
             "P1502IST1_b": "",    # Zpracovatel záznamu (viditelna)
-            "P1601ISB__a": "",    # Zpracovatel záznamu (hidden)
+            "P1601ISB__a": "",    # ISBN2 - validated (hidden)
             # "REPEAT": "Y",        # predvyplnit zaznam
         }
 
@@ -96,28 +96,6 @@ class ExportData:
 
         self._import_epublication(epub)
 
-    def _postprocess(self):
-        isbn_ = self.__POST["P0601010__a"].upper()
-        self.__POST["P0601010__a"] = isbn_
-
-        if not isbn.is_valid_isbn(isbn_):
-            raise InvalidISBNException("%s is has invalid checksum!" % isbn_)
-
-        self.__POST["P0601010__b"] = "soubor : " + isbn_
-        self.__POST["P1601ISB__a"] = isbn_
-
-        # some fields need to be remapped (depends on type of media)
-        self._apply_mapping(
-            self.mapping.get(self.__POST["P0502010__b"], self.mapping["else"])
-        )
-
-    def _apply_mapping(self, mapping):
-        self.__POST["P0100LDR__"] = self.maping[0]
-        self.__POST["P0200FMT__"] = self.maping[1]
-        self.__POST["P0502010__b"] = self.maping[2]
-        self.__POST["P07022001_b"] = self.maping[3]
-        self.__POST["P1501IST1_a"] = self.maping[4]
-
     def _import_epublication(self, epub):
         self.__POST["P0501010__a"] = epub.ISBN
         self.__POST["P07012001_a"] = epub.nazev
@@ -147,8 +125,73 @@ class ExportData:
         for field, author in zip(authors_fields, authors):
             self.__POST[field] = author
 
+    def _apply_mapping(self, mapping):
+        self.__POST["P0100LDR__"] = mapping[0]
+        self.__POST["P0200FMT__"] = mapping[1]
+        self.__POST["P0502010__b"] = mapping[2]
+        self.__POST["P07022001_b"] = mapping[3]
+        self.__POST["P1501IST1_a"] = mapping[4]
+
+    def _postprocess(self):
+        # get ISBN of serie
+        series_isbn = self.__POST["P0601010__a"]
+        if isinstance(series_isbn, list) and len(series_isbn) > 0:
+            series_isbn = series_isbn[0]
+
+        # try to validate series ISBN
+        if series_isbn != "" and series_isbn != []:
+            series_isbn = series_isbn.upper()
+            self.__POST["P0601010__a"] = series_isbn
+
+            if not isbn.is_valid_isbn(series_isbn):
+                raise InvalidISBNException(
+                    "%s is has invalid ISBN checksum!" % series_isbn
+                )
+
+            self.__POST["P0601010__b"] = "soubor : " + series_isbn
+
+        book_isbn = self.__POST["P0501010__a"]
+        if isinstance(book_isbn, list) and len(book_isbn) > 0:
+            book_isbn = book_isbn[0]
+
+        if not isbn.is_valid_isbn(book_isbn):
+            raise InvalidISBNException(
+                "%s is has invalid ISBN checksum!" % book_isbn
+            )
+        self.__POST["P0501010__a"] = book_isbn
+        self.__POST["P1601ISB__a"] = book_isbn
+
+        # some fields need to be remapped (depends on type of media)
+        self._apply_mapping(
+            self.mapping.get(self.__POST["P0502010__b"], self.mapping["else"])
+        )
+
+    def _check_required_fields(self):
+        assert(self.__POST["P0501010__a"] != "")  # ISBN
+        assert(self.__POST["P1601ISB__a"] != "")  # hidden ISBN field
+
+        assert(self.__POST["P07012001_a"] != "")  # nazev
+        assert(self.__POST["P0901210__a"] != "")  # Místo vydání
+
+        assert(self.__POST["P0903210__d"] != "")  # Měsíc a rok vydání
+        assert(self.__POST["P0801205__a"] != "")  # Pořadí vydání
+
+        # Zpracovatel záznamu
+        assert(self.__POST["P1501IST1_a"] != "")  # (hidden)
+        assert(self.__POST["P1502IST1_b"] != "")  # (visible)
+
+        # vazba/forma
+        assert(self.__POST["P0502010__b"] != "")
+
+        # Formát (poze pro epublikace)
+        if self.__POST["P0502010__b"] == FormatEnum.ONLINE:
+            assert(self.__POST["P0503010__x"] != "")
+
+        assert(self.__POST["P0902210__c"] != "")  # Nakladatel
+
     def get_POST_data(self):
         self._postprocess()
+        self._check_required_fields()
 
         return self.__POST
 
@@ -163,4 +206,11 @@ def exportEpublication(epub):
 
 #= Main program ===============================================================
 if __name__ == '__main__':
-    pass
+    f = open("tests/resources/aleph_data_examples/aleph_sources/example4.xml")
+    data = f.read()
+    f.close()
+
+    import convertors
+    epub = convertors.toEPublication(data)
+
+    exportEpublication(epub)
