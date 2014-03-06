@@ -32,23 +32,24 @@ def toEPublication(marcxml):
     if not isinstance(marcxml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(marcxml))
 
-    distributor = ""
-    mistoDistribuce = ""
-    datumDistribuce = ""
+    # distributor = ""  # FUTURE
+    # mistoDistribuce = ""
+    # datumDistribuce = ""
 
-    # parse information about distributors
-    distributors = parsed.getCorporations("dst")
-    if len(distributors) >= 1:
-        mistoDistribuce = distributors[0].place
-        datumDistribuce = distributors[0].date
-        distributor = distributors[0].name
+    # # parse information about distributors
+    # distributors = parsed.getCorporations("dst")
+    # if len(distributors) >= 1:
+    #     mistoDistribuce = distributors[0].place
+    #     datumDistribuce = distributors[0].date
+    #     distributor = distributors[0].name
 
     # zpracovatel
     zpracovatel = parsed.getDataRecords("040", "a", False)
-    if len(zpracovatel) >= 1:
-        zpracovatel = zpracovatel[0]
-    else:
-        zpracovatel = ""
+    zpracovatel = zpracovatel[0] if len(zpracovatel) >= 1 else ""
+
+    # url
+    url = parsed.getDataRecords("856", "u", False)
+    url = url[0] if len(url) >= 1 else ""
 
     binding = parsed.getBinding()
 
@@ -66,15 +67,14 @@ def toEPublication(marcxml):
         datumVydani         = parsed.getPubDate(),
         poradiVydani        = parsed.getPubOrder(),
         zpracovatelZaznamu  = zpracovatel,
-        kategorieProRIV     = "",
-        mistoDistribuce     = mistoDistribuce,
-        distributor         = distributor,
-        datumDistribuce     = datumDistribuce,
+        # mistoDistribuce     = mistoDistribuce,  # FUTURE
+        # distributor         = distributor,
+        # datumDistribuce     = datumDistribuce,
         datumProCopyright   = "",
         format              = parsed.getFormat(),
-        url                 = "",
+        url                 = url,
         mistoVydani         = parsed.getPubPlace(),
-        ISBNSouboruPublikaci= "",
+        ISBNSouboruPublikaci= [],
         autori              = map(  # convert Persons to amqp's Authors
             lambda a: Author(
                 (a.name + " " + a.second_name).strip(),
@@ -83,7 +83,8 @@ def toEPublication(marcxml):
             ),
             parsed.getAuthors()
         ),
-        originaly=parsed.getOriginals(),
+        originaly           = parsed.getOriginals(),
+        intenal_url         = ""  # TODO
     )
 
 
