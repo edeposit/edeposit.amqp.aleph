@@ -16,6 +16,7 @@ import json
 
 
 from marcxml import MARCXMLRecord
+from datastructures import *
 from __init__ import *
 
 
@@ -70,7 +71,7 @@ def toEPublication(marcxml):
         # mistoDistribuce     = mistoDistribuce,  # FUTURE
         # distributor         = distributor,
         # datumDistribuce     = datumDistribuce,
-        datumProCopyright   = "",
+        # datumProCopyright   = "",
         format              = parsed.getFormat(),
         url                 = url,
         mistoVydani         = parsed.getPubPlace(),
@@ -84,7 +85,7 @@ def toEPublication(marcxml):
             parsed.getAuthors()
         ),
         originaly           = parsed.getOriginals(),
-        intenal_url         = ""  # TODO
+        internal_url        = ""  # TODO
     )
 
 
