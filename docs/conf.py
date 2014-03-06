@@ -11,7 +11,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys, os
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -25,7 +24,15 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.graphviz', 'sphinx.ext.todo', 'sphinx.ext.coverage', 'sphinx.ext.viewcode',"sphinxcontrib_robotdoc", 'sphinxcontrib.napoleon']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.graphviz',
+    'sphinx.ext.todo',
+    'sphinx.ext.coverage',
+    'sphinx.ext.viewcode',
+    "sphinxcontrib_robotdoc",
+    'sphinxcontrib.napoleon'
+]
 
 # Napoleon settings
 napoleon_google_docstring = True
@@ -189,10 +196,13 @@ latex_elements = {
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
-latex_documents = [
-  ('index', 'E-Deposit.tex', u'E-Deposit Documentation',
-   u'Jan Stavěl', 'manual'),
-]
+latex_documents = [(
+    'index',
+    'E-Deposit.tex',
+    u'E-Deposit Documentation',
+    u'Jan Stavěl',
+    'manual'
+),]
 
 # The name of an image file (relative to this directory) to place at the top of
 # the title page.
@@ -220,8 +230,13 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'e-deposit', u'E-Deposit Documentation',
-     [u'Jan Stavěl'], 1)
+    (
+        'index',
+        'e-deposit',
+        u'E-Deposit Documentation',
+        [u'Jan Stavěl'],
+        1
+    )
 ]
 
 # If true, show URL addresses after external links.
@@ -233,11 +248,15 @@ man_pages = [
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
-texinfo_documents = [
-  ('index', 'E-Deposit', u'E-Deposit Documentation',
-   u'Jan Stavěl', 'E-Deposit', 'One line description of project.',
-   'Miscellaneous'),
-]
+texinfo_documents = [(
+    'index',
+    'E-Deposit',
+    u'E-Deposit Documentation',
+    u'Jan Stavěl',
+    'E-Deposit',
+    'One line description of project.',
+    'Miscellaneous'
+),]
 
 # Documents to append as an appendix to all manuals.
 #texinfo_appendices = []
