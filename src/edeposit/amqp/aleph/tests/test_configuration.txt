@@ -4,14 +4,21 @@ Library     OperatingSystem
 Variables   inspector.py
 
 *** Variables ***
-${SETTINGS_PATH}             src/edeposit/amqp/aleph/settings.py
+${SETTINGS_PATH}           src/edeposit/amqp/aleph/settings.py
 
 *** Test Cases ***
 Konfigurační soubor
     [Documentation]        Otestuj, zda konfigurační soubor existuje.
     Should Exist           ${SETTINGS_PATH}
 
-
 Cesta k alephu
     [Documentation]        URL přes kterou je možné vyhledávat v Alephu.
     Variable Presented     ${SETTINGS_PATH}     ALEPH_URL
+
+Exportní signatura
+    [Documentation]        Exportní signatura se používá k identifikaci scriptu.
+    Variable Presented     ${SETTINGS_PATH}     EDEPOSIT_EXPORT_SIGNATURE
+
+Adresa exportního formuláře
+    [Documentation]        URL formuláře, který slouží k nahlašování nových publikací.
+    Variable Presented     ${SETTINGS_PATH}     ALEPH_EXPORT_URL
