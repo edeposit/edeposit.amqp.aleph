@@ -116,7 +116,7 @@ class Inspector(object):
 
         assert(epub == epub2)
 
-    def test_conversion_to_POST_request(self):
+    def convert_epublication_to_post_request(self):
         xml = self.read_file(EXAMPLE_PATH)
         xml = aleph.marcxml.MARCXMLRecord(xml)
 
@@ -124,3 +124,21 @@ class Inspector(object):
         post = export.PostData(epub)
 
         assert(epub.nazev == post._POST["P07012001_a"])
+
+    def try_to_send_bad_data(self):
+        xml = self.read_file(EXAMPLE_PATH)
+        xml = aleph.marcxml.MARCXMLRecord(xml)
+
+        epub = convertors.toEPublication(xml)
+        post = export.PostData(epub)
+
+        post_dict = post.get_POST_data()
+        post_dict["P1601ISB__a"] = "test123"
+        post_dict["P0501010__a"] = "test123"
+
+        try:
+            export._sendPostDict(post_dict)
+        except export.ExportRejectedException:
+            return
+
+        raise AssertionError("Rejection of invalid ebook doesn't work!")

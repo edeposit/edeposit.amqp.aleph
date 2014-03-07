@@ -16,7 +16,11 @@ Variables   inspector.py
 *** Test Cases ***
 Převod EPublikace na POST request
     [Documentation]  Datová struktura POST requestu je háklivá na některé údaje, které musí být nutně přítomny.
-    Test conversion to POST request
+    Convert epublication to post request
+
+Pokud o odeslání špatné struktury
+    [Documentation]  Zkusíme odeslat strukturu se špatným checksumem a hledáme chybovou hlášku. Pokud tam není, je něco špatně.
+    Try to send bad data
 
 Export do Alephu
     Fail  Not implemented yet.
