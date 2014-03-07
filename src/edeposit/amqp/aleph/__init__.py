@@ -80,22 +80,6 @@ import convertors
 from datastructures import *
 
 
-#= Variables ==================================================================
-QUERY_TYPES = [
-    ISBNQuery,
-    AuthorQuery,
-    PublisherQuery,
-    GenericQuery
-]
-
-REQUEST_TYPES = [
-    SearchRequest,
-    CountRequest,
-    ExportRequest,
-    ISBNValidationRequest
-]
-
-
 #= Queries ====================================================================
 class _QueryTemplate:
     """
@@ -186,6 +170,22 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]),
 
     def _getCount(self):
         return aleph.getPublishersBooksCount(self.publisher)
+
+
+#= Variables ==================================================================
+QUERY_TYPES = [
+    ISBNQuery,
+    AuthorQuery,
+    PublisherQuery,
+    GenericQuery
+]
+
+REQUEST_TYPES = [
+    SearchRequest,
+    CountRequest,
+    ExportRequest,
+    ISBNValidationRequest
+]
 
 
 #= Interface for an external world ============================================
