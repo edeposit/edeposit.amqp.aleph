@@ -213,17 +213,4 @@ def _sendPostDict(post_dict):
 
 def exportEPublication(epub):
     post_dict = PostData(epub).get_POST_data()
-    # sendPostDict(post_dict)
-
-
-
-#= Main program ===============================================================
-if __name__ == '__main__':
-    f = open("tests/resources/aleph_data_examples/aleph_sources/example4.xml")
-    data = f.read()
-    f.close()
-
-    import convertors
-    epub = convertors.toEPublication(data)
-
-    exportEPublication(epub)
+    # sendPostDict(post_dict)  # TODO: uncoment, when test settings at the webform will be implemented
