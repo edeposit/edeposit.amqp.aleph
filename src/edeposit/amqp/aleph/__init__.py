@@ -75,6 +75,7 @@ from collections import namedtuple
 
 import isbn
 import aleph
+import export
 import convertors
 from datastructures import *
 
@@ -263,6 +264,9 @@ def reactToAMQPMessage(message, response_callback, UUID):
         raise NotImplementedError("Not implemented yet.")
     elif iiOfAny(req, ISBNValidationRequest):
         response = ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
+    elif iiOfAny(req, ExportRequest):
+        export.exportEPublication(req.epublication)
+        response = ExportResult(req.epublication.ISBN)
     else:
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "' or query: '" +
