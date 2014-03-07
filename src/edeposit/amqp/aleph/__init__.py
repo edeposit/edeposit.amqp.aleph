@@ -79,7 +79,23 @@ import convertors
 from datastructures import *
 
 
-## Queries ####################################################################
+#= Variables ==================================================================
+QUERY_TYPES = [
+    ISBNQuery,
+    AuthorQuery,
+    PublisherQuery,
+    GenericQuery
+]
+
+REQUEST_TYPES = [
+    SearchRequest,
+    CountRequest,
+    ExportRequest,
+    ISBNValidationRequest
+]
+
+
+#= Queries ====================================================================
 class _QueryTemplate:
     """
     This class is here to just save some effort by using common ancestor with
@@ -171,47 +187,7 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]),
         return aleph.getPublishersBooksCount(self.publisher)
 
 
-## Export protocol query wrappers #############################################
-# TODO: move out to datastructures
-class ExportRequest(namedtuple("AlephExport", ['epublication'])):
-    """
-    epublication -- EPublication structure, which will be exported to Aleph
-    """
-    pass
-
-
-class ExportResult(namedtuple("AlephExportResult", ['docNumber',
-                                                    'base',
-                                                    'xml',
-                                                    'success',
-                                                    'message'])):
-    """
-    docNumber -- docNumber of a record in Aleph
-    base      --      base of Aleph
-    success   --   whether import was successful
-    message   --   message of error or success
-    """
-    pass
-
-
-# Interface for an external world #############################################
-
-# Variables ###################################################################
-QUERY_TYPES = [
-    ISBNQuery,
-    AuthorQuery,
-    PublisherQuery,
-    GenericQuery
-]
-
-REQUEST_TYPES = [
-    SearchRequest,
-    CountRequest,
-    ExportRequest,
-    ISBNValidationRequest
-]
-
-
+#= Interface for an external world ============================================
 def serialize(data):
     """
     Serialize class hierarchy into JSON.
@@ -252,7 +228,7 @@ def iiOfAny(instance, classes):
     return any(map(lambda x: type(instance).__name__ == x.__name__, classes))
 
 
-# Functions ###################################################################
+#= Functions ==================================================================
 def reactToAMQPMessage(message, response_callback, UUID):
     """
     React to given AMQPMessage. Return data thru given callback function.
