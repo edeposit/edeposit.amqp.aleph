@@ -26,6 +26,11 @@ class InvalidISBNException(ExportException):
         super(InvalidISBNException, self).__init__(message)
 
 
+class ExportRejectedException(ExportException):
+    def __init__(self, message):
+        super(ExportRejectedException, self).__init__(message)
+
+
 class PostData:
     def __init__(self, epub):
         self._POST = {
@@ -196,12 +201,20 @@ class PostData:
         return self._POST
 
 
+def _sendPostDict(post_dict):
+    downer = Downloader()
+    data = downer.download(settings.ALEPH_EXPORT_URL, post=post_dict)
+
+    if "Požadavek byl odmítnut" in data:
+        raise ExportRejectedException("Export was rejected by Aleph form!")
+
+    return data
+
+
 def exportEPublication(epub):
-    # ALEPH_EXPORT_URL
+    post_dict = PostData(epub).get_POST_data()
+    # sendPostDict(post_dict)
 
-    POST = PostData(epub).get_POST_data()
-
-    print POST
 
 
 #= Main program ===============================================================
