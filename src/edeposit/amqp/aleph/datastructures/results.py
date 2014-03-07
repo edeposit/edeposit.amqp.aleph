@@ -31,3 +31,15 @@ class CountResult(namedtuple("CountResult", ['num_of_records'])):
     This is returned back to client when he send CountRequest.
     """
     pass
+
+
+class ExportResult(namedtuple("AlephExportResult", ["ISBN"])):
+    """
+    Sent back as response to ExportRequest.
+
+    This class is blank at the moment, because there is no information, that
+    can be sen't back.
+
+    ISBN -- ISBN of accepted publication
+    """
+    pass
