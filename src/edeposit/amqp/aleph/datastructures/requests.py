@@ -40,3 +40,17 @@ class ISBNValidationRequest(namedtuple("ISBNValidationRequest", ['ISBN'])):
     reactToAMQPMessage() returns ISBNValidationResult as response.
     """
     pass
+
+
+class ExportRequest(namedtuple("AlephExport", ['epublication'])):
+    """
+    Request to export data to Aleph.
+
+    ISBN, nazev, Místo vydání, Měsíc a rok vydání, Pořadí vydání, Zpracovatel
+    záznamu, vazba/forma, Formát (poze pro epublikace), Nakladatel has to be
+    present, or AssertionError will be thrown. ISBN has to be valid, or
+    request will be rejected with ExportException.
+
+    epublication -- EPublication structure, which will be exported to Aleph
+    """
+    pass
