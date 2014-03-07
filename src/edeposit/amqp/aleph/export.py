@@ -26,7 +26,7 @@ class InvalidISBNException(ExportException):
         super(InvalidISBNException, self).__init__(message)
 
 
-class ExportData:
+class PostData:
     def __init__(self, epub):
         self._POST = {
             "sid": settings.EDEPOSIT_EXPORT_SIGNATURE,
@@ -196,10 +196,10 @@ class ExportData:
         return self._POST
 
 
-def exportEpublication(epub):
+def exportEPublication(epub):
     # ALEPH_EXPORT_URL
 
-    POST = ExportData(epub).get_POST_data()
+    POST = PostData(epub).get_POST_data()
 
     print POST
 
@@ -213,4 +213,4 @@ if __name__ == '__main__':
     import convertors
     epub = convertors.toEPublication(data)
 
-    exportEpublication(epub)
+    exportEPublication(epub)

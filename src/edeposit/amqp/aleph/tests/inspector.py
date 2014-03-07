@@ -6,6 +6,8 @@
 
 import imp
 import edeposit.amqp.aleph as aleph
+import edeposit.amqp.aleph.export as export
+import edeposit.amqp.aleph.convertors as convertors
 
 import os.path
 
@@ -73,10 +75,12 @@ class Inspector(object):
 
         return self.value_partialy_in_any_epub(author, ident, epub)
 
+    def read_file(self, fn):
+        with open(fn) as f:
+            return f.read()
+
     def test_Marc_XML_deserialization(self):
-        xml = ""
-        with open(EXAMPLE_PATH) as f:
-            xml = f.read()
+        xml = self.read_file(EXAMPLE_PATH)
 
         m = aleph.marcxml.MARCXMLRecord(xml)
 
@@ -111,3 +115,12 @@ class Inspector(object):
         epub2 = aleph.convertors.fromJSON(aleph.convertors.toJSON(epub))
 
         assert(epub == epub2)
+
+    def test_conversion_to_POST_request(self):
+        xml = self.read_file(EXAMPLE_PATH)
+        xml = aleph.marcxml.MARCXMLRecord(xml)
+
+        epub = convertors.toEPublication(xml)
+        post = export.PostData(epub)
+
+        assert(epub.nazev == post._POST["P07012001_a"])
