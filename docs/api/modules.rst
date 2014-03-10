@@ -4,4 +4,4 @@ aleph
 .. toctree::
    :maxdepth: 4
 
-   api/aleph.rst
+   aleph
