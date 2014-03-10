@@ -22,3 +22,7 @@ Exportní signatura
 Adresa exportního formuláře
     [Documentation]        URL formuláře, který slouží k nahlašování nových publikací.
     Variable Presented     ${SETTINGS_PATH}     ALEPH_EXPORT_URL
+
+Defaultní báze
+    [Documentation]        Základní báze pro vyhledáávní v Alephu.
+    Variable Presented     ${SETTINGS_PATH}     ALEPH_DEFAULT_BASE
