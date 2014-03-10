@@ -8,9 +8,8 @@
 This module exists to provide ability to convert from AMQP data structures to
 Aleph's data structures.
 
-It can convert MARCXMLRecord to EPublication simplified data structure.
-
-It can also serialize any namedtuple to JSON.
+It can convert MARCXMLRecord to EPublication simplified data structure. It can
+also serialize any namedtuple to JSON.
 """
 import json
 
@@ -25,9 +24,16 @@ def toEPublication(marcxml):
     """
     Convert MARCXMLRecord object to EPublication named tuple (see __init__.py).
 
-    marcxml -- MARCXMLRecord instance OR string (with <record> tag)
+    Args:
+        marcxml (str/MARCXMLRecord): MarcXML which will be converted to
+                EPublication. In case of str, <record> tag is required.
 
-    Returns EPublication named tuple.
+    Returns:
+        EPublication: named tuple with data about publication.
+
+    See Also:
+        :class:`aleph.datastructures.epublication` for details of EPublication
+        structure.
     """
     parsed = marcxml
     if not isinstance(marcxml, MARCXMLRecord):
@@ -91,11 +97,14 @@ def toEPublication(marcxml):
 
 def _serializeNT(data):
     """
-    Serialize namedtuples (and other basic types) to dictionary with special
-    properties.
+    Serialize namedtuples (and other basic python types) to dictionary with
+    some special properties.
 
-    Namedtuples can be later automatically de-serialized by calling
-    _deserializeNT().
+    Args:
+        data (namedtuple/other python types): Data which will be serialized to
+             dict.
+
+    Data can be later automatically de-serialized by calling _deserializeNT().
     """
     if isinstance(data, list):
         return map(lambda x: _serializeNT(x), data)
@@ -126,6 +135,13 @@ def toJSON(structure):
 
     This is necessary, because standard JSON module can't serialize
     namedtuples.
+
+    Args:
+        structure (namedtuple/basic python types): data which will be
+                  serialized to JSON.
+
+    Returns:
+        str: with serialized data.
     """
     return json.dumps(_serializeNT(structure))
 
@@ -168,5 +184,11 @@ def fromJSON(json_data):
 
     This is necessary, because standard JSON module can't serialize
     namedtuples.
+
+    Args:
+        json_data (str): JSON string.
+
+    Returns:
+        python data/nameduple: with deserialized data.
     """
     return _deserializeNT(json.loads(json_data))
