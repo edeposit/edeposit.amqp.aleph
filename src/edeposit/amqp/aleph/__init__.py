@@ -76,6 +76,7 @@ from collections import namedtuple
 import isbn
 import aleph
 import export
+import settings
 import convertors
 from datastructures import *
 
@@ -141,35 +142,50 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
         )["no_entries"]
 
 
-class ISBNQuery(namedtuple("ISBNQuery", ["ISBN"]), _QueryTemplate):
+class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
     """
-    Query for ISBN.
+    Query Aleph to get books by ISBN.
 
     Note: ISBN is not unique, so you can get back lot of books with same ISBN.
           Some books also have two or more ISBNs.
     """
+    def __new__(self, ISBN, base=settings.ALEPH_DEFAULT_BASE):
+        return super(ISBNQuery, self).__new__(self, ISBN, base)
+
     def _getIDs(self):
-        return aleph.getISBNsIDs(self.ISBN)
+        return aleph.getISBNsIDs(self.ISBN, base=self.base)
 
     def _getCount(self):
-        return aleph.getISBNCount(self.ISBN)
+        return aleph.getISBNCount(self.ISBN, base=self.base)
 
 
 class AuthorQuery(namedtuple("AuthorQuery", ["author"]), _QueryTemplate):
+    """
+    Query Aleph to get books by Author.
+    """
+    def __new__(self, author, base=settings.ALEPH_DEFAULT_BASE):
+        return super(AuthorQuery, self).__new__(self, author, base)
+
     def _getIDs(self):
-        return aleph.getAuthorsBooksIDs(self.author)
+        return aleph.getAuthorsBooksIDs(self.author, base=self.base)
 
     def _getCount(self):
-        return aleph.getAuthorsBooksCount(self.author)
+        return aleph.getAuthorsBooksCount(self.author, base=self.base)
 
 
 class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]),
                      _QueryTemplate):
+    """
+    Query Aleph to get books by Publisher.
+    """
+    def __new__(self, publisher, base=settings.ALEPH_DEFAULT_BASE):
+        return super(PublisherQuery, self).__new__(self, publisher, base)
+
     def _getIDs(self):
-        return aleph.getPublishersBooksIDs(self.publisher)
+        return aleph.getPublishersBooksIDs(self.publisher, base=self.base)
 
     def _getCount(self):
-        return aleph.getPublishersBooksCount(self.publisher)
+        return aleph.getPublishersBooksCount(self.publisher, base=self.base)
 
 
 #= Variables ==================================================================
