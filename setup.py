@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-version = '1.1.0'
+version = '1.2.0'
 long_description = "\n\n".join([
     open('README.rst').read(),
     open('CONTRIBUTORS.txt').read(),

@@ -1,1 +1,2 @@
 include CONTRIBUTORS.txt CHANGES.txt LICENCE
+prune src/edeposit/amqp/aleph/tests
