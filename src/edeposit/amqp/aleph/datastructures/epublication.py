@@ -7,6 +7,9 @@ from collections import namedtuple
 
 
 class FormatEnum:
+    """
+    Enum used as format in :class:`EPublication`.
+    """
     BROZ = "brož."
     VAZANA = "váz."
     MAPA = "mapa"
@@ -44,31 +47,39 @@ class EPublication(namedtuple("EPublication", ["ISBN",
     In case of Search/Count requests, this structure is filled with data from
     MARC XML record parsed by marcxml.py.
 
-    Properties:
-
-        .url    -- url specified by publisher (THIS IS NOT INTERNAL URL!)
-        .ISBN   -- ISBN of the book
-        .cena   -- price of the book
-        .nazev  -- name of the book
-        .format -- format of the book - see FormatEnum
-        .autori     -- list of Author objects
-        .castDil    -- which part of the series of books is this
-        .podnazev   -- subname of the book
-        .originaly  -- list of ISBN's of original books in case of
-                       translations
-        .nazevCasti -- name of part of the series
-        .datumVydani  -- date of publication
-        .mistoVydani  -- city/country origin of the publication
-        .internal_url -- link to edeposit/kramerius system
-        .poradiVydani -- order of publication
-        .zpracovatelZaznamu   -- processor/manufacturer of record
-        .nakladatelVydavatel  -- publisher's name
-        .ISBNSouboruPublikaci -- ISBN of the book series
+    Attributes:
+        url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)
+        ISBN   (str): ISBN of the book
+        cena   (str): price of the book
+        nazev  (str): name of the book
+        format (str): format of the book - see :class:`FormatEnum`
+        autori (list): list of :class:`Author` objects
+        castDil (str): which part of the series of books is this
+        podnazev (str): subname of the book
+        originaly (list): list of (str) ISBN's of original books in case of
+                          translations
+        nazevCasti (str): name of part of the series
+        datumVydani (str): date of publication
+        mistoVydani (str): city/country origin of the publication
+        internal_url (str): link to edeposit/kramerius system
+        poradiVydani (str): order of publication
+        zpracovatelZaznamu   (str):  processor/manufacturer of record
+        nakladatelVydavatel  (str):  publisher's name
+        ISBNSouboruPublikaci (list): list of strings with ISBN of the book
+                                     series
     """
     pass
 
 
 class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
+    """
+    Informations about author (or person).
+
+    Attributes:
+        firstName (str)
+        lastName (str)
+        title (str)
+    """
     pass
 
 
