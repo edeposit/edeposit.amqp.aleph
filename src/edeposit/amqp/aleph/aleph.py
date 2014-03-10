@@ -83,11 +83,12 @@ from collections import namedtuple
 from string import Template
 from urllib import quote_plus
 
-from settings import *
-
 
 import dhtmlparser
 from httpkie import Downloader
+
+
+from settings import *
 
 
 #= Variables ==================================================================
@@ -472,25 +473,25 @@ def downloadMARCOAI(doc_id, base):
     return data
 
 
-def getISBNsIDs(isbn, base="nkc"):
+def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, isbn, False, "sbn"))
 
 
-def getAuthorsBooksIDs(author, base="nkc"):
+def getAuthorsBooksIDs(author, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, author, False, "wau"))
 
 
-def getPublishersBooksIDs(publisher, base="nkc"):
+def getPublishersBooksIDs(publisher, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, publisher, False, "wpb"))
 
 
-def getISBNCount(isbn, base="nkc"):
+def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     return searchInAleph(base, isbn, False, "sbn")["no_entries"]
 
 
-def getAuthorsBooksCount(author, base="nkc"):
+def getAuthorsBooksCount(author, base=ALEPH_DEFAULT_BASE):
     return searchInAleph(base, author, False, "wau")["no_entries"]
 
 
-def getPublishersBooksCount(publisher, base="nkc"):
+def getPublishersBooksCount(publisher, base=ALEPH_DEFAULT_BASE):
     return searchInAleph(base, publisher, False, "wpb")["no_entries"]
