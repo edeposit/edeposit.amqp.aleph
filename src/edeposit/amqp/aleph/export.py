@@ -4,25 +4,26 @@
 # Interpreter version: python 2.7
 #
 """
-This module is used to put data to Aleph.
+This module is used to put data to Aleph. It is based on custom made webform,
+which is currently used to report new books by publishers.
 
-It is based on custom made webform, which is currently used to report new
-books by publishers.
+Most important function from this module is :func:`exportEPublication`,
+which will do everything, that is needed to do, to export
+:class:`aleph.datastructures.epublication.EPublication` structure to the Aleph.
 
-Source code of this form is not available at this moment (it was created by
-third party), but it is possible, that it will be in future. This will highly
-depend on number of people, which will use this project.
+Warning:
+    This whole module is highly dependent on processes, which are defined as
+    import processes at the Czech National Library.
 
-Most important function from this module is exportEPublication(epub), which
-will do everything, that is needed to do, to export EPublication structure to
-the Aleph.
+Warning:
+    If you want to use export ability in your library, you should rewrite this
+    and take care, that you are sending data somewhere, where someone will
+    process them. Otherwise, you can fill your library's database with crap.
 
-This whole module is highly dependent on processes, which are defined as import
-processes at the Czech National Library.
-
-If you want to use export ability in your library, you should rewrite this and
-take care, that you are sending data somewhere, where someone will process
-them. Otherwise, you can fill your library's database with crap.
+Note:
+    Source code of the webform is not available at this moment (it was created
+    by third party), but it is possible, that it will be in future. This will
+    highly depend on number of people, which will use this project.
 """
 #= Imports ====================================================================
 import isbn
@@ -50,14 +51,28 @@ class ExportRejectedException(ExportException):
 
 class PostData:
     """
-    This class is used to transform data from EPublication to dictionary, which
-    is sent as POST request to Aleph third-party webform.
+    This class is used to transform data from
+    :class:`aleph.datastructures.epublication.EPublication` to dictionary,
+    which is sent as POST request to Aleph third-party webform_.
 
-    http://aleph.nkp.cz/F/?func=file&file_name=service-isbn
+    .. _webform: http://aleph.nkp.cz/F/?func=file&file_name=service-isbn
 
-    Class is used, because there is 29 POST parameters with internal
-    dependencies, which need to be processed and validated before they can be
-    passed to webform.
+    Note:
+        Class is used instead of simple function, because there is 29 POST
+        parameters with internal dependencies, which need to be processed and
+        validated before they can be passed to webform.
+
+    Args:
+        epub (EPublication): structure, which will be converted
+
+    Attributes:
+        _POST (dict):   dictionary with parsed data
+        mapping (dict): dictionary with some of mapping, which are aplied to
+                        ``_POST`` dict in postprocessing
+
+    Warning:
+        Don't manipulate ``_POST`` property directly, if you didn't really know
+        the'internal structure and how the ``mapping`` is aplied.
     """
     def __init__(self, epub):
         self._POST = {
@@ -242,6 +257,11 @@ class PostData:
         assert(self._POST["P0902210__c"] != "")  # Nakladatel
 
     def get_POST_data(self):
+        """
+        Returns:
+            dict: POST data, which can be sent to webform using urllib, \
+                  or similar library
+        """
         self._postprocess()
         self._check_required_fields()
 
@@ -250,7 +270,10 @@ class PostData:
 
 def _sendPostDict(post_dict):
     """
-    Send `post_dict` to the settigns.ALEPH_EXPORT_URL.
+    Send `post_dict` to the ``settigns.ALEPH_EXPORT_URL``.
+
+    Args:
+        post_dict (dict): dictionary from :class:`PostData.get_POST_data()`
 
     It may look strange, to have standalone function to do this, but it is used
     in unittests to test that form rejects invalid data, which can tell us,
@@ -269,6 +292,9 @@ def exportEPublication(epub):
     """
     Send `epub` EPublication object to Aleph, where it will be processed by
     librarians.
+
+    Args:
+        epub (EPublication): structure for export
     """
     post_dict = PostData(epub).get_POST_data()
     # sendPostDict(post_dict)  # TODO: uncoment, when test settings at the webform will be implemented
