@@ -16,13 +16,16 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
     This structure is returned as response to SearchRequest inside
     SearchResult.
 
-    base -- from which base was this record pulled
-    library -- library string, used for downloading documents from Aleph when
-               you know proper docNumber
-    docNumber -- identificator in Aleph. It is not that much unique as it could
-                 be, but with .library string, you can fetch documents from
-                 Aleph if you know this.
-    xml -- MARC XML source returned from Aleph. Quite complicated stuff.
-    epublication -- parsed .xml to EPublication structure
+    Attributes:
+        base (str): from which base was this record pulled
+        library (str): library string, used for downloading documents from
+                       Aleph when you know proper docNumber
+        docNumber (str): identificator in Aleph. It is not that much unique as
+                         it could be, but with .library string, you can fetch
+                         documents from Aleph if you know this.
+        xml (str): MARC XML source returned from Aleph. Quite complicated
+                   stuff.
+        epublication (EPublication): parsed .xml to
+             :class:`aleph.datastructures.epublication.EPublication` structure
     """
     pass
