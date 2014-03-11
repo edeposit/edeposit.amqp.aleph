@@ -4,70 +4,76 @@
 # Interpreter version: python 2.7
 #
 """
-- Query workflow --------------------------------------------------------------
+Query workflow
+==============
 
-To query Aleph, just create one of the Queries - ISBNQuery for example and put
-it into SearchRequest wrapper. Then encode it by calling toAMQPMessage() and
-send the message to the Aleph's exchange.
+To query Aleph, just create one of the Queries - :class:`ISBNQuery` for example
+and put it into :class:`aleph.datastructures.requests.SearchRequest` wrapper.
+Then encode it by calling :func:`serialize` and send the message to the Aleph's
+exchange::
 
----
-isbnq = ISBNQuery("80-251-0225-4")
-request = SearchRequest(isbnq)
+    isbnq = ISBNQuery("80-251-0225-4")
+    request = SearchRequest(isbnq)
 
-amqp.send(
-    message    = serialize(request),
-    properties = "..",
-    exchange   = "ALEPH'S_EXCHANGE"
-)
----
+    amqp.send(
+        message    = serialize(request),
+        properties = "..",
+        exchange   = "ALEPH'S_EXCHANGE"
+    )
 
 and you will get back AMQP message, and after decoding with fromAMQPMessage()
 also SearchResult.
 
+Note:
+    You don't have to import all structures from :class:`datastructures`, they
+    should be automatically imported and made global in ``__init__.py``.
+
 If you want to just get count of how many items is there in Aleph, just wrap
-the ISBNQuery with CountRequest (you should use this instead of just calling
-len() to SearchResult.records - it doesn't put that much load to Aleph):
+the ISBNQuery with :class:`CountRequest`::
 
----
-isbnq = ISBNQuery("80-251-0225-4")
-request = CountRequest(isbnq)
+    isbnq = ISBNQuery("80-251-0225-4")
+    request = CountRequest(isbnq)
 
-# rest is same..
----
+    # rest is same..
 
-and you will get back (after decoding) CountResult.
+and you will get back (after decoding)
+:class:`aleph.datastructures.results.CountResult`.
 
-Here is ASCII flow diagram for you:
+Note:
+    You should always use CountRequest instead of just calling ``len()` to
+    SearchResult.records - it doesn't put that much load to Aleph. Also Aleph
+    is restricted to 150 requests per second.
 
-ISBNQuery      ----.                                 ,--> CountResult
-AuthorQuery    ----|                                 |        `- num_of_records
-PublisherQuery ----|                                 |
-GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
-                   |                |                |        `- AlephRecord
-                   V                |                |
-         Count/SearchRequest        |                |--> ISBNValidationResult
-                   |                |                |        `- ISBN
-                   V                |                |
-              serialize()<----------'           deserialize()
-                   |                                 ^
-                   V             Client              |
-              AMQPMessage ------> AMQP -------> AMQPMessage
-                                 |    ^
-                                 V    |
-                                 |    ^
-                                 V    |
-                                 |    ^
-                                 V    |
-              AMQPMessage <------ AMQP <-------- AMQPMessage
-                   |             Service              ^
-                   |                                  |
-                   V                                  |
-          reactToAMQPMessage() ............... magic_happens()
+Here is ASCII flow diagram for you::
+
+ ISBNQuery      ----.                                 ,--> CountResult
+ AuthorQuery    ----|                                 |       `- num_of_records
+ PublisherQuery ----|                                 |
+ GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
+                    |                |                |       `- AlephRecord
+                    V                |                |
+       Count/Search/ExportRequest    |                |--> ISBNValidationResult
+                    |                |                |        - ISBN
+                    V                |                |
+                    |                |                |--> ExportResult
+                    V                |                |
+               serialize()<----------'           deserialize()
+                    |                                 ^
+                    V             Client              |
+               AMQPMessage ------> AMQP -------> AMQPMessage
+                                  |    ^
+                                  V    |
+                                  |    ^
+                                  V    |
+                                  |    ^
+                                  V    |
+               AMQPMessage <------ AMQP <-------- AMQPMessage
+                    |             Service              ^
+                    |                                  |
+                    V                                  |
+           reactToAMQPMessage() ............... magic_happens()
 
 Neat, isn't it?
-
-- Export workflow -------------------------------------------------------------
-TODO: implement, then write docstring
 """
 #= Imports ====================================================================
 from collections import namedtuple
@@ -118,10 +124,17 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
     """
     Used for generic queries to aleph.
 
-    For details of base/phrase/.. parameters, see aleph.py : searchInAleph().
+    Args:
+        base (str)
+        phrase (str)
+        considerSimilar (bool)
+        field (str)
+
+    For details of base/phrase/.. parameters, see :func:`aleph.searchInAleph`.
+    All parameters also serves as properties.
 
     This is used mainly if you want to search by your own parameters and don't
-    want to use prepared wrappers (AuthorQuery/ISBNQuery/..).
+    want to use prepared wrappers (:class:`AuthorQuery`/:class:`ISBNQuery`/..).
     """
     def _getIDs(self):
         return aleph.getDocumentIDs(
@@ -146,8 +159,14 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
     """
     Query Aleph to get books by ISBN.
 
-    Note: ISBN is not unique, so you can get back lot of books with same ISBN.
-          Some books also have two or more ISBNs.
+    Args:
+        ISBN (str)
+        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
+                              used
+
+    Note:
+        ISBN is not unique, so you can get back lot of books with same ISBN.
+        Some books also have two or more ISBNs.
     """
     def __new__(self, ISBN, base=settings.ALEPH_DEFAULT_BASE):
         return super(ISBNQuery, self).__new__(self, ISBN, base)
@@ -159,9 +178,16 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
         return aleph.getISBNCount(self.ISBN, base=self.base)
 
 
-class AuthorQuery(namedtuple("AuthorQuery", ["author"]), _QueryTemplate):
+class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
+                  _QueryTemplate):
     """
     Query Aleph to get books by Author.
+
+    Args:
+        author (str): Author's name/lastname in UTF
+        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
+                              used
+
     """
     def __new__(self, author, base=settings.ALEPH_DEFAULT_BASE):
         return super(AuthorQuery, self).__new__(self, author, base)
@@ -173,10 +199,16 @@ class AuthorQuery(namedtuple("AuthorQuery", ["author"]), _QueryTemplate):
         return aleph.getAuthorsBooksCount(self.author, base=self.base)
 
 
-class PublisherQuery(namedtuple("PublisherQuery", ["publisher"]),
+class PublisherQuery(namedtuple("PublisherQuery", ["publisher", "base"]),
                      _QueryTemplate):
     """
     Query Aleph to get books by Publisher.
+
+    Args:
+        publisher (str): publisher's name in UTF
+        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
+                              used
+
     """
     def __new__(self, publisher, base=settings.ALEPH_DEFAULT_BASE):
         return super(PublisherQuery, self).__new__(self, publisher, base)
@@ -208,6 +240,13 @@ REQUEST_TYPES = [
 def serialize(data):
     """
     Serialize class hierarchy into JSON.
+
+    Args:
+        data (any): any python type serializable to JSON, with added support of
+                    namedtuples
+
+    Returns:
+        unicode: JSON string
     """
     return convertors.toJSON(data)
 
@@ -215,13 +254,19 @@ def serialize(data):
 def deserialize(data):
     """
     Deserialize classes from JSON data.
+
+    Args:
+        data (str): python data serialized to JSON
+
+    Returns:
+        any: any python typ (make sure you have namedtuples imported)
     """
     return convertors.fromJSON(data)
 
 
-def iiOfAny(instance, classes):
+def _iiOfAny(instance, classes):
     """
-    Returns true, if `instance` is instance of any (iiOfAny) of the `classes`.
+    Returns true, if `instance` is instance of any (_iiOfAny) of the `classes`.
 
     This function doesn't use isinstance() check, it just compares the
     classnames.
@@ -235,9 +280,14 @@ def iiOfAny(instance, classes):
     Use this function instead, if you wan't to check what type is your
     deserialized message.
 
-    instance -- class instance you want to know the type
-    classes -- list of classes, or just the class you want to compare - func
-               automatically retypes nonlist/nontuple parameters to list
+    Args:
+        instance (object): class instance you want to know the type
+        classes (list): classes, or just the class you want to compare - func
+                        automatically converts nonlist/nontuple parameters to
+                        list
+
+    Returns:
+        bool: True if `instance` is instance of any of the `classes`.
     """
     if type(classes) not in [list, tuple]:
         classes = [classes]
@@ -248,39 +298,45 @@ def iiOfAny(instance, classes):
 #= Functions ==================================================================
 def reactToAMQPMessage(message, response_callback, UUID):
     """
-    React to given AMQPMessage. Return data thru given callback function.
+    React to given (AMQP) message. Return data thru given callback function.
 
-    message -- message encoded in JSON by serialize()
-    response_callback -- function taking exactly ONE parameter - message's body
-                         with response. Function take care of sending the
-                         response over AMQP.
+    Args:
+        message (str or Request class): message encoded in JSON by serialize()
+                                        or any of the Request class from
+                                        :class:`aleph.datastructures.requests`
+        response_callback (func): function has to take two parameters -
+                                  message's body (serialized response class)
+                                  and UUID
+        UUID (str): unique ID of received message
 
-    Returns result of response_callback() call.
+    Note:
+        Function take care of sending the response over AMQP, or whatever you
+        use.
 
-    Raise:
-        ValueError if bad type of `message` structure is given.
+    Returns:
+        result of `response_callback()` call.
 
-    TODO:
-        React to Export requests.
+    Raises:
+        ValueError: if bad type of `message` structure is given.
     """
     req = deserialize(message) if type(message) == str else message
 
     # TODO: pridat podporu exportnich typu
-    if not iiOfAny(req, REQUEST_TYPES):
+    if not _iiOfAny(req, REQUEST_TYPES):
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "'!"
         )
 
     response = None
-    if iiOfAny(req, CountRequest) and iiOfAny(req.query, QUERY_TYPES):
+    if _iiOfAny(req, CountRequest) and _iiOfAny(req.query, QUERY_TYPES):
         response = req.query.getCountResult()
-    elif iiOfAny(req, SearchRequest) and iiOfAny(req.query, QUERY_TYPES):
+    elif _iiOfAny(req, SearchRequest) and _iiOfAny(req.query, QUERY_TYPES):
         response = req.query.getSearchResult()
-    elif iiOfAny(req, ExportRequest):
+    elif _iiOfAny(req, ExportRequest):
         raise NotImplementedError("Not implemented yet.")
-    elif iiOfAny(req, ISBNValidationRequest):
+    elif _iiOfAny(req, ISBNValidationRequest):
         response = ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
-    elif iiOfAny(req, ExportRequest):
+    elif _iiOfAny(req, ExportRequest):
         export.exportEPublication(req.epublication)
         response = ExportResult(req.epublication.ISBN)
     else:
