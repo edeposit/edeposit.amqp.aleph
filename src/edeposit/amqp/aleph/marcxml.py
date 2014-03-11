@@ -13,152 +13,148 @@ Module for parsing and high-level processing of MARC XML records.
 About format and how the class work; Standard MARC record is made from
 three parts:
 
-    leader -- binary something, you can probably ignore it
-    controlfileds -- marc fields < 10
-    datafields -- important information you actually want
+* `leader` - binary something, you can probably ignore it
+* `controlfileds` - marc fields < 10
+* `datafields` - important information you actually want
 
-Basic MARC XML scheme uses this structure:
+Basic MARC XML scheme uses this structure::
 
-----
-<record xmlns=definition..>
-    <leader>optional_binary_something</leader>
-    <controlfield tag="001">data</controlfield>
-    ...
-    <controlfield tag="010">data</controlfield>
-    <datafield tag="011" ind1=" " ind2=" ">
-        <subfield code="scode">data</subfield>
-        <subfield code="a">data</subfield>
-        <subfield code="a">another data, but same code!</subfield>
+    <record xmlns=definition..>
+        <leader>optional_binary_something</leader>
+        <controlfield tag="001">data</controlfield>
         ...
-        <subfield code"scode+">another data</subfield>
-    </datafield>
-    ...
-    <datafield tag="999" ind1=" " ind2=" ">
-    ...
-    </datafield>
-</record>
----
+        <controlfield tag="010">data</controlfield>
+        <datafield tag="011" ind1=" " ind2=" ">
+            <subfield code="scode">data</subfield>
+            <subfield code="a">data</subfield>
+            <subfield code="a">another data, but same code!</subfield>
+            ...
+            <subfield code"scode+">another data</subfield>
+        </datafield>
+        ...
+        <datafield tag="999" ind1=" " ind2=" ">
+        ...
+        </datafield>
+    </record>
 
-<leader> is optional and it is parsed into MARCXMLRecord.leader as string.
+`<leader>` is optional and it is parsed into :class:`MARCXMLRecord.leader` as
+string.
 
-<controlfield>s are optional and parsed as dictionary into
-MARCXMLRecord.controlfields, and dictionary for data from example would
-look like this:
+`<controlfield>s` are optional and parsed as dictionary into
+:class:`MARCXMLRecord.controlfields`, and dictionary for data from example
+would look like this::
 
----
-MARCXMLRecord.controlfields = {
-    "001": "data",
-    ...
-    "010": "data"
-}
----
+    MARCXMLRecord.controlfields = {
+        "001": "data",
+        ...
+        "010": "data"
+    }
 
-<datafield>s are non-optional and are parsed into MARCXMLRecord.datafields,
-which is little bit more complicated dictionary. Complicated is mainly
-because tag parameter is not unique, so there can be more <datafield>s with
-same tag!
+`<datafield>s` are non-optional and are parsed into
+:class:`MARCXMLRecord.datafields`, which is little bit more complicated
+dictionary. Complicated is mainly because tag parameter is not unique, so there
+can be more `<datafield>s` with same tag!
 
-scode is always one character (ASCII lowercase), or number.
+`scode` (subfield code) is always one character (ASCII lowercase), or number.
 
----
-MARCXMLRecord.datafields = {
-    "011": [{
-        "ind1": " ",
-        "ind2": " ",
-        "scode": ["data"],
-        "scode+": ["another data"]
-    }],
+Example dict::
 
-    # real example
-    "928": [{
-        "ind1": "1",
-        "ind2": " ",
-        "a": ["Portál"]
-    }],
+    MARCXMLRecord.datafields = {
+        "011": [{
+            "ind1": " ",
+            "ind2": " ",
+            "scode": ["data"],
+            "scode+": ["another data"]
+        }],
 
-    "910": [
-        {
+        # real example
+        "928": [{
             "ind1": "1",
             "ind2": " ",
-            "a": ["ABA001"]
-        },
-        {
-            "ind1": "2",
-            "ind2": " ",
-            "a": ["BOA001"],
-            "b": ["2-1235.975"]
-        },
-        {
-            "ind1": "3",
-            "ind2": " ",
-            "a": ["OLA001"],
-            "b": ["1-218.844"]
-        }
-    ]
-}
----
+            "a": ["Portál"]
+        }],
 
-As you can see in 910 record example, sometimes there are multiple records
+        "910": [
+            {
+                "ind1": "1",
+                "ind2": " ",
+                "a": ["ABA001"]
+            },
+            {
+                "ind1": "2",
+                "ind2": " ",
+                "a": ["BOA001"],
+                "b": ["2-1235.975"]
+            },
+            {
+                "ind1": "3",
+                "ind2": " ",
+                "a": ["OLA001"],
+                "b": ["1-218.844"]
+            }
+        ]
+    }
+
+As you can see in ``910`` record example, sometimes there are multiple records
 in a list!
 
-NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
-RECORD, OR MULTIPLE RECORDS. SAME APPLY TO SUBFIELDS.
+Warning:
+    NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
+    RECORD, OR MULTIPLE RECORDS. SAME APPLY TO SUBFIELDS.
 
-Example above corresponds with this piece of code from real world:
+Example above corresponds with this piece of code from real world::
 
----
-<datafield tag="910" ind1="1" ind2=" ">
-<subfield code="a">ABA001</subfield>
-</datafield>
-<datafield tag="910" ind1="2" ind2=" ">
-<subfield code="a">BOA001</subfield>
-<subfield code="b">2-1235.975</subfield>
-</datafield>
-<datafield tag="910" ind1="3" ind2=" ">
-<subfield code="a">OLA001</subfield>
-<subfield code="b">1-218.844</subfield>
-</datafield>
----
+    <datafield tag="910" ind1="1" ind2=" ">
+    <subfield code="a">ABA001</subfield>
+    </datafield>
+    <datafield tag="910" ind1="2" ind2=" ">
+    <subfield code="a">BOA001</subfield>
+    <subfield code="b">2-1235.975</subfield>
+    </datafield>
+    <datafield tag="910" ind1="3" ind2=" ">
+    <subfield code="a">OLA001</subfield>
+    <subfield code="b">1-218.844</subfield>
+    </datafield>
 
-- OAI ----------------------------------------------------------------------
+OAI
+===
 To prevent things to be too much simple, there is also another type of MARC
 XML document - OAI format.
 
 OAI documents are little bit different, but almost same in structure.
 
-leader is optional and is stored in MARCXMLRecord.controlfields["LDR"], but
-also in MARCXMLRecord.leader for backward compatibility.
+`leader` is optional and is stored in ``MARCXMLRecord.controlfields["LDR"]``,
+but also in ``MARCXMLRecord.leader`` for backward compatibility.
 
-<controlfield> is renamed to <fixfield> and its "tag" parameter to "label".
+`<controlfield>` is renamed to `<fixfield>` and its "tag" parameter to "label".
 
-<datafield> tag is not named datafield, but <varfield>, "tag" parameter is
+`<datafield>` tag is not named datafield, but `<varfield>`, "tag" parameter is
 "id" and ind1/ind2 are named i1/i2, but works the same way.
 
-<subfield>s parameter "code" is renamed to "label".
+`<subfield>s` parameter "code" is renamed to "label".
 
-Real world example:
+Real world example::
 
----
-<oai_marc>
-<fixfield id="LDR">-----nam-a22------aa4500</fixfield>
-<fixfield id="FMT">BK</fixfield>
-<fixfield id="001">cpk19990652691</fixfield>
-<fixfield id="003">CZ-PrNK</fixfield>
-<fixfield id="005">20130513104801.0</fixfield>
-<fixfield id="007">tu</fixfield>
-<fixfield id="008">990330m19981999xr-af--d------000-1-cze--</fixfield>
-<varfield id="015" i1=" " i2=" ">
-<subfield label="a">cnb000652691</subfield>
-</varfield>
-<varfield id="020" i1=" " i2=" ">
-<subfield label="a">80-7174-091-8 (sv. 1 : váz.) :</subfield>
-<subfield label="c">Kč 182,00</subfield>
-</varfield>
-...
-</oai_marc>
----
+    <oai_marc>
+    <fixfield id="LDR">-----nam-a22------aa4500</fixfield>
+    <fixfield id="FMT">BK</fixfield>
+    <fixfield id="001">cpk19990652691</fixfield>
+    <fixfield id="003">CZ-PrNK</fixfield>
+    <fixfield id="005">20130513104801.0</fixfield>
+    <fixfield id="007">tu</fixfield>
+    <fixfield id="008">990330m19981999xr-af--d------000-1-cze--</fixfield>
+    <varfield id="015" i1=" " i2=" ">
+    <subfield label="a">cnb000652691</subfield>
+    </varfield>
+    <varfield id="020" i1=" " i2=" ">
+    <subfield label="a">80-7174-091-8 (sv. 1 : váz.) :</subfield>
+    <subfield label="c">Kč 182,00</subfield>
+    </varfield>
+    ...
+    </oai_marc>
 
-- Full documentation -------------------------------------------------------
+Full documentation
+==================
 Description of simplified MARCXML schema can be found at
 http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd
 
@@ -193,6 +189,19 @@ def resorted(values):
     Sort values, but put numbers after alphabetically sorted words.
 
     This function is here for outputs, to be diff-compatible with aleph.
+
+    Example:
+
+    >>> sorted(["b", "1", "a"])
+    ['1', 'a', 'b']
+    >>> resorted(["b", "1", "a"])
+    ['a', 'b', '1']
+
+    Args:
+        values (iterable): any iterable object/list/tuple/whatever.
+
+    Returns:
+        list of sorted values, but with numbers after words
     """
     values = sorted(values)
     words = filter(lambda x: not x.isdigit(), values)
@@ -209,11 +218,11 @@ class Person(namedtuple("Person", ["name",
     This class represents informations about persons as they are defined in
     MARC standards.
 
-    Properties:
-        .name
-        .second_name
-        .surname
-        .title
+    Attributes:
+        name (str)
+        second_name (str)
+        surname (str)
+        title (str)
     """
     pass
 
@@ -231,8 +240,8 @@ class Corporation(namedtuple("Corporation", ["name", "place", "date"])):
 
 class MarcSubrecord(str):
     """
-    This class is used to stored data returned from .getDataRecords() method
-    from MARCXMLRecord.
+    This class is used to stored data returned from ``.getDataRecords()``
+    method from MARCXMLRecord.
 
     It looks kinda like overshot, but when you are parsing the MARC XML,
     values from subrecords, you need to know the context in which the subrecord
@@ -244,6 +253,14 @@ class MarcSubrecord(str):
     This class provides this acces thru .getI1()/.getI2() and
     .getOtherSubfiedls() getters. As a bonus, it is also fully convertable to
     string, in which case only the value of subrecord is preserved.
+
+    Attributes:
+        arg (str): value of subrecord
+        ind1 (char): indicator one
+        ind2 (char): indicator two
+        other_subfields (dict): dictionary with other subfields from the same
+                                subrecord
+
     """
     def __new__(self, arg, ind1, ind2, other_subfields):
         return str.__new__(self, arg)
@@ -272,102 +289,108 @@ class MARCXMLRecord:
     Class for serialization/deserialization of MARCXML and MARC OAI
     documents.
 
-    This class parses everything between <root> elements. It checks, if
+    This class parses everything between `<root>` elements. It checks, if
     there is root element, so please, give it full XML.
 
     Internal format is described in module docstring. You can access
     internal data directly, or using few handy methods on two different
     levels of abstraction:
 
-    - No abstraction at all ------------------------------------------------
+    **No abstraction at all**
+
     You can choose to access data directly and for this use, there is few
     important properties:
 
-      .leader         (string)
-      .oai_marc       (bool)
-      .controlfields  (dict)
-      .datafields     (dict of arrays of dict of arrays of strings ^-^)
+    Attributes:
+      leader         (string): leader of MARC XML document
+      oai_marc       (bool): True/False, depending if doc is OAI doc or not
+      controlfields  (dict): Controlfields stored in dict.
+      datafields     (dict of arrays of dict of arrays of strings ^-^):
+                     Datafileds stored in nested dicts/arrays.
 
-    .controlfields is simple and easy to use dictionary, where keys are
+    `controlfields` is simple and easy to use dictionary, where keys are
     field identificators (string, 3 chars, all chars digits). Value is
     always string.
 
-    .datafields is little bit complicated and it is dictionary, consisting
-    of arrays of dictionaries, which consist from arrays of strings and two
-    special parameters.
+    `datafields` is little bit complicated; it is dictionary made of arrays of
+    dictionaries, which consists of arrays of strings and two special
+    parameters.
 
-    It sounds horrible, but it is not that hard to understand:
+    It sounds horrible, but it is not that hard to understand::
 
-    ---
-    .datafields = {
-        "011": ["ind1": " ", "ind2": " "]  # array of 0 or more dicts
-        "012": [
-            {
-                "a": ["a) subsection value"],
-                "b": ["b) subsection value"],
-                "ind1": " ",
-                "ind2": " "
-            },
-            {
-                "a": [
-                    "multiple values in a) subsections are possible!",
-                    "another value in a) subsection"
-                ],
-                "c": [
-                    "subsection identificator is always one character long"
-                ],
-                "ind1": " ",
-                "ind2": " "
-            }
-        ]
-    }
-    ---
+        .datafields = {
+            "011": ["ind1": " ", "ind2": " "]  # array of 0 or more dicts
+            "012": [
+                {
+                    "a": ["a) subsection value"],
+                    "b": ["b) subsection value"],
+                    "ind1": " ",
+                    "ind2": " "
+                },
+                {
+                    "a": [
+                        "multiple values in a) subsections are possible!",
+                        "another value in a) subsection"
+                    ],
+                    "c": [
+                        "subsection identificator is always one character long"
+                    ],
+                    "ind1": " ",
+                    "ind2": " "
+                }
+            ]
+        }
 
-    Notice ind1/ind2 keywords, which are reserved indicators and used in few
-    cases thru MARC standard.
+    Notice `ind1`/`ind2` keywords, which are reserved indicators and used in
+    few cases thru MARC standard.
 
     Dict structure is not that hard to understand, but kinda long to access,
     so there is also little bit more high-level abstraction access methods.
 
-    - Lowlevel abstraction -------------------------------------------------
+    **Lowlevel abstraction**
+
     To access data little bit easier, there are defined two methods to
     access and two methods to add data to internal dictionaries:
 
-      .addControlField(name, value)
-      .addDataField(name, i1, i2, subfields_dict)
+    Methods:
+        .addControlField(name, value)
+        .addDataField(name, i1, i2, subfields_dict)
 
-    Names imho selfdescribing. subfields_dict is expected en enforced to be
+    Names imho selfdescribing. `subfields_dict` is expected en enforced to be
     dictionary with one character long keys and list of strings as values.
 
     Getters are also simple to use:
 
+    Methods:
       .getControlRecord(controlfield)
       .getDataRecords(datafield, subfield, throw_exceptions)
 
-    .getControlRecord() is basically just wrapper over .controlfields and
+    ``.getControlRecord()`` is basically just wrapper over .controlfields and
     works same way as accessing .controlfields[controlfield]
 
-    .getDataRecords(datafield, subfield, throw_exceptions) return list of
-    MarcSubrecord* objects with informations from section `datafield`
+    ``.getDataRecords(datafield, subfield, throw_exceptions)`` return list of
+    ``MarcSubrecord`` objects* with informations from section `datafield`
     subsection `subfield`.
 
     If throw_exceptions parameter is set to False, method returns empty list
-    instead of throwing KeyError.
+    instead of throwing ``KeyError``.
 
     *As I said, function returns list of MarcSubrecord objects. They are
     almost same thing as normal strings (they are actually subclassed
     strings), but defines few important methods, which can make your life
     little bit easier:
 
+    Methods:
       .getI1()
       .getI2()
       .getOtherSubfiedls()
 
-    .getOtherSubfiedls() returns dictionary with other subsections, as
+    `.getOtherSubfiedls()` returns dictionary with other subsections, as
     subfield requested by calling .getDataRecords().
 
-    - Highlevel abstractions -----------------------------------------------
-    There is also lot of highlevel getters:
+    **Highlevel abstractions**
+
+    There is also lot of highlevel getters::
 
       .getName()
       .getSubname()
@@ -463,18 +486,18 @@ class MARCXMLRecord:
         """
         Return content of given subfield in datafield.
 
-        datafield -- String with section name (for example "001", "100",
-                     "700")
-        subfield -- String with subfield name (for example "a", "1", etc..)
-        throw_exceptions -- If True, KeyError is raised if method couldnt
-                            found given datafield/subfield. If false, blank
-                            array [] is returned.
+        Args:
+            datafield (str): Section name (for example "001", "100", "700")
+            subfield (str):  Subfield name (for example "a", "1", etc..)
+            throw_exceptions (bool): If True, KeyError is raised if method
+                                     couldnt found given datafield/subfield. If
+                                     false, blank array [] is returned.
 
-        Returns list of MarcSubrecords. MarcSubrecord is practically same
-        thing as string, but has defined .getI1() and .getI2() properties.
-
-        Believe me, you will need this, because MARC XML depends on them
-        from time to time (name of authors for example).
+        Returns list of :class:`MarcSubrecord`. MarcSubrecord is practically
+        same thing as string, but has defined `.getI1()` and `.getI2()`
+        properties. Believe me, you will need to be able to get this, because
+        MARC XML depends on them from time to time (name of authors for
+        example).
         """
         if len(datafield) != 3:
             raise ValueError(
@@ -514,9 +537,20 @@ class MARCXMLRecord:
         return output
 
     def getName(self):
+        """
+        Returns:
+            str: Name of the book.
+
+        Raises:
+            KeyError: when name is not specified.
+        """
         return "".join(self.getDataRecords("245", "a", True))
 
     def getSubname(self, undefined=""):
+        """
+        Returns:
+            str: Subname of the book.
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("245", "b", False)),
             lambda x: x.strip() == "",
@@ -524,6 +558,10 @@ class MARCXMLRecord:
         )
 
     def getPrice(self, undefined=""):
+        """
+        Returns:
+            str: Price of the book (with currency).
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("020", "c", False)),
             lambda x: x.strip() == "",
@@ -531,6 +569,10 @@ class MARCXMLRecord:
         )
 
     def getPart(self, undefined=""):
+        """
+        Returns:
+            str: Which part of the book series is this record.
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("245", "p", False)),
             lambda x: x.strip() == "",
@@ -538,6 +580,10 @@ class MARCXMLRecord:
         )
 
     def getPartName(self, undefined=""):
+        """
+        Returns:
+            str: Name of the part of the series.
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("245", "n", False)),
             lambda x: x.strip() == "",
@@ -545,6 +591,10 @@ class MARCXMLRecord:
         )
 
     def getPublisher(self, undefined=""):
+        """
+        Returns:
+            str: name of the publisher ("Grada" for example)
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("260", "b", False)),
             lambda x: x.strip() == "",
@@ -552,6 +602,10 @@ class MARCXMLRecord:
         )
 
     def getPubDate(self, undefined=""):
+        """
+        Returns:
+            str: date of publication (month and year usually)
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("260", "c", False)),
             lambda x: x.strip() == "",
@@ -559,6 +613,10 @@ class MARCXMLRecord:
         )
 
     def getPubOrder(self, undefined=""):
+        """
+        Returns:
+            str: information about order in which was the book published
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("901", "f", False)),
             lambda x: x.strip() == "",
@@ -566,6 +624,10 @@ class MARCXMLRecord:
         )
 
     def getFormat(self, undefined=""):
+        """
+        Returns:
+            str: dimensions of the book ('23 cm' for example)
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("300", "c", False)),
             lambda x: x.strip() == "",
@@ -573,6 +635,10 @@ class MARCXMLRecord:
         )
 
     def getPubPlace(self, undefined=""):
+        """
+        Returns:
+            str: name of city/country where the book was published
+        """
         return _undefinedPattern(
             "".join(self.getDataRecords("260", "a", False)),
             lambda x: x.strip() == "",
@@ -580,7 +646,10 @@ class MARCXMLRecord:
         )
 
     def getAuthors(self):
-        """Return list of authors represented as Person objects."""
+        """
+        Returns:
+            list: authors represented as Person objects
+        """
         authors = self._parsePersons("100", "a")
         authors += self._parsePersons("600", "a")
         authors += self._parsePersons("700", "a")
@@ -590,11 +659,14 @@ class MARCXMLRecord:
 
     def getCorporations(self, roles=["dst"]):
         """
-        Return list of Corporation objects specified by roles parameter.
+        Args:
+            roles (list, optional): specify which types of corporations you
+                  need. Set to ["any"] for any role, ["dst"] for distributors,
+                  etc.. See http://www.loc.gov/marc/relators/relaterm.html for
+                  details.
 
-        roles -- specify which types of corporations you need. Set to
-                 ["any"] for any role, ["dst"] for distributors, etc.. See
-                 http://www.loc.gov/marc/relators/relaterm.html for details.
+        Returns:
+            list: :class:`Corporation` objects specified by roles parameter.
         """
         corporations = self._parseCorporations("110", "a", roles)
         corporations += self._parseCorporations("610", "a", roles)
@@ -605,13 +677,16 @@ class MARCXMLRecord:
 
     def getDistributors(self):
         """
-        Return list of distributors. Each distributor is represented as
-        Corporation object.
+        Returns:
+            list: distributors represented as :class:`Corporation` object
         """
         return self.getCorporations(roles=["dst"])
 
     def getISBNs(self):
-        """Return list of ISBN strings."""
+        """
+        Returns:
+            list: array with ISBN strings
+        """
 
         if len(self.getDataRecords("020", "a", False)) != 0:
             return map(
@@ -628,6 +703,10 @@ class MARCXMLRecord:
         return []
 
     def getBinding(self):
+        """
+        Returns:
+            list: array of strings with bindings (["brož."]) or blank list
+        """
         if len(self.getDataRecords("020", "a", False)) != 0:
             return map(
                 lambda x: x.strip().split(" ", 1)[1],
@@ -640,15 +719,19 @@ class MARCXMLRecord:
         return []
 
     def getOriginals(self):
-        """Return list of original names."""
+        """
+        Returns:
+            list: of original names
+        """
         return self.getDataRecords("765", "t", False)
 
     def getI(self, num):
         """
-        Get current name of i1/ind1 parameter based on self.oai_marc.
+        This method is used mainly internally, but it can be handy if you work
+        with with raw MARC XML object and not using getters.
 
-        This method is used mainly internally, but it can be handy if you
-        work with with raw MARC XML object and not using getters.
+        Returns:
+            str: current name of i1/ind1 parameter based on ``self.oai_marc``.
         """
         if num != 1 and num != 2:
             raise ValueError("num parameter have to be 1 or 2!")
@@ -662,14 +745,16 @@ class MARCXMLRecord:
         Parse informations about corporations from given field identified
         by datafield parmeter.
 
-        datafield -- String identifying MARC field ("110", "610", etc..)
-        subfield -- String identifying MARC subfield with name, which is
-                     typically stored in "a" subfield.
-        roles -- specify which roles you need. Set to ["any"] for any role,
-                 ["dst"] for distributors, etc.. See
-                 http://www.loc.gov/marc/relators/relaterm.html for details.
+        Args:
+            datafield (str): MARC field ID ("110", "610", etc..)
+            subfield (str):  MARC subfield ID with name, which is typically
+                             stored in "a" subfield.
+            roles (str): specify which roles you need. Set to ["any"] for any
+                         role, ["dst"] for distributors, etc.. For details, see
+                         http://www.loc.gov/marc/relators/relaterm.html
 
-        Returns list of Corporation objects.
+        Returns:
+            list: Corporation objects.
         """
         if len(datafield) != 3:
             raise ValueError(
@@ -713,15 +798,17 @@ class MARCXMLRecord:
         """
         Parse persons from given datafield.
 
-        datafield -- string code of datafield ("010", "730", etc..)
-        subfield -- string code of subfield ("a", "z", "4", etc..)
-        role -- set to ["any"] for any role, ["aut"] for authors, etc..
-                (see http://www.loc.gov/marc/relators/relaterm.html for
-                details)
+        Args:
+            datafield (str): code of datafield ("010", "730", etc..)
+            subfield (char):  code of subfield ("a", "z", "4", etc..)
+            role (list of str): set to ["any"] for any role, ["aut"] for
+                 authors, etc.. For details see
+                 http://www.loc.gov/marc/relators/relaterm.html
 
         Main records for persons are: "100", "600" and "700", subrecords "c".
 
-        Returns list of Person objects.
+        Returns:
+            list: Person objects.
         """
         # parse authors
         parsed_persons = []
@@ -788,6 +875,9 @@ class MARCXMLRecord:
         Parse MARC XML document to dicts, which are contained in
         self.controlfields and self.datafields.
 
+        Args:
+            xml (str or HTMLElement): input data
+
         Also detect if this is oai marc format or not (see elf.oai_marc).
         """
         if not isinstance(xml, HTMLElement):
@@ -823,12 +913,11 @@ class MARCXMLRecord:
         """
         Parse control fields.
 
-        fields -- list of HTMLElements
-        tag_id -- parameter name, which holds the information, about field
-                  name this is normally "tag", but in case of oai_marc
-                  "id".
-
-        Returns None.
+        Args:
+            fields (list): list of HTMLElements
+            tag_id (str):  parameter name, which holds the information, about
+                           field name this is normally "tag", but in case of
+                           oai_marc "id".
         """
         for field in fields:
             params = field.params
@@ -841,12 +930,14 @@ class MARCXMLRecord:
         """
         Parse data fields.
 
-        fields -- list of HTMLElements
-        tag_id -- parameter name, which holds the information, about field
-                  name this is normally "tag", but in case of oai_marc "id"
-        sub_id -- id of parameter, which holds informations about subfield
-                  name this is normally "code" but in case of oai_marc
-                  "label"
+        Args:
+            fields (list): of HTMLElements
+            tag_id (str): parameter name, which holds the information, about
+                          field name this is normally "tag", but in case of
+                          oai_marc "id"
+            sub_id (str): id of parameter, which holds informations about
+                          subfield name this is normally "code" but in case of
+                          oai_marc "label"
 
         """
         for field in fields:
@@ -961,8 +1052,9 @@ class MARCXMLRecord:
         """
         Convert object back to XML string.
 
-        Returned string should be same as parsed, if everything works as
-        expected.
+        Returns:
+            str: string which should be same as original, parsed input, if
+                 everything works as expected
         """
         marcxml_template = """<record xmlns="http://www.loc.gov/MARC21/slim/"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
