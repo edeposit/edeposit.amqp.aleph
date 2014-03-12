@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.2
+-----
+
+- Tests and HTML help is now included in PYPI package.
+
 1.2.1
 -----
 

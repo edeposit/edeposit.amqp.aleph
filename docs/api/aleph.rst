@@ -21,8 +21,8 @@ Submodules
    aleph.marcxml
    aleph.settings
 
-Module contents
----------------
+Module content
+--------------
 
 .. automodule:: aleph
     :members:

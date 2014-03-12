@@ -1,2 +1,3 @@
 include CONTRIBUTORS.txt CHANGES.txt LICENCE
-prune src/edeposit/amqp/aleph/tests
+recursive-include src/edeposit/amqp/aleph/tests *
+recursive-include docs/_build/html *

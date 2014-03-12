@@ -57,8 +57,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'E-Deposit'
-copyright = u'2013, Jan Stavěl'
+project = u'edeposit.amqp.aleph'
+copyright = u'2014 E-deposit team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
