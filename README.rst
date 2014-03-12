@@ -4,9 +4,7 @@ Introduction
 This package provides an AMQP middle-ware for communication with Aleph. `Aleph <http://www.exlibrisgroup.com/category/Aleph>`_ is a system used in libraries to store meta-data about books and
 authors.
 
-You can read `some documentation <http://edeposit-amqp-aleph.readthedocs.org/cs/latest/>`__, but that is based on acceptance test and it's  not really actual.
-
-Full documentation can be found in doc-strings of each ``.py`` source file. Full Sphinx documentation of source codes will provided to the end of this week.
+`Full module documentation <http://edeposit-amqp-aleph.readthedocs.org/en/latest/py-modindex.html>`_ is hosted at the `readthedocs <http://edeposit-amqp-aleph.readthedocs.org>`_.
 
 Installation
 ------------
@@ -17,7 +15,7 @@ Module is hosted at `PYPI <http://pypi.python.org>`_, and can be easily installe
 
     pip install edeposit.amqp.aleph
 
-Sources can be found at `GitHub <https://github.com/>`_: https://github.com/jstavel/edeposit.amqp.aleph.
+Source codes can be found at `GitHub <https://github.com/>`_: https://github.com/jstavel/edeposit.amqp.aleph.
 
 Content
 -------
@@ -67,7 +65,7 @@ Or continuously using nosier:
     $ nosier -p src -b 'export' "pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
 
 Status of acceptance tests
---------------------------
+++++++++++++++++++++++++++
 
 You can see the results of the tests here:
 
@@ -75,4 +73,4 @@ http://edeposit-amqp-aleph.readthedocs.org/cs/latest/\_downloads/log.html
 
 http://edeposit-amqp-aleph.readthedocs.org/cs/latest/\_downloads/report.html
 
-Results are currently (04.03.2014) outdated, but some form of continuous integration framework will be used in the future.
+Results are currently (12.03.2014) outdated, but some form of continuous integration framework will be used in the future.
