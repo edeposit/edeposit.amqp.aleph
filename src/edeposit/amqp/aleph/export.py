@@ -106,6 +106,7 @@ class PostData:
             "P1501IST1_a": "ow",  # Zpracovatel záznamu (hidden)
             "P1502IST1_b": "",    # Zpracovatel záznamu (viditelna)
             "P1601ISB__a": "",    # ISBN2 - validated (hidden)
+            "P1801URL__u": "",    # internal URL
             # "REPEAT": "Y",        # predvyplnit zaznam
         }
 
@@ -162,6 +163,7 @@ class PostData:
         self._POST["P110185640u"] = epub.url
         self._POST["P0901210__a"] = epub.mistoVydani
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
+        self._POST["P1801URL__u"] = epub.internal_url
 
         # FUTURE:
         # self._POST[""] = epub.mistoDistribuce
@@ -194,6 +196,8 @@ class PostData:
         series_isbn = self._POST["P0601010__a"]
         if isinstance(series_isbn, list) and len(series_isbn) > 0:
             series_isbn = series_isbn[0]
+        # we want str
+        self._POST["P0601010__a"] = "" if series_isbn == [] else series_isbn
 
         # try to validate series ISBN
         if series_isbn != "" and series_isbn != []:
@@ -211,6 +215,7 @@ class PostData:
         book_isbn = self._POST["P0501010__a"]
         if isinstance(book_isbn, list) and len(book_isbn) > 0:
             book_isbn = book_isbn[0]
+        book_isbn = "" if book_isbn == [] else book_isbn  # we want str
 
         if not isbn.is_valid_isbn(book_isbn):
             raise InvalidISBNException(
@@ -218,16 +223,6 @@ class PostData:
             )
         self._POST["P0501010__a"] = book_isbn
         self._POST["P1601ISB__a"] = book_isbn
-
-        # some fields need to be remapped (depends on type of media)
-        self._apply_mapping(
-            self.mapping.get(self._POST["P0502010__b"], self.mapping["else"])
-        )
-
-        # # clean the dict before you send it
-        # for key in self._POST.keys():
-        #     if self._POST[key] == "":
-        #         del self._POST[key]
 
     def _check_required_fields(self):
         """
@@ -263,6 +258,12 @@ class PostData:
                   or similar library
         """
         self._postprocess()
+
+        # some fields need to be remapped (depends on type of media)
+        self._apply_mapping(
+            self.mapping.get(self._POST["P0502010__b"], self.mapping["else"])
+        )
+
         self._check_required_fields()
 
         return self._POST
@@ -280,6 +281,7 @@ def _sendPostDict(post_dict):
     when the webform is broken.
     """
     downer = Downloader()
+    downer.headers["Referer"] = settings.EDEPOSIT_EXPORT_REFERER
     data = downer.download(settings.ALEPH_EXPORT_URL, post=post_dict)
 
     if "Požadavek byl odmítnut" in data:
@@ -297,4 +299,4 @@ def exportEPublication(epub):
         epub (EPublication): structure for export
     """
     post_dict = PostData(epub).get_POST_data()
-    # sendPostDict(post_dict)  # TODO: uncoment, when test settings at the webform will be implemented
+    return _sendPostDict(post_dict)
