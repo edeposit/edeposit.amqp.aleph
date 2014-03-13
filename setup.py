@@ -1,12 +1,52 @@
+import os
+import os.path
+import shutil
+
 from setuptools import setup, find_packages
+from distutils.command.sdist import sdist
 
 
-version = '1.2.2'
+DOCS_GENERATED = False
+version = '1.2.3'
 long_description = "\n\n".join([
     open('README.rst').read(),
-    open('CONTRIBUTORS.txt').read(),
-    open('CHANGES.txt').read()
+    open('CONTRIBUTORS.rst').read(),
+    open('CHANGES.rst').read()
 ])
+
+
+class BuildSphinx(sdist):
+    """
+    Generates sphinx documentation, puts it into html_docs/, packs it to
+    package and removes unused directory.
+    """
+    def run(self):
+        d = os.path.abspath('.')
+        DOCS = d + "/" + "docs"
+        DOCS_IN = DOCS + "/_build/html"
+        DOCS_OUT = d + "/html_docs"
+
+        if not self.dry_run:
+            print "Generating the documentation .."
+
+            os.chdir(DOCS)
+            os.system("make clean")
+            os.system("make html")
+
+            if os.path.exists(DOCS_OUT):
+                shutil.rmtree(DOCS_OUT)
+
+            shutil.copytree(DOCS_IN, DOCS_OUT)
+
+            global DOCS_GENERATED
+            DOCS_GENERATED = True
+
+            os.chdir(d)
+
+        sdist.run(self)
+
+        if os.path.exists(DOCS_OUT):
+            shutil.rmtree(DOCS_OUT)
 
 
 setup(
@@ -54,5 +94,6 @@ setup(
             "sphinxcontrib-napoleon",
             "sphinx",
         ]
-    }
+    },
+    cmdclass={'sdist': BuildSphinx}
 )
