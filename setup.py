@@ -6,7 +6,6 @@ from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 
 
-DOCS_GENERATED = False
 version = '1.2.5'
 long_description = "\n\n".join([
     open('README.rst').read(),
@@ -37,10 +36,6 @@ class BuildSphinx(sdist):
                 shutil.rmtree(DOCS_OUT)
 
             shutil.copytree(DOCS_IN, DOCS_OUT)
-
-            global DOCS_GENERATED
-            DOCS_GENERATED = True
-
             os.chdir(d)
 
         sdist.run(self)
