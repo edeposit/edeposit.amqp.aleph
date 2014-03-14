@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.4
+-----
+    - Documentation is now even for settings.py's attributes.
+    - User defined JSON configuration is now supported.
+
 1.2.3
 -----
     - Documentation is now generated automatically everytime the package is generated.
