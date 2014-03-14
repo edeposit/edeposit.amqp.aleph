@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Module is containing all necessary global variables for module.
+Module is containing all necessary global variables for package.
 
 Module also has ability to read user-defined data from two paths:
 $HOME/:attr:`SETTINGS_PATH` and /etc/:attr:`SETTINGS_PATH`.
