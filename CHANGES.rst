@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.5
+-----
+    - Fixed bug with package installation, when the package couldn't find README.rst.
+
 1.2.4
 -----
     - Documentation is now even for settings.py's attributes.

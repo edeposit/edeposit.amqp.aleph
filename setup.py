@@ -7,7 +7,7 @@ from distutils.command.sdist import sdist
 
 
 DOCS_GENERATED = False
-version = '1.2.4'
+version = '1.2.5'
 long_description = "\n\n".join([
     open('README.rst').read(),
     open('CONTRIBUTORS.rst').read(),
