@@ -81,7 +81,7 @@ class PostData:
             "P0200FMT__": "BK",
             "P0300BAS__a": "30",
             "P0501010__a": "",    # ISBN (uppercase)
-            "P0502010__b": "",    # vazba/forma
+            "P0502010__b": "online",  # vazba/forma
             "P0504010__d": "",    # cena
             # "P1201901__b": "",    # ean
             "P0601010__a": "",    # ISBN souboru

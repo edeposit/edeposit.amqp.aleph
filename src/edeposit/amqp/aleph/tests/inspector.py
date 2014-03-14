@@ -1,5 +1,5 @@
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 #
 # library for Robot Framework to inspect python modules
 #
@@ -77,7 +77,7 @@ class Inspector(object):
 
     def read_file(self, fn):
         with open(fn) as f:
-            return f.read()
+            return f.read().decode("utf-8").encode("utf-8")
 
     def test_Marc_XML_deserialization(self):
         xml = self.read_file(EXAMPLE_PATH)
@@ -127,15 +127,14 @@ class Inspector(object):
 
         return post
 
-    # def try_to_send_bad_data(self):
-    #     post_dict = self.convert_epublication_to_post_request().get_POST_data()
-    #     post_dict["P1601ISB__a"] = "edeposit_test"
-    #     post_dict["P0501010__a"] = "edeposit_test"
+    def try_to_send_bad_data(self):
+        post_dict = self.convert_epublication_to_post_request().get_POST_data()
+        post_dict["P1601ISB__a"] = "edeposit_test"
+        post_dict["P0501010__a"] = "edeposit_test"
 
-    #     try:
-    #         a = export._sendPostDict(post_dict)
-    #         raise AssertionError(str(a))
-    #     except export.ExportRejectedException:
-    #         return
+        data = export._sendPostDict(post_dict).decode("utf-8")
 
-    #     raise AssertionError("Rejection of invalid ebook doesn't work!")
+        assert(u"P07012001_a='Umění programování v UNIXu /'" in data)
+        assert(u"P0504010__d='Kč 590,00'" in data)
+
+        return data
