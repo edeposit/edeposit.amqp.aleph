@@ -13,10 +13,12 @@ Modul zajištuje export údajů o epublikacích do systém **Aleph**.
    configuration
    usage
 
+Tests
+-----
 
-:download:`test report <../report.html>`
+- :download:`test report <../report.html>`
+- :download:`test log <../log.html>`
 
-:download:`test log <../log.html>`
 
 Indices and tables
 ==================
