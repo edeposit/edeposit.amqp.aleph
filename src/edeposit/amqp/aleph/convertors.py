@@ -122,7 +122,7 @@ def _serializeNT(data):
         return dict(
             map(
                 lambda key: [key, _serializeNT(data[key])],
-                data.keys()
+                data
             )
         )
 
@@ -161,14 +161,14 @@ def _deserializeNT(data):
         del data["__nt_name"]
 
         return globals()[class_name](
-            **dict(zip(data.keys(), _deserializeNT(data.values())))
+            **dict(zip(data, _deserializeNT(data.values())))
         )
 
     elif isinstance(data, dict):
         return dict(
             map(
                 lambda key: [key, _deserializeNT(data[key])],
-                data.keys()
+                data
             )
         )
 

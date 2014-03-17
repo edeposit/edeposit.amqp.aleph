@@ -71,7 +71,7 @@ def get_all_constants():
 
         filter(                               # filter _PRIVATE variables
             lambda x: not x.startswith("_"),
-            globals().keys()
+            globals()
         )
     )
 
@@ -95,7 +95,7 @@ def substitute_globals(config_dict):
     if type(config_dict) != dict:
         return
 
-    for key in config_dict.keys():
+    for key in config_dict:
         if key in constants and type(config_dict[key]) in _ALLOWED:
             globals()[key] = config_dict[key]
 
