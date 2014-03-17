@@ -457,7 +457,7 @@ class MARCXMLRecord:
             raise ValueError(
                 "subfields_dict parameter has to be dict instance!"
             )
-        for key in subfields_dict.keys():
+        for key in subfields_dict:
             if len(key) > 1:
                 raise KeyError(
                     "subfields_dict can be only one character long!"
@@ -980,7 +980,7 @@ class MARCXMLRecord:
         field_name = "tag" if not self.oai_marc else "id"
 
         output = ""
-        for field_id in resorted(self.controlfields.keys()):
+        for field_id in resorted(self.controlfields):
             output += Template(template).substitute(
                 TAGNAME=tagname,
                 FIELD_NAME=field_name,
@@ -997,7 +997,7 @@ class MARCXMLRecord:
         field_name = "code" if not self.oai_marc else "label"
 
         output = ""
-        for field_id in resorted(subfields.keys()):
+        for field_id in resorted(subfields):
             for subfield in subfields[field_id]:
                 output += Template(template).substitute(
                     TAGNAME=tagname,
@@ -1021,7 +1021,7 @@ class MARCXMLRecord:
         i2_name = self.getI(2)
 
         output = ""
-        for field_id in resorted(self.datafields.keys()):
+        for field_id in resorted(self.datafields):
             # unpac dicts from array
             for dict_field in self.datafields[field_id]:
                 i1_val = dict_field[i1_name]
