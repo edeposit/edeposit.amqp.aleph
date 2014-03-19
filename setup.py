@@ -52,7 +52,7 @@ setup(
     description="E-Deposit AMQP module providing communication with Aleph",
     long_description=long_description,
 
-    url='https://github.com/jstavel/edeposit.amqp.aleph',
+    url='https://github.com/edeposit/edeposit.amqp.aleph',
 
     author='Edeposit team',
     author_email='edeposit@email.cz',
