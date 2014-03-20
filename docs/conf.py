@@ -35,7 +35,8 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
     "sphinxcontrib_robotdoc",
-    'sphinxcontrib.napoleon'
+    'sphinxcontrib.napoleon',
+    'sphinx.ext.intersphinx'
 ]
 
 # Napoleon settings
