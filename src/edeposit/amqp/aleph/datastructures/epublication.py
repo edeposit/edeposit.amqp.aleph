@@ -10,11 +10,11 @@ class FormatEnum:
     """
     Enum used as format in :class:`EPublication`.
     """
-    BROZ = "brož."
-    VAZANA = "váz."
-    MAPA = "mapa"
     CD = "CD-ROM"
     DVD = "DVD"
+    BROZ = "brož."
+    MAPA = "mapa"
+    VAZANA = "váz."
     ONLINE = "online"
 
 
