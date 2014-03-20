@@ -1,7 +1,7 @@
 .. _index:
 
 Modul pro AMQP komunikaci se systémem Aleph's
-==============================================
+=============================================
 
 Modul zajištuje export metadat o publikacích do systému **Aleph**.
 
@@ -18,6 +18,7 @@ Modul je vyvíjen v rámci projektu E-Deposit http://edeposit.nkp.cz
    installation
    configuration
    usage
+   aleph
 
 Tests
 -----
@@ -33,3 +34,4 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+ 
