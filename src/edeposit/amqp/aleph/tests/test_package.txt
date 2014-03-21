@@ -1,12 +1,18 @@
 *** Settings ***
-Library       HttpLibrary.HTTP
+Library  HttpLibrary.HTTP
+Library  OperatingSystem
+
 
 *** Variables ***
-${PACKAGE_NAME}   edeposit.amqp.aleph
-${PACKAGE_URL}    https://pypi.python.org/pypi/${PACKAGE_NAME}/
+${PACKAGE_NAME}                         edeposit.amqp.aleph
+${PACKAGE_URL}                          https://pypi.python.org/pypi/${PACKAGE_NAME}/
+
 
 *** Test Cases ***
 PYPI repozitář
-    GET      ${PACKAGE_URL}
+    GET                                 ${PACKAGE_URL}
     Response Status Code Should Equal   200
 
+PYPI balíček
+    ${RC} =   Run And Return Rc         pip search ${PACKAGE_NAME}
+    Should Be True                      ${RC} == 0
