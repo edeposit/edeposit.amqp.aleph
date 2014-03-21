@@ -6,14 +6,9 @@
 #= Imports ====================================================================
 """
 This module exists to provide ability to convert from AMQP data structures to
-Aleph's data structures.
-
-It can convert MARCXMLRecord to EPublication simplified data structure. It can
-also serialize any namedtuple to JSON.
+Aleph's data structures, specifically to convert MARCXMLRecord to EPublication
+simplified data structure.
 """
-import json
-
-
 from marcxml import MARCXMLRecord
 from datastructures import *
 from __init__ import *
@@ -93,102 +88,3 @@ def toEPublication(marcxml):
         originaly           = parsed.getOriginals(),
         internal_url        = ""  # TODO
     )
-
-
-def _serializeNT(data):
-    """
-    Serialize namedtuples (and other basic python types) to dictionary with
-    some special properties.
-
-    Args:
-        data (namedtuple/other python types): Data which will be serialized to
-             dict.
-
-    Data can be later automatically de-serialized by calling _deserializeNT().
-    """
-    if isinstance(data, list):
-        return map(lambda x: _serializeNT(x), data)
-
-    elif isinstance(data, tuple) and hasattr(data, "_fields"):  # is namedtuple
-        serialized = _serializeNT(dict(data._asdict()))
-        serialized["__nt_name"] = data.__class__.__name__
-
-        return serialized
-
-    elif isinstance(data, tuple):
-        return tuple(map(lambda x: _serializeNT(x), data))
-
-    elif isinstance(data, dict):
-        return dict(
-            map(
-                lambda key: [key, _serializeNT(data[key])],
-                data
-            )
-        )
-
-    return data
-
-
-def toJSON(structure):
-    """
-    Convert structure to json.
-
-    This is necessary, because standard JSON module can't serialize
-    namedtuples.
-
-    Args:
-        structure (namedtuple/basic python types): data which will be
-                  serialized to JSON.
-
-    Returns:
-        str: with serialized data.
-    """
-    return json.dumps(_serializeNT(structure))
-
-
-def _deserializeNT(data):
-    """
-    Deserialize special kinds of dicts from _serializeNT().
-    """
-    if isinstance(data, list):
-        return map(lambda x: _deserializeNT(x), data)
-
-    elif isinstance(data, tuple):
-        return tuple(map(lambda x: _deserializeNT(x), data))
-
-    elif isinstance(data, dict) and "__nt_name" in data:  # is namedtuple
-        class_name = data["__nt_name"]
-        del data["__nt_name"]
-
-        return globals()[class_name](
-            **dict(zip(data, _deserializeNT(data.values())))
-        )
-
-    elif isinstance(data, dict):
-        return dict(
-            map(
-                lambda key: [key, _deserializeNT(data[key])],
-                data
-            )
-        )
-
-    elif isinstance(data, unicode):
-        return data.encode("utf-8")
-
-    return data
-
-
-def fromJSON(json_data):
-    """
-    Convert JSON string back to python structures.
-
-    This is necessary, because standard JSON module can't serialize
-    namedtuples.
-
-    Args:
-        json_data (str): JSON string.
-
-    Returns:
-        python data/nameduple: with deserialized data.
-    """
-    return _deserializeNT(json.loads(json_data))

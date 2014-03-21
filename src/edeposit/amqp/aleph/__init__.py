@@ -8,9 +8,8 @@ Query workflow
 ==============
 
 To query Aleph, just create one of the Queries - :class:`ISBNQuery` for example
-and put it into :class:`aleph.datastructures.requests.SearchRequest` wrapper.
-Then encode it by calling :func:`serialize` and send the message to the Aleph's
-exchange::
+and put it into :class:`aleph.datastructures.requests.SearchRequest` wrapper
+and send the message to the Aleph's exchange::
 
     isbnq = ISBNQuery("80-251-0225-4")
     request = SearchRequest(isbnq)
@@ -21,8 +20,7 @@ exchange::
         exchange   = "ALEPH'S_EXCHANGE"
     )
 
-and you will get back AMQP message, and after decoding with fromAMQPMessage()
-also SearchResult.
+and you will get back AMQP message with SearchResult.
 
 Note:
     You don't have to import all structures from :class:`datastructures`, they
@@ -36,8 +34,7 @@ the ISBNQuery with :class:`CountRequest`::
 
     # rest is same..
 
-and you will get back (after decoding)
-:class:`aleph.datastructures.results.CountResult`.
+and you will get back :class:`aleph.datastructures.results.CountResult`.
 
 Note:
     You should always use CountRequest instead of just calling ``len()` to
@@ -67,13 +64,16 @@ Here is ASCII flow diagram for you::
                                   V    |
                                   |    ^
                                   V    |
-               AMQPMessage <------ AMQP <-------- AMQPMessage
+               AMQPMessage <------ AMQP <-------- AMQPMessagserializee
                     |             Service              ^
                     |                                  |
                     V                                  |
            reactToAMQPMessage() ............... magic_happens()
 
 Neat, isn't it?
+
+AQMP is handled by another module, edeposit.aqmp.aleph provides just
+datastructures and reactToAMQPMessage().
 """
 #= Imports ====================================================================
 from collections import namedtuple
@@ -237,33 +237,6 @@ REQUEST_TYPES = [
 
 
 #= Interface for an external world ============================================
-def serialize(data):
-    """
-    Serialize class hierarchy into JSON.
-
-    Args:
-        data (any): any python type serializable to JSON, with added support of
-                    namedtuples
-
-    Returns:
-        unicode: JSON string
-    """
-    return convertors.toJSON(data)
-
-
-def deserialize(data):
-    """
-    Deserialize classes from JSON data.
-
-    Args:
-        data (str): python data serialized to JSON
-
-    Returns:
-        any: any python typ (make sure you have namedtuples imported)
-    """
-    return convertors.fromJSON(data)
-
-
 def _iiOfAny(instance, classes):
     """
     Returns true, if `instance` is instance of any (_iiOfAny) of the `classes`.
@@ -296,22 +269,20 @@ def _iiOfAny(instance, classes):
 
 
 #= Functions ==================================================================
-def reactToAMQPMessage(message, response_callback, UUID):
+def reactToAMQPMessage(req, response_callback, UUID):
     """
     React to given (AMQP) message. Return data thru given callback function.
 
     Args:
-        message (str or Request class): message encoded in JSON by serialize()
-                                        or any of the Request class from
-                                        :class:`aleph.datastructures.requests`
+        req (Request class): any of the Request class from
+                             :class:`aleph.datastructures.requests`
         response_callback (func): function has to take two parameters -
-                                  message's body (serialized response class)
-                                  and UUID
+                                  message's body and UUID
         UUID (str): unique ID of received message
 
     Note:
         Function take care of sending the response over AMQP, or whatever you
-        use.
+        use by calling `response_callback()`.
 
     Returns:
         result of `response_callback()` call.
@@ -319,8 +290,6 @@ def reactToAMQPMessage(message, response_callback, UUID):
     Raises:
         ValueError: if bad type of `message` structure is given.
     """
-    req = deserialize(message) if type(message) == str else message
-
     # TODO: pridat podporu exportnich typu
     if not _iiOfAny(req, REQUEST_TYPES):
         raise ValueError(
@@ -346,4 +315,4 @@ def reactToAMQPMessage(message, response_callback, UUID):
         )
 
     if response is not None:
-        return response_callback(serialize(response), UUID)
+        return response_callback(response, UUID)
