@@ -18,6 +18,18 @@ class FormatEnum:
     ONLINE = "online"
 
 
+class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
+    """
+    Informations about author (or person).
+
+    Attributes:
+        firstName (str)
+        lastName (str)
+        title (str)
+    """
+    pass
+
+
 class EPublication(namedtuple("EPublication", ["ISBN",
                                                'nazev',
                                                'podnazev',
@@ -67,18 +79,6 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         nakladatelVydavatel  (str):  publisher's name
         ISBNSouboruPublikaci (list): list of strings with ISBN of the book
                                      series
-    """
-    pass
-
-
-class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
-    """
-    Informations about author (or person).
-
-    Attributes:
-        firstName (str)
-        lastName (str)
-        title (str)
     """
     pass
 
