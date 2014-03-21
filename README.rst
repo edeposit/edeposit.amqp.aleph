@@ -56,13 +56,13 @@ You can run them manually (from the root of the package):
 
 ::
 
-    $ pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/:src src/edeposit/amqp/aleph/tests/
+    $ pybot -W 80 --pythonpath src/edeposit/amqp/aleph/tests/:src src/edeposit/amqp/aleph/tests/
 
 Or continuously using nosier:
 
 ::
 
-    $ nosier -p src -b 'export' "pybot -W 100 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
+    $ nosier -p src -b 'export' "pybot -W 80 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
 
 Status of acceptance tests
 ++++++++++++++++++++++++++
