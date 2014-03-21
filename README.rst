@@ -37,9 +37,9 @@ edeposit.amqp.aleph.marcxml
 +++++++++++++++++++++++++++
 MARC XML (de)serialization class, which provides some higher-level bindings to MARC records.
 
-edeposit.amqp.aleph.convertors
-++++++++++++++++++++++++++++++
-Convertors from MARC XML records to Epublication structures defined in ``__init__``.
+edeposit.amqp.aleph.convertor
++++++++++++++++++++++++++++++
+Convertor from MARC XML records to Epublication structures defined in ``__init__``.
 
 edeposit.amqp.aleph.isbn
 ++++++++++++++++++++++++

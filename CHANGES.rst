@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.0
+-----
+    - Serializers removed from convertors.py. (De)serialization will be handled in edeposit.amqp, because other packages also uses it.
+
 1.2.5
 -----
     - Fixed bug with package installation, when the package couldn't find README.rst.
