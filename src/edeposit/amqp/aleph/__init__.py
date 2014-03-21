@@ -83,7 +83,7 @@ import isbn
 import aleph
 import export
 import settings
-import convertors
+import convertor
 from datastructures import *
 
 
@@ -106,7 +106,7 @@ class _QueryTemplate:
                     library,
                     doc_id,
                     xml,
-                    convertors.toEPublication(xml)
+                    convertor.toEPublication(xml)
                 )
             )
 

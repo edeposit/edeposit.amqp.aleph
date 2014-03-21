@@ -7,7 +7,7 @@
 import imp
 import edeposit.amqp.aleph as aleph
 import edeposit.amqp.aleph.export as export
-import edeposit.amqp.aleph.convertors as convertors
+import edeposit.amqp.aleph.convertor as convertor
 
 import os.path
 
@@ -107,7 +107,7 @@ class Inspector(object):
         assert set(xml.splitlines()) == set(str(m).splitlines())
 
     def test_epublication_convertor(self):
-        epub = aleph.convertors.toEPublication(self.read_file(EXAMPLE_PATH))
+        epub = aleph.convertor.toEPublication(self.read_file(EXAMPLE_PATH))
 
         assert epub.autori[0].lastName == "Raymond", "Bad author name."
         assert epub.ISBN[0] == "80-251-0225-4", "Bad ISBN."
@@ -128,7 +128,7 @@ class Inspector(object):
         xml = self.read_file(EXAMPLE_PATH)
         xml = aleph.marcxml.MARCXMLRecord(xml)
 
-        epub = convertors.toEPublication(xml)
+        epub = convertor.toEPublication(xml)
         post = export.PostData(epub)
 
         assert(epub.nazev == post._POST["P07012001_a"])

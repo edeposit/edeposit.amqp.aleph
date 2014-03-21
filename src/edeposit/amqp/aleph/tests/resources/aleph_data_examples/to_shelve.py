@@ -8,7 +8,7 @@ import os
 import os.path
 import shelve  # http://www.py.cz/Shelve
 
-import convertors
+import convertor
 from marcxml import MARCXMLRecord
 
 
@@ -21,7 +21,7 @@ def convertToShelve(filename):
     print filename
 
     data = open(filename).read()
-    epub = convertors.toEPublication(data)
+    epub = convertor.toEPublication(data)
 
     filename = os.path.basename(filename)
 
