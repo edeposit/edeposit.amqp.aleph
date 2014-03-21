@@ -39,10 +39,10 @@ class Inspector(object):
 
     def aleph_request(self, request):
         def blank_fn(result, uuid):
-            return aleph.deserialize(result)
+            return result
 
         return aleph.reactToAMQPMessage(
-            aleph.serialize(request),
+            request,
             blank_fn,
             "0"
         )
@@ -106,15 +106,23 @@ class Inspector(object):
         # test m.__str__() equality with original XML
         assert set(xml.splitlines()) == set(str(m).splitlines())
 
-    def test_JSON_convertor(self):
-        data = ""
-        with open(EXAMPLE_PATH) as f:
-            data = f.read()
+    def test_epublication_convertor(self):
+        epub = aleph.convertors.toEPublication(self.read_file(EXAMPLE_PATH))
 
-        epub = aleph.convertors.toEPublication(data)
-        epub2 = aleph.convertors.fromJSON(aleph.convertors.toJSON(epub))
-
-        assert(epub == epub2)
+        assert epub.autori[0].lastName == "Raymond", "Bad author name."
+        assert epub.ISBN[0] == "80-251-0225-4", "Bad ISBN."
+        assert "brož." in epub.vazba, "Bad binding."
+        assert epub.format == "23 cm", "Bad size."
+        assert epub.nazev == "Umění programování v UNIXu /", "Bad name."
+        assert epub.podnazev == "", "Bad subname"
+        assert epub.cena == "Kč 590,00", "Bad price."
+        assert epub.nazevCasti == "", "Bad part name."
+        assert epub.castDil == "", "Bad part order."
+        assert epub.nakladatelVydavatel == "Computer Press,", "Bad publisher."
+        assert epub.datumVydani == "2004", "Bad pub date."
+        assert epub.poradiVydani == "1. vyd.", "Bad pub order."
+        assert epub.originaly[0] == "Art of UNIX programming", "Bad original name."
+        assert epub.internal_url == "", "Bad internal URL."
 
     def convert_epublication_to_post_request(self):
         xml = self.read_file(EXAMPLE_PATH)

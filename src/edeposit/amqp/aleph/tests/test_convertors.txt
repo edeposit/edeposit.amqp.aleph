@@ -14,5 +14,5 @@ Variables   inspector.py
 Otestuj serializaci/deserializaci Marc XML/OAI
     Test Marc XML deserialization
 
-Otestuj JSON konvertor
-    Test JSON convertor
+Otestuj EPublication konvertor
+    Test EPublication convertor
