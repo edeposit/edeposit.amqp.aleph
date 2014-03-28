@@ -37,7 +37,7 @@ the ISBNQuery with :class:`CountRequest`::
 and you will get back :class:`aleph.datastructures.results.CountResult`.
 
 Note:
-    You should always use CountRequest instead of just calling ``len()` to
+    You should always use CountRequest instead of just calling ``len()`` to
     SearchResult.records - it doesn't put that much load to Aleph. Also Aleph
     is restricted to 150 requests per second.
 
@@ -45,7 +45,7 @@ Here is ASCII flow diagram for you::
 
  ISBNQuery      ----.                                 ,--> CountResult
  AuthorQuery    ----|                                 |       `- num_of_records
- PublisherQuery ----|                                 |
+ PublisherQuery ----|          ExportRequest          |
  GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
                     |                |                |       `- AlephRecord
                     V                |                |
@@ -64,7 +64,7 @@ Here is ASCII flow diagram for you::
                                   V    |
                                   |    ^
                                   V    |
-               AMQPMessage <------ AMQP <-------- AMQPMessagserializee
+               AMQPMessage <------ AMQP <-------- AMQPMessage
                     |             Service              ^
                     |                                  |
                     V                                  |
@@ -72,8 +72,9 @@ Here is ASCII flow diagram for you::
 
 Neat, isn't it?
 
-AQMP is handled by another module, edeposit.aqmp.aleph provides just
-datastructures and reactToAMQPMessage().
+AQMP is handled by `edeposit.amqp <http://edeposit-amqp.readthedocs.org>`_
+module, edeposit.aqmp.aleph provides just datastructures and
+:func:`reactToAMQPMessage`.
 """
 #= Imports ====================================================================
 from collections import namedtuple
@@ -269,26 +270,20 @@ def _iiOfAny(instance, classes):
 
 
 #= Functions ==================================================================
-def reactToAMQPMessage(req, response_callback, UUID):
+def reactToAMQPMessage(req, UUID):
     """
     React to given (AMQP) message. Return data thru given callback function.
 
     Args:
         req (Request class): any of the Request class from
                              :class:`aleph.datastructures.requests`
-        response_callback (func): function has to take two parameters -
-                                  message's body and UUID
         UUID (str): unique ID of received message
 
-    Note:
-        Function take care of sending the response over AMQP, or whatever you
-        use by calling `response_callback()`.
-
     Returns:
-        result of `response_callback()` call.
+        result of search in Aleph.
 
     Raises:
-        ValueError: if bad type of `message` structure is given.
+        ValueError: if bad type of `req` structure is given.
     """
     # TODO: pridat podporu exportnich typu
     if not _iiOfAny(req, REQUEST_TYPES):
@@ -296,23 +291,17 @@ def reactToAMQPMessage(req, response_callback, UUID):
             "Unknown type of request: '" + str(type(req)) + "'!"
         )
 
-    response = None
     if _iiOfAny(req, CountRequest) and _iiOfAny(req.query, QUERY_TYPES):
-        response = req.query.getCountResult()
+        return req.query.getCountResult()
     elif _iiOfAny(req, SearchRequest) and _iiOfAny(req.query, QUERY_TYPES):
-        response = req.query.getSearchResult()
-    elif _iiOfAny(req, ExportRequest):
-        raise NotImplementedError("Not implemented yet.")
+        return req.query.getSearchResult()
     elif _iiOfAny(req, ISBNValidationRequest):
-        response = ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
+        return ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
     elif _iiOfAny(req, ExportRequest):
         export.exportEPublication(req.epublication)
-        response = ExportResult(req.epublication.ISBN)
-    else:
-        raise ValueError(
-            "Unknown type of request: '" + str(type(req)) + "' or query: '" +
-            str(type(req.query)) + "'!"
-        )
+        return ExportResult(req.epublication.ISBN)
 
-    if response is not None:
-        return response_callback(response, UUID)
+    raise ValueError(
+        "Unknown type of request: '" + str(type(req)) + "' or query: '" +
+        str(type(req.query)) + "'!"
+    )
