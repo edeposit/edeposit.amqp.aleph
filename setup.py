@@ -8,7 +8,7 @@ from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 
 
-version = '1.3.0'
+version = '1.4.0'
 long_description = "\n\n".join([
     open('README.rst').read(),
     open('CONTRIBUTORS.rst').read(),

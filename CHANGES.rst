@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.0
+-----
+    - API change in reactToAMQPmessage(), which now takes just two parameters and returns values, instead of calling callbacks.
+    - Documentation updated and made useful.
+
 1.3.0
 -----
     - Serializers removed from convertors.py. (De)serialization will be handled in edeposit.amqp, because other packages also uses it.
