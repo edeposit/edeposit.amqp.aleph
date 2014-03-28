@@ -1,8 +1,11 @@
-aleph.datastructures package
-============================
+Data structures
+===============
+.. automodule:: aleph.datastructures
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-Submodules
-----------
+List of defined structures:
 
 .. toctree::
 
@@ -10,11 +13,3 @@ Submodules
    aleph.datastructures.epublication
    aleph.datastructures.requests
    aleph.datastructures.results
-
-Module contents
----------------
-
-.. automodule:: aleph.datastructures
-    :members:
-    :undoc-members:
-    :show-inheritance:

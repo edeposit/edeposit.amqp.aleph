@@ -1,5 +1,5 @@
-aleph.marcxml module
-====================
+Marc XML / Marc OAI parser
+==========================
 
 .. automodule:: aleph.marcxml
     :members:

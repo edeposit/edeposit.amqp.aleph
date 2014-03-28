@@ -1,5 +1,5 @@
-aleph.datastructures.alephrecord module
-=======================================
+AlephRecord structure
+=====================
 
 .. automodule:: aleph.datastructures.alephrecord
     :members:

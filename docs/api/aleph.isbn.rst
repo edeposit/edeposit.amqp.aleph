@@ -1,5 +1,5 @@
-aleph.isbn module
-=================
+ISBN validation module
+======================
 
 .. automodule:: aleph.isbn
     :members:

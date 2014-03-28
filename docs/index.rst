@@ -1,24 +1,22 @@
 .. _index:
 
-Modul pro AMQP komunikaci se systémem Aleph's
-=============================================
+Modul pro AMQP komunikaci se systémem Aleph
+===========================================
 
-Modul zajištuje export metadat o publikacích do systému **Aleph**.
+Modul zajištuje export metadat o publikacích do systému **Aleph** a je vyvíjen v rámci"projektu E-Deposit http://edeposit.nkp.cz
 
-Modul poskytuje AMQP komunikaci s RabbitMQ serverem.
+.. toctree::
+   :maxdepth: 4
 
-RabbitMQ server vystupuje v roli Integračního serveru, zajišťuje dostupnost dat, trvalost dat a jejich distribuci.
+   api/aleph
 
-Modul je vyvíjen v rámci projektu E-Deposit http://edeposit.nkp.cz
+Third party API description
+---------------------------
 
 .. toctree::
    :maxdepth: 2
 
-   requirements
-   installation
-   configuration
-   usage
-   aleph
+   propojeni_do_katalogu_nk
 
 Tests
 -----

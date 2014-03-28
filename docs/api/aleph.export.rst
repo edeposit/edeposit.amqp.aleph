@@ -1,5 +1,5 @@
-aleph.export module
-===================
+Export module
+=============
 
 .. automodule:: aleph.export
     :members:

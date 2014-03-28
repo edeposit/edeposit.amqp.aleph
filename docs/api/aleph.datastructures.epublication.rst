@@ -1,5 +1,5 @@
-aleph.datastructures.epublication module
-========================================
+EPublication structure
+======================
 
 .. automodule:: aleph.datastructures.epublication
     :members:

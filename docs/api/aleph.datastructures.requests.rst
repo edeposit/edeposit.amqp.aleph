@@ -1,5 +1,5 @@
-aleph.datastructures.requests module
-====================================
+Request structures
+==================
 
 .. automodule:: aleph.datastructures.requests
     :members:

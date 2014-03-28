@@ -1,5 +1,5 @@
-aleph.datastructures.results module
-===================================
+Result classes
+==============
 
 .. automodule:: aleph.datastructures.results
     :members:

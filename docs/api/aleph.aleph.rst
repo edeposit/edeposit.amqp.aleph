@@ -1,4 +1,4 @@
-aleph.aleph module
+Aleph lowlevel API
 ==================
 
 .. automodule:: aleph.aleph
