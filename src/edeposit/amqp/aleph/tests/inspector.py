@@ -38,12 +38,8 @@ class Inspector(object):
         return fn(*args, **kwargs)
 
     def aleph_request(self, request):
-        def blank_fn(result, uuid):
-            return result
-
         return aleph.reactToAMQPMessage(
             request,
-            blank_fn,
             "0"
         )
 
