@@ -4,7 +4,7 @@ Introduction
 This package provides an AMQP middle-ware for communication with Aleph. `Aleph <http://www.exlibrisgroup.com/category/Aleph>`_ is a system used in libraries to store meta-data about books and
 authors.
 
-`Full module documentation <http://edeposit-amqp-aleph.readthedocs.org/en/latest/py-modindex.html>`_ is hosted at the `readthedocs <http://edeposit-amqp-aleph.readthedocs.org>`_.
+`Full module documentation <http://edeposit-amqp-aleph.readthedocs.org>`_ is hosted at the ReadTheDocs.
 
 Installation
 ------------
