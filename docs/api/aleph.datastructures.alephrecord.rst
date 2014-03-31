@@ -1,7 +1,7 @@
 AlephRecord structure
 =====================
 
-.. automodule:: aleph.datastructures.alephrecord
+.. automodule:: edeposit.amqp.aleph.datastructures.alephrecord
     :members:
     :undoc-members:
     :show-inheritance:

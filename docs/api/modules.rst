@@ -4,4 +4,4 @@ aleph
 .. toctree::
    :maxdepth: 4
 
-   aleph
+   edeposit.amqp.aleph

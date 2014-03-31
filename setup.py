@@ -7,12 +7,14 @@ import shutil
 from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 
+from docs import getVersion
 
-version = '1.4.0'
+
+changelog = open('CHANGES.rst').read()
 long_description = "\n\n".join([
     open('README.rst').read(),
     open('CONTRIBUTORS.rst').read(),
-    open('CHANGES.rst').read()
+    changelog
 ])
 
 
@@ -48,7 +50,7 @@ class BuildSphinx(sdist):
 
 setup(
     name='edeposit.amqp.aleph',
-    version=version,
+    version=getVersion(changelog),
     description="E-Deposit AMQP module providing communication with Aleph",
     long_description=long_description,
 

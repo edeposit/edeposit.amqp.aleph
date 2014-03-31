@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.1
+-----
+    - Version of package and documentation is now automatically parsed from this file.
+
 1.4.0
 -----
     - API change in reactToAMQPmessage(), which now takes just two parameters and returns values, instead of calling callbacks.

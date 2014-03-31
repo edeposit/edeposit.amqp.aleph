@@ -1,6 +1,6 @@
 Data structures
 ===============
-.. automodule:: aleph.datastructures
+.. automodule:: edeposit.amqp.aleph.datastructures
     :members:
     :undoc-members:
     :show-inheritance:

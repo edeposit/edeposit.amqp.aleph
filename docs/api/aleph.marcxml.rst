@@ -1,7 +1,7 @@
 Marc XML / Marc OAI parser
 ==========================
 
-.. automodule:: aleph.marcxml
+.. automodule:: edeposit.amqp.aleph.marcxml
     :members:
     :undoc-members:
     :show-inheritance:
