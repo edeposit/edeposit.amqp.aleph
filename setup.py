@@ -7,7 +7,10 @@ import shutil
 from setuptools import setup, find_packages
 from distutils.command.sdist import sdist
 
-from docs import getVersion
+try:
+    from docs import getVersion
+except ImportError:  # during packaging, docs are moved to html_docs
+    from html_docs import getVersion
 
 
 changelog = open('CHANGES.rst').read()
@@ -40,6 +43,7 @@ class BuildSphinx(sdist):
                 shutil.rmtree(DOCS_OUT)
 
             shutil.copytree(DOCS_IN, DOCS_OUT)
+            shutil.copy(DOCS + "/__init__.py", DOCS_OUT)  # for getVersion()
             os.chdir(d)
 
         sdist.run(self)
