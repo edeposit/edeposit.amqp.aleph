@@ -2,6 +2,10 @@ Changelog
 =========
 
 
+1.4.3
+-----
+    - Documentation of export.py updated.
+
 1.4.2
 -----
     - Assertions in export.py are now annotated (useful for debugging).

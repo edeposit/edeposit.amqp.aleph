@@ -63,6 +63,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)
         ISBN   (str): ISBN of the book
         cena   (str): price of the book
+        vazba  (str): bidding of the book
         nazev  (str): name of the book
         format (str): format of the book - see :class:`FormatEnum`
         autori (list): list of :class:`Author` objects

@@ -9,7 +9,7 @@ which is currently used to report new books by publishers.
 
 Most important function from this module is :func:`exportEPublication`,
 which will do everything, that is needed to do, to export
-:class:`aleph.datastructures.epublication.EPublication` structure to the Aleph.
+:class:`.EPublication` structure to the Aleph.
 
 Warning:
     This whole module is highly dependent on processes, which are defined as
@@ -63,16 +63,17 @@ class PostData:
         validated before they can be passed to webform.
 
     Args:
-        epub (EPublication): structure, which will be converted
+        epub (EPublication): structure, which will be converted (see
+                             :class:`.EPublication` for details).
 
     Attributes:
         _POST (dict):   dictionary with parsed data
-        mapping (dict): dictionary with some of mapping, which are aplied to
-                        ``_POST`` dict in postprocessing
+        mapping (dict): dictionary with some of mapping, which are applied to
+                        :attr:`._POST` dict in post processing
 
     Warning:
-        Don't manipulate ``_POST`` property directly, if you didn't really know
-        the'internal structure and how the ``mapping`` is aplied.
+        Don't manipulate :attr:`._POST` property directly, if you didn't really
+        know the internal structure and how the :attr:`.mapping` is applied.
     """
     def __init__(self, epub):
         self._POST = {
@@ -254,8 +255,8 @@ class PostData:
     def get_POST_data(self):
         """
         Returns:
-            dict: POST data, which can be sent to webform using urllib, \
-                  or similar library
+            dict: POST data, which can be sent to webform using \
+                  :py:mod:`urllib` or similar library
         """
         self._postprocess()
 
@@ -271,7 +272,7 @@ class PostData:
 
 def _sendPostDict(post_dict):
     """
-    Send `post_dict` to the ``settigns.ALEPH_EXPORT_URL``.
+    Send `post_dict` to the :attr:`.ALEPH_EXPORT_URL`.
 
     Args:
         post_dict (dict): dictionary from :class:`PostData.get_POST_data()`
@@ -292,11 +293,28 @@ def _sendPostDict(post_dict):
 
 def exportEPublication(epub):
     """
-    Send `epub` EPublication object to Aleph, where it will be processed by
-    librarians.
+    Send `epub` :class:`.EPublication` object to Aleph, where it will be
+    processed by librarians.
 
     Args:
         epub (EPublication): structure for export
+
+    Warning:
+        The export function is expecting some of the EPublication properties to be
+        filled with non-blank data.
+
+        Specifically:
+
+        - :attr:`.EPublication.ISBN`
+        - :attr:`.EPublication.nazev`
+        - :attr:`.EPublication.mistoVydani`
+        - :attr:`.EPublication.datumVydani`
+        - :attr:`.EPublication.poradiVydani`
+        - :attr:`.EPublication.zpracovatelZaznamu`
+        - :attr:`.EPublication.vazba`
+        - :attr:`.EPublication.format`
+        - :attr:`.EPublication.format`
+        - :attr:`.EPublication.nakladatelVydavatel`
     """
     post_dict = PostData(epub).get_POST_data()
     return _sendPostDict(post_dict)
