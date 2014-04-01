@@ -1,6 +1,11 @@
 Changelog
 =========
 
+
+1.4.2
+-----
+    - Assertions in export.py are now annotated (useful for debugging).
+
 1.4.1
 -----
     - Version of package and documentation is now automatically parsed from this file.

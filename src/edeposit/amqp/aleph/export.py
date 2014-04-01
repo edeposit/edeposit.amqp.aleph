@@ -227,29 +227,29 @@ class PostData:
     def _check_required_fields(self):
         """
         Make sure, that internal dictionary contains all fields, which are
-        requiered by the webform.
+        required by the webform.
         """
-        assert(self._POST["P0501010__a"] != "")  # ISBN
-        assert(self._POST["P1601ISB__a"] != "")  # hidden ISBN field
+        assert self._POST["P0501010__a"] != "", "ISBN is required!"
+        assert self._POST["P1601ISB__a"] != "", "Hidden ISBN field is required!"
 
-        assert(self._POST["P07012001_a"] != "")  # nazev
-        assert(self._POST["P0901210__a"] != "")  # Místo vydání
+        assert self._POST["P07012001_a"] != "", "Nazev is required!"
+        assert self._POST["P0901210__a"] != "", "Místo vydání is required!"
 
-        assert(self._POST["P0903210__d"] != "")  # Měsíc a rok vydání
-        assert(self._POST["P0801205__a"] != "")  # Pořadí vydání
+        assert self._POST["P0903210__d"] != "", "Datum vydání is required!"
+        assert self._POST["P0801205__a"] != "", "Pořadí vydání is required!"
 
         # Zpracovatel záznamu
-        assert(self._POST["P1501IST1_a"] != "")  # (hidden)
-        assert(self._POST["P1502IST1_b"] != "")  # (visible)
+        assert self._POST["P1501IST1_a"] != "", "Zpracovatel is required! (H)"
+        assert self._POST["P1502IST1_b"] != "", "Zpracovatel is required! (V)"
 
         # vazba/forma
-        assert(self._POST["P0502010__b"] != "")
+        assert self._POST["P0502010__b"] != "", "Vazba/forma is required!"
 
         # Formát (poze pro epublikace)
         if self._POST["P0502010__b"] == FormatEnum.ONLINE:
-            assert(self._POST["P0503010__x"] != "")
+            self._POST["P0503010__x"] != "", "Format is required!"
 
-        assert(self._POST["P0902210__c"] != "")  # Nakladatel
+        assert self._POST["P0902210__c"] != "", "Nakladatel is required!"
 
     def get_POST_data(self):
         """
