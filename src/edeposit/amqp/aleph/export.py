@@ -230,6 +230,13 @@ class PostData:
         Make sure, that internal dictionary contains all fields, which are
         required by the webform.
         """
+        # export script accepts only czech ISBNs
+        isbn_check = self._POST["P0501010__a"].startswith("80") or \
+                     self._POST["P0501010__a"].startswith("978-80")
+        hidden_isbn_check = self._POST["P1601ISB__a"].startswith("80") or \
+                            self._POST["P1601ISB__a"].startswith("978-80")
+        assert isbn_check and hidden_isbn_check, "Only czech ISBN is accepted!"
+
         assert self._POST["P0501010__a"] != "", "ISBN is required!"
         assert self._POST["P1601ISB__a"] != "", "Hidden ISBN field is required!"
 
