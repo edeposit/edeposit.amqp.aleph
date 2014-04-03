@@ -188,42 +188,36 @@ class PostData:
         self._POST["P07022001_b"] = mapping[3]
         self._POST["P1501IST1_a"] = mapping[4]
 
+    def _validate_isbn(self, raw_isbn):
+        if isinstance(raw_isbn, list) and len(raw_isbn) > 0:
+            raw_isbn = raw_isbn[0]
+
+        raw_isbn = "" if raw_isbn == [] else raw_isbn
+
+        if not isbn.is_valid_isbn(raw_isbn):
+            raise InvalidISBNException(
+                raw_isbn + " has invalid ISBN checksum!"
+            )
+
+        return raw_isbn.upper()
+
     def _postprocess(self):
         """
         Move data between internal fields, validate them and make sure, that
         everything is as it should be.
         """
-        # get ISBN of serie
-        series_isbn = self._POST["P0601010__a"]
-        if isinstance(series_isbn, list) and len(series_isbn) > 0:
-            series_isbn = series_isbn[0]
-        # we want str
-        self._POST["P0601010__a"] = "" if series_isbn == [] else series_isbn
-
-        # try to validate series ISBN
-        if series_isbn != "" and series_isbn != []:
-            series_isbn = series_isbn.upper()
-            self._POST["P0601010__a"] = series_isbn
-
-            if not isbn.is_valid_isbn(series_isbn):
-                raise InvalidISBNException(
-                    "%s is has invalid ISBN checksum!" % series_isbn
-                )
-
-            self._POST["P0601010__b"] = "soubor : " + series_isbn
+        # validate series ISBN
+        self._POST["P0601010__a"] = self._validate_isbn(
+            self._POST["P0601010__a"]
+        )
+        if self._POST["P0601010__a"] != "":
+            self._POST["P0601010__b"] = "soubor : " + self._POST["P0601010__a"]
 
         # validate ISBN of the book
-        book_isbn = self._POST["P0501010__a"]
-        if isinstance(book_isbn, list) and len(book_isbn) > 0:
-            book_isbn = book_isbn[0]
-        book_isbn = "" if book_isbn == [] else book_isbn  # we want str
-
-        if not isbn.is_valid_isbn(book_isbn):
-            raise InvalidISBNException(
-                "%s is has invalid ISBN checksum!" % book_isbn
-            )
-        self._POST["P0501010__a"] = book_isbn
-        self._POST["P1601ISB__a"] = book_isbn
+        self._POST["P0501010__a"] = self._validate_isbn(
+            self._POST["P0501010__a"]
+        )
+        self._POST["P1601ISB__a"] = self._POST["P0501010__a"]
 
     def _check_required_fields(self):
         """
