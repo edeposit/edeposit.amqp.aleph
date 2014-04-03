@@ -188,11 +188,14 @@ class PostData:
         self._POST["P07022001_b"] = mapping[3]
         self._POST["P1501IST1_a"] = mapping[4]
 
-    def _validate_isbn(self, raw_isbn):
+    def _validate_isbn(self, raw_isbn, accept_blank=False):
         if isinstance(raw_isbn, list) and len(raw_isbn) > 0:
             raw_isbn = raw_isbn[0]
 
         raw_isbn = "" if raw_isbn == [] else raw_isbn
+
+        if raw_isbn == "" and accept_blank:
+            return raw_isbn
 
         if not isbn.is_valid_isbn(raw_isbn):
             raise InvalidISBNException(
@@ -208,14 +211,16 @@ class PostData:
         """
         # validate series ISBN
         self._POST["P0601010__a"] = self._validate_isbn(
-            self._POST["P0601010__a"]
+            self._POST["P0601010__a"],
+            accept_blank=True
         )
         if self._POST["P0601010__a"] != "":
             self._POST["P0601010__b"] = "soubor : " + self._POST["P0601010__a"]
 
         # validate ISBN of the book
         self._POST["P0501010__a"] = self._validate_isbn(
-            self._POST["P0501010__a"]
+            self._POST["P0501010__a"],
+            accept_blank=False
         )
         self._POST["P1601ISB__a"] = self._POST["P0501010__a"]
 
