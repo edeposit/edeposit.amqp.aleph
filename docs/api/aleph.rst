@@ -9,10 +9,11 @@ aleph package
 Submodules
 ----------
 .. toctree::
+   :maxdepth: 1
 
-   aleph.aleph
-   aleph.marcxml
-   aleph.isbn
-   aleph.export
-   aleph.settings
+   /api/aleph.aleph
+   /api/aleph.marcxml
+   /api/aleph.isbn
+   /api/aleph.export
+   /api/aleph.settings
    /api/aleph.datastructures

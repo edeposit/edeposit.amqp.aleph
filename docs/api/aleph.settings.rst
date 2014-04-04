@@ -1,5 +1,5 @@
-aleph.settings module
-=====================
+Settings and configuration
+==========================
 
 .. automodule:: edeposit.amqp.aleph.settings
     :members:

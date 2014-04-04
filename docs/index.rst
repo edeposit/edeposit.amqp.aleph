@@ -3,10 +3,14 @@
 Modul pro AMQP komunikaci se systémem Aleph
 ===========================================
 
-Modul zajištuje export metadat o publikacích do systému **Aleph** a je vyvíjen v rámci"projektu E-Deposit http://edeposit.nkp.cz
+Modul zajištuje export metadat o publikacích do systému Aleph_. Modul je vyvíjen
+v rámci projektu `E-Deposit`_.
+
+.. _Aleph: http://www.exlibrisgroup.com/category/Aleph
+.. _E-Deposit: http://edeposit.nkp.cz
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 3
 
    api/aleph
 
