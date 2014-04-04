@@ -192,6 +192,7 @@ class PostData:
         if isinstance(raw_isbn, list) and len(raw_isbn) > 0:
             raw_isbn = raw_isbn[0]
 
+        # blank list -> blank str
         raw_isbn = "" if raw_isbn == [] else raw_isbn
 
         if raw_isbn == "" and accept_blank:
@@ -306,8 +307,8 @@ def exportEPublication(epub):
         epub (EPublication): structure for export
 
     Warning:
-        The export function is expecting some of the EPublication properties to be
-        filled with non-blank data.
+        The export function is expecting some of the EPublication properties to
+        be filled with non-blank data.
 
         Specifically:
 

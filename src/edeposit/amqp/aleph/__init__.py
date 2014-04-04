@@ -8,8 +8,8 @@ Query workflow
 ==============
 
 To query Aleph, just create one of the Queries - :class:`ISBNQuery` for example
-and put it into :class:`aleph.datastructures.requests.SearchRequest` wrapper
-and send the message to the Aleph's exchange::
+and put it into :class:`.SearchRequest` wrapper and send the message to the
+Aleph's exchange::
 
     isbnq = ISBNQuery("80-251-0225-4")
     request = SearchRequest(isbnq)
@@ -20,26 +20,28 @@ and send the message to the Aleph's exchange::
         exchange   = "ALEPH'S_EXCHANGE"
     )
 
-and you will get back AMQP message with SearchResult.
+and you will get back AMQP message with :class:`.SearchResult`.
 
 Note:
     You don't have to import all structures from :class:`datastructures`, they
     should be automatically imported and made global in ``__init__.py``.
 
+Example
+-------
 If you want to just get count of how many items is there in Aleph, just wrap
-the ISBNQuery with :class:`CountRequest`::
+the :class:`.ISBNQuery` with :class:`.CountRequest`::
 
     isbnq = ISBNQuery("80-251-0225-4")
     request = CountRequest(isbnq)
 
     # rest is same..
 
-and you will get back :class:`aleph.datastructures.results.CountResult`.
+and you will get back :class:`.CountResult`.
 
 Note:
-    You should always use CountRequest instead of just calling ``len()`` to
-    SearchResult.records - it doesn't put that much load to Aleph. Also Aleph
-    is restricted to 150 requests per second.
+    You should always use :class:`.CountRequest` instead of just calling
+    :py:func:`len()` to :attr:`.SearchResult.records` - it doesn't put that
+    much load to Aleph. Also Aleph is restricted to 150 requests per second.
 
 Here is ASCII flow diagram for you::
 
@@ -72,9 +74,13 @@ Here is ASCII flow diagram for you::
 
 Neat, isn't it?
 
-AQMP is handled by `edeposit.amqp <http://edeposit-amqp.readthedocs.org>`_
-module, edeposit.aqmp.aleph provides just datastructures and
-:func:`reactToAMQPMessage`.
+Note:
+    AQMP is handled by `edeposit.amqp <http://edeposit-amqp.readthedocs.org>`_
+    module, edeposit.aqmp.aleph provides just datastructures and
+    :func:`reactToAMQPMessage`.
+
+API
+---
 """
 #= Imports ====================================================================
 from collections import namedtuple
@@ -123,7 +129,7 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
                                                'field']),
                    _QueryTemplate):
     """
-    Used for generic queries to aleph.
+    Used for generic queries to Aleph.
 
     Args:
         base (str)
@@ -158,12 +164,12 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
 
 class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
     """
-    Query Aleph to get books by ISBN.
+    Used to query Aleph to get books by ISBN.
 
     Args:
         ISBN (str)
-        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
-                              used
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
 
     Note:
         ISBN is not unique, so you can get back lot of books with same ISBN.
@@ -182,12 +188,12 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
 class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
                   _QueryTemplate):
     """
-    Query Aleph to get books by Author.
+    Used to query Aleph to get books by Author.
 
     Args:
-        author (str): Author's name/lastname in UTF
-        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
-                              used
+        author (str): Author's name/lastname in UTF-8.
+        base (str, optional): If not set, ``settings.ALEPH_DEFAULT_BASE`` is
+                              used.
 
     """
     def __new__(self, author, base=settings.ALEPH_DEFAULT_BASE):
@@ -203,12 +209,12 @@ class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
 class PublisherQuery(namedtuple("PublisherQuery", ["publisher", "base"]),
                      _QueryTemplate):
     """
-    Query Aleph to get books by Publisher.
+    Used to query Aleph to get books by Publisher.
 
     Args:
-        publisher (str): publisher's name in UTF
-        base (str, optional): if not set, ``settings.ALEPH_DEFAULT_BASE`` is
-                              used
+        publisher (str): Publisher's name in UTF-8.
+        base (str, optional): If not set, ``settings.ALEPH_DEFAULT_BASE`` is
+                              used.
 
     """
     def __new__(self, publisher, base=settings.ALEPH_DEFAULT_BASE):
@@ -242,16 +248,16 @@ def _iiOfAny(instance, classes):
     """
     Returns true, if `instance` is instance of any (_iiOfAny) of the `classes`.
 
-    This function doesn't use isinstance() check, it just compares the
-    classnames.
+    This function doesn't use :func:`isinstance` check, it just compares the
+    class names.
 
-    This can be generaly dangerous, but it is really useful when you are
+    This can be generally dangerous, but it is really useful when you are
     comparing class serialized in one module and deserialized in another.
 
     This causes, that module paths in class internals are different and
-    isinstance() and type() comparsions thus fails.
+    :func:`isinstance` and :func:`type` comparsions thus fails.
 
-    Use this function instead, if you wan't to check what type is your
+    Use this function instead, if you want to check what type is your
     deserialized message.
 
     Args:
@@ -272,7 +278,7 @@ def _iiOfAny(instance, classes):
 #= Functions ==================================================================
 def reactToAMQPMessage(req, UUID):
     """
-    React to given (AMQP) message. Return data thru given callback function.
+    React to given (AMQP) message.
 
     Args:
         req (Request class): any of the Request class from
@@ -280,10 +286,12 @@ def reactToAMQPMessage(req, UUID):
         UUID (str): unique ID of received message
 
     Returns:
-        result of search in Aleph.
+        Result class: Result of search in Aleph. \
+                      See :mod:`~edeposit.amqp.aleph.datastructures.results` \
+                      submodule.
 
     Raises:
-        ValueError: if bad type of `req` structure is given.
+        ValueError: If bad type of `req` structure is given.
     """
     # TODO: pridat podporu exportnich typu
     if not _iiOfAny(req, REQUEST_TYPES):
