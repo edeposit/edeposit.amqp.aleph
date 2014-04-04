@@ -193,10 +193,7 @@ def _getListOfBases():
     )
 
     # filter bases from base sections
-    bases = map(
-        lambda x: x.split("=")[1].strip(),
-        bases
-    )
+    bases = map(lambda x: x.split("=")[1].strip(), bases)
 
     return list(set(bases))  # list(set()) is same as unique()
 
@@ -227,19 +224,21 @@ def _alephResultToDict(dom):
     """
     result = {}
     for i in dom.childs:
-        if i.isOpeningTag():
-            keyword = i.getTagName().strip()
-            value = _tryConvertToInt(i.getContent().strip())
+        if not i.isOpeningTag():
+            continue
 
-            # if there are multiple tags with same keyword, add values into
-            # array, instead of rewriting existing value at given keyword
-            if keyword not in result:  # if it is not in result, add it
-                result[keyword] = value
-            else:  # if it is already there ..
-                if isinstance(result[keyword], list):  # and it is list ..
-                    result[keyword].append(value)  # add it to list
-                else:  # or make it array
-                    result[keyword] = [result[keyword], value]
+        keyword = i.getTagName().strip()
+        value = _tryConvertToInt(i.getContent().strip())
+
+        # if there are multiple tags with same keyword, add values into
+        # array, instead of rewriting existing value at given keyword
+        if keyword in result:                  # if it is already there ..
+            if isinstance(result[keyword], list):  # and it is list ..
+                result[keyword].append(value)          # add it to list
+            else:                                  # or make it array
+                result[keyword] = [result[keyword], value]
+        else:                                  # if it is not in result, add it
+            result[keyword] = value
 
     return result
 
@@ -308,14 +307,15 @@ def searchInAleph(base, phrase, considerSimilar, field):
     # add informations about base into result
     result["base"] = base
 
-    if "error" in result:
-        if result["error"] == "empty set":
-            result["no_entries"] = 0  # empty set have 0 entries
-            return result
-        else:
-            raise AlephException(result["error"])
+    if "error" not in result:
+        return result
 
-    return result
+    # handle errors
+    if result["error"] == "empty set":
+        result["no_entries"] = 0  # empty set have 0 entries
+        return result
+    else:
+        raise AlephException(result["error"])
 
 
 def getDocumentIDs(aleph_search_result, number_of_docs=-1):
@@ -460,7 +460,7 @@ def downloadMARCOAI(doc_id, base):
 
     Args:
         doc_id (str):         you will get this from :func:`getDocumentIDs`
-        base (str, optional): Base from which you want to download Aleph 
+        base (str, optional): Base from which you want to download Aleph
                               document.
                               This seems to be duplicite with
                               :func:`searchInAleph` parameters, but it's just
@@ -486,18 +486,18 @@ def downloadMARCOAI(doc_id, base):
 
     # check for errors
     error = dom.find("error")
-    if len(error) > 0:
-        if "Error reading document" in error[0].getContent():
-            raise DocumentNotFoundException(
-                str(error[0].getContent())
-            )
-        else:
-            raise InvalidAlephBaseException(
-                error[0].getContent() + "\n" +
-                "The base you are trying to access probably doesn't exist."
-            )
+    if len(error) <= 0:  # no errors
+        return data
 
-    return data
+    if "Error reading document" in error[0].getContent():
+        raise DocumentNotFoundException(
+            str(error[0].getContent())
+        )
+    else:
+        raise InvalidAlephBaseException(
+            error[0].getContent() + "\n" +
+            "The base you are trying to access probably doesn't exist."
+        )
 
 
 def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
