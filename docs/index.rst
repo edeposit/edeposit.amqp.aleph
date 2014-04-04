@@ -3,7 +3,8 @@
 Modul pro AMQP komunikaci se systémem Aleph
 ===========================================
 
-Modul zajištuje export metadat o publikacích do systému Aleph_. Modul je vyvíjen
+Modul zajištuje export metadat o publikacích do systému Aleph_. Modul je 
+vyvíjen
 v rámci projektu `E-Deposit`_.
 
 .. _Aleph: http://www.exlibrisgroup.com/category/Aleph
@@ -22,11 +23,17 @@ Third party API description
 
    propojeni_do_katalogu_nk
 
-Tests
------
+Related projects
+----------------
 
-- :download:`test report <../report.html>`
-- :download:`test log <../log.html>`
+    - `AMQP module <http://edeposit-amqp.readthedocs.org>`_
+    - `Calibre module <http://edeposit-amqp-calibre.readthedocs.org>`_
+
+.. Tests
+.. -----
+.. 
+.. - :download:`test report <../report.html>`
+.. - :download:`test log <../log.html>`
 
 
 Indices and tables
