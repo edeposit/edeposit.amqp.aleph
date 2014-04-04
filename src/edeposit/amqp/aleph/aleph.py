@@ -7,10 +7,12 @@
 """
 Aleph X-Service wrapper.
 
-This module allows you to query Aleph's X-Services module (Aleph server is
-defined by ALEPH_URL in settings.py).
+This module allows you to query Aleph's X-Services_ module (Aleph server is
+defined by :attr:`~edeposit.amqp.aleph.settings.ALEPH_URL` in ``settings.py``).
 
-There are two levels of abstraction:
+.. _X-Services: http://www.exlibrisgroup.com/category/MetaLibXServer
+
+There are two levels of abstraction.
 
 Lowlevel
 ========
@@ -28,20 +30,21 @@ Workflow
 Aleph works in strange way, that he won't allow you to access desired
 information directly.
 
-You have to create search request by calling searchInAleph() first, which
-will return dictionary with few imporant informations about session.
+You have to create search request by calling :func:`searchInAleph` first, which
+will return dictionary with few important informations about session.
 
-This dictionary can be later used as parameter to function getDocumentIDs(),
-which will give you list of DocumentID named tuples.
+This dictionary can be later used as parameter to :func:`getDocumentIDs`
+function, which will give you list of :class:`DocumentID` named tuples.
 
-Named tuples are used, because to access your document, you won't need just
-document ID number, but also library ID string.
+Note:
+    :py:func:`~collections.namedtuple` is used, because to access your document,
+    you don't need just `document ID` number, but also `library ID` string.
 
 Depending on your system, there may be just only one accessible library, or
-mutiple ones, and then you will be glad, that you get both of this
+multiple ones, and then you will be glad, that you get both of this
 informations together.
 
-DocumentID can be used as parameter to :func:`downloadMARCXML`.
+:class:`DocumentID` can be used as parameter to :func:`downloadMARCXML`.
 
 Lets look at some code::
 
@@ -51,21 +54,24 @@ Lets look at some code::
 
         # processDocument(XML)
 
-Highlevel
-=========
+High-level
+==========
 
-So far, there are only getter wrappers::
+So far, there are only getter wrappers:
 
-    getISBNsIDs()
-    getAuthorsBooksIDs()
-    getPublishersBooksIDs()
+    - :func:`getISBNsIDs`
+    - :func:`getAuthorsBooksIDs`
+    - :func:`getPublishersBooksIDs`
 
-And counting functions (they are one request to aleph faster than just
-counting results from getters)::
+And counting functions:
 
-    getISBNCount()
-    getAuthorsBooksCount()
-    getPublishersBooksCount()
+    - :func:`getISBNCount`
+    - :func:`getAuthorsBooksCount`
+    - :func:`getPublishersBooksCount`
+
+Note:
+    Counting functions are by one request faster than just counting results from
+    standard getters. It is preferred to use them to reduce load to Aleph.
 
 Other noteworthy properties
 ===========================
@@ -73,7 +79,7 @@ Other noteworthy properties
 List of valid bases can be obtained by calling :func:`_getListOfBases`, which
 returns list of strings.
 
-There is also defined exception tree - see :class:`AlephException` docstring
+There is also defined exception tree - see :class:`AlephException` doc-string
 for details.
 """
 from collections import namedtuple
@@ -109,7 +115,7 @@ VALID_ALEPH_FIELDS = [
     "icz",  # identifikační číslo záznamu
     "cnb",  # číslo ČNB
     "sg"  # signatura
-]
+]  #: 
 
 dhtmlparser.NONPAIR_TAGS = []  # used for parsing XML - see documentation
 
@@ -151,13 +157,14 @@ class DocumentNotFoundException(AlephException):
 
 class DocumentID(namedtuple("DocumentID", ["id", "library", "base"])):
     """
-    This structure is used to store pointer to document in aleph.
+    This structure is used to store `"pointer"` to document in aleph.
 
     Attributes:
-        id (int): id of document
-        library (str): can be different for each document
-        base (str): default "nkc", but really depends at what bases you have
-                    defined in your aleph
+        id (int): ID of document.
+        library (str): This can be different for each document, depend on your
+                       system.
+        base (str): Default "``nkc``", but really depends on what bases you have
+                    defined in your Aleph server.
     """
     pass
 
@@ -167,8 +174,8 @@ def _getListOfBases():
     This function is here mainly for purposes of unittest
 
     Returns:
-        list: valid bases as they are used as URL parameters in links at aleph
-              main page.
+        list of str: Valid bases as they are used as URL parameters in links at
+                     Aleph main page.
     """
     downer = Downloader()
     data = downer.download(ALEPH_URL + "/F/?func=file&file_name=base-list")
@@ -200,10 +207,10 @@ def _getListOfBases():
 
 def _tryConvertToInt(s):
     """
-    Try convert value from |s| to int.
+    Try convert value from `s` to int.
 
     Returns:
-        int(s): if the value was successfully converted, or `s` when conversion
+        int(s): If the value was successfully converted, or `s` when conversion
                 failed.
     """
     try:
@@ -214,7 +221,7 @@ def _tryConvertToInt(s):
 
 def _alephResultToDict(dom):
     """
-    Convert part of non-nested XML to dict.
+    Convert part of non-nested XML to :py:class:`dict`.
 
     Args:
         dom (HTMLElement tree): pre-parsed XML (see dhtmlparser).
@@ -248,17 +255,17 @@ def searchInAleph(base, phrase, considerSimilar, field):
     Send request to the aleph search engine.
 
     Request itself is pretty useless, but it can be later used as parameter
-    for :func:`getAlephRecords`, which can fetch records from Aleph.
+    for :func:`getDocumentIDs`, which can fetch records from Aleph.
 
     Args:
         base (str): which database you want to use
         phrase (str): what do you want to search
         considerSimilar (bool): fuzzy search, which is not working at all, so
                                don't use it
-        field (str): where you want to look (see `VALID_ALEPH_FIELDS`)
+        field (str): where you want to look (see: :attr:`VALID_ALEPH_FIELDS`)
 
     Returns:
-        aleph_search_record, which is dictionary consisting from those fields:
+        dictionary: consisting from following fields:
 
             | error (optional): present if there was some form of error
             | no_entries (int): number of entries that can be fetch from aleph
@@ -324,15 +331,15 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
 
     Args:
         aleph_search_result (dict): returned from :func:`searchInAleph`
-        number_of_docs (int, optional): how many :class:`DocumentIDs` from set
-                          given by aleph_search_result should be returned,
-                          default -1 for all of them.
+        number_of_docs (int, optional): how many :class:`DocumentID` from set
+                          given by `aleph_search_result` should be returned.
+                          Default -1 for all of them.
 
     Returns:
         list: :class:`DocumentID` named tuples to given `aleph_search_result`.
 
     Raises:
-        AlephException: if Aleph returns unknown format of data
+        AlephException: If Aleph returns unknown format of data.
 
     Note:
         Returned :class:`DocumentID` can be used as parameters to
@@ -402,8 +409,8 @@ def downloadMARCXML(doc_id, library):
     Download MARC XML document with given `doc_id` from given `library`.
 
     Args:
-        doc_id (DocumentID): you will get this from :func:`getDocumentIDs`
-        library (str): "NKC01" in our case, but don't worry,
+        doc_id (DocumentID): You will get this from :func:`getDocumentIDs`.
+        library (str): "``NKC01``" in our case, but don't worry,
                    :func:`getDocumentIDs` adds library specification into
                    :class:`DocumentID` named tuple.
 
@@ -459,15 +466,15 @@ def downloadMARCOAI(doc_id, base):
     in their full text.
 
     Args:
-        doc_id (str):         you will get this from :func:`getDocumentIDs`
+        doc_id (str):         You will get this from :func:`getDocumentIDs`.
         base (str, optional): Base from which you want to download Aleph
                               document.
                               This seems to be duplicite with
                               :func:`searchInAleph` parameters, but it's just
-                              somethin Aleph's X-Services wants, so ..
+                              something Aleph's X-Services wants, so ..
 
     Returns:
-        str: MARC XML unicode string.
+        str: MARC XML Unicode string.
 
     Raises:
         InvalidAlephBaseException
@@ -505,9 +512,9 @@ def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
     Get list of :class:`DocumentID` objects of documents with given `isbn`.
 
     Args:
-        isbn (str): ISBN string
-        base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+        isbn (str): ISBN string.
+        base (str, optional): Base on which will be search performed. Default
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -520,9 +527,9 @@ def getAuthorsBooksIDs(author, base=ALEPH_DEFAULT_BASE):
     Get list of :class:`DocumentID` objects of documents with given `author`.
 
     Args:
-        author (str): Authors name/lastname in UTF
+        author (str): Authors name/lastname in UTF-8.
         base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -536,9 +543,9 @@ def getPublishersBooksIDs(publisher, base=ALEPH_DEFAULT_BASE):
     `publisher`.
 
     Args:
-        publisher (str): name of publisher which will be used to search Aleph
+        publisher (str): Name of publisher which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -551,9 +558,9 @@ def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     Get number of records in Aleph which match given `isbn`.
 
     Args:
-        isbn (str): ISBN string
-        base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+        isbn (str): ISBN string.
+        base (str, optional): Base on which will be search performed. Default
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
@@ -566,9 +573,9 @@ def getAuthorsBooksCount(author, base=ALEPH_DEFAULT_BASE):
     Get number of records in Aleph which match given `author`.
 
     Args:
-        isbn (str): Authors name/lastname in UTF
+        isbn (str): Authors name/lastname in UTF-8.
         base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
@@ -581,9 +588,9 @@ def getPublishersBooksCount(publisher, base=ALEPH_DEFAULT_BASE):
     Get number of records in Aleph which match given `publisher`.
 
     Args:
-        isbn (str): name of publisher which will be used to search Aleph
+        isbn (str): Name of publisher which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
-                              ``settings.ALEPH_DEFAULT_BASE``
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
