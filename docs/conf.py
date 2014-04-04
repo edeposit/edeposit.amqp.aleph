@@ -31,6 +31,9 @@ napoleon_include_special_with_doc = True
 # Document all methods in classes
 autoclass_content = 'both'
 
+# Sorting of items
+autodoc_member_order = "bysource"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
