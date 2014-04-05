@@ -380,7 +380,7 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
         documents = _alephResultToDict(library)
 
         if "error" in documents:
-            raise AlephException("getDocumentIDs: " + documents[error])
+            raise AlephException("getDocumentIDs: " + documents["error"])
 
         # convert all document records to DocumentID named tuple and extend
         # them to 'ids' array
