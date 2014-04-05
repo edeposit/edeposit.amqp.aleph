@@ -874,9 +874,10 @@ class MARCXMLRecord:
 
                 if "c" in other_subfields:
                     surname = ",".join(other_subfields["c"])
-            elif ind1 == "1" and ind2 == "0" or ind1 == 0 and ind2 == 0:
+            elif ind1 == "1" and ind2 == "0" or ind1 == "0" and ind2 == "0":
                 name = person.strip()
-                title = ",".join(other_subfields["c"])
+                if "c" in other_subfields:
+                    title = ",".join(other_subfields["c"])
 
             parsed_persons.append(
                 Person(
