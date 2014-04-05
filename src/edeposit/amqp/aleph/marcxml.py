@@ -861,8 +861,10 @@ class MARCXMLRecord:
             if ind1 == "1" and ind2 == " ":
                 if "," in person:
                     surname, name = person.split(",", 1)
-                else:
+                elif " " in person:
                     surname, name = person.split(" ", 1)
+                else:
+                    surname = person
 
                 if "c" in other_subfields:
                     title = ",".join(other_subfields["c"])
