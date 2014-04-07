@@ -592,6 +592,23 @@ def getPublishersBooksIDs(publisher, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, publisher, False, "wpb"))
 
 
+def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
+    """
+    Get list of :class:`DocumentID` objects of documents with given
+    `title`.
+
+    Args:
+        title (str): Title (name) of the book which will be used to search in
+                     Aleph.
+        base (str, optional): base on which will be search performed. Default
+                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        list: of :class:`DocumentID` objects
+    """
+    return getDocumentIDs(searchInAleph(base, title, False, "wtl"))
+
+
 def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     """
     Get number of records in Aleph which match given `isbn`.
@@ -612,7 +629,7 @@ def getAuthorsBooksCount(author, base=ALEPH_DEFAULT_BASE):
     Get number of records in Aleph which match given `author`.
 
     Args:
-        isbn (str): Authors name/lastname in UTF-8.
+        author (str): Authors name/lastname in UTF-8.
         base (str, optional): base on which will be search performed. Default
                     :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
@@ -627,11 +644,26 @@ def getPublishersBooksCount(publisher, base=ALEPH_DEFAULT_BASE):
     Get number of records in Aleph which match given `publisher`.
 
     Args:
-        isbn (str): Name of publisher which will be used to search Aleph.
+        publisher (str): Name of publisher which will be used to search Aleph.
+        base (str, optional): base on which will be search performed. Default
+                       :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        int: Number of matching documents in Aleph.
+    """
+    return searchInAleph(base, publisher, False, "wpb")["no_entries"]
+
+
+def getBooksTitleCount(title, base=ALEPH_DEFAULT_BASE):
+    """
+    Get number of records in Aleph which match given `title`.
+
+    Args:
+        title (str): Title (name) of book which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
                     :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
     """
-    return searchInAleph(base, publisher, False, "wpb")["no_entries"]
+    return searchInAleph(base, title, False, "wtl")["no_entries"]

@@ -47,7 +47,8 @@ Here is ASCII flow diagram for you::
 
  ISBNQuery      ----.                                 ,--> CountResult
  AuthorQuery    ----|                                 |       `- num_of_records
- PublisherQuery ----|          ExportRequest          |
+ PublisherQuery ----|                                 |
+ TitleQuery     ----|          ExportRequest          |
  GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
                     |                |                |       `- AlephRecord
                     V                |                |
@@ -229,11 +230,32 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher", "base"]),
         return aleph.getPublishersBooksCount(self.publisher, base=self.base)
 
 
+class TitleQuery(_QueryTemplate,
+                 namedtuple("TitleQuery", ["title", "base"])):
+    """
+    Used to query Aleph to get books by book's title/name.
+
+    Args:
+        title (str): Book's title in UTF-8.
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
+                              used.
+
+    """
+    def __new__(self, title, base=settings.ALEPH_DEFAULT_BASE):
+        return super(TitleQuery, self).__new__(self, title, base)
+
+    def _getIDs(self):
+        return aleph.getBooksTitleIDs(self.title, base=self.base)
+
+    def _getCount(self):
+        return aleph.getBooksTitleCount(self.title, base=self.base)
+
 #= Variables ==================================================================
 QUERY_TYPES = [
     ISBNQuery,
     AuthorQuery,
     PublisherQuery,
+    TitleQuery,
     GenericQuery
 ]
 

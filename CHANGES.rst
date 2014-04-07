@@ -6,6 +6,7 @@ Changelog
     - Documentation of the whole package updated.
     - Fixed bugs in MARC XML parser and Aleph lowlevel API.
     - Added ``run_tests.sh``.
+    - Added TitleQuery.
 
 1.4.3
 -----
