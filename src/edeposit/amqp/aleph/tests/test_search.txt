@@ -10,6 +10,7 @@ Variables   inspector.py
 *** Variables ***
 ${vladci_isbn_query} =                 ${aleph.ISBNQuery("80-85892-15-4")}
 ${unix_isbn_validation_request} =      ${aleph.ISBNValidationRequest("80-251-0225-4")}
+${vladci_title_query} =                ${aleph.TitleQuery("Vládci strachu")}
 
 
 
@@ -70,6 +71,18 @@ ISBN dotaz na záznam Vládců strachu
     Log                     Zkontroluj počet záznamů
     ${len} =                Length                    ${result.records}
     Greater or equal than   ${len}                    1
+
+    Log                     Zkontroluj, zda odpovídá autor
+    Author partialy in any epub                       Kulhánek              ${result.records}
+
+Jmenný dotaz na Vládce strachu
+    Žádost má správný typ   ${vladci_title_query}      ${aleph.TitleQuery}
+    ${result} =             Zkonvertuj dotaz          ${vladci_isbn_query}  ${aleph.SearchRequest}
+    ${result} =             Dotaz do Alephu           ${result}
+
+    Log                     Zkontroluj počet záznamů
+    ${len} =                Length                    ${result.records}
+    Greater or equal than   ${len}                    2
 
     Log                     Zkontroluj, zda odpovídá autor
     Author partialy in any epub                       Kulhánek              ${result.records}
