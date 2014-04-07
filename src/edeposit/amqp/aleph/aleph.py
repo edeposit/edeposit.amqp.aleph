@@ -103,19 +103,55 @@ ALEPH_GET_OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
 
 
 VALID_ALEPH_FIELDS = [
-    "wrd",  # slova ze všech popisných údaju
-    "wtl",  # slova z názvových údajů (název, název části, edice, originál atd)
-    "wau",  # slova z údajů o autorech
-    "wpb",  # slova z údajů o nakladateli
-    "wpp",  # slova z údajů o místě vydání
-    "wyr",  # rok vydání
-    "wkw",  # předmět (klíčová slova)
-    "sbn",  # ISBN/ISMN
+    "wrd",  # Všechny údaje
+    "wtl",  # Název
+    "wau",  # Autor (osoba, korporace)
+    "wkw",  # Předmět (klíčová slova)
+    "txt",  # Slova z obsahu (table of cont.)
+    "wpb",  # Nakladatel
+    "wpp",  # Místo vydání
+    "wyr",  # Rok vydání
     "ssn",  # ISSN
-    "icz",  # identifikační číslo záznamu
-    "cnb",  # číslo ČNB
-    "sg"  # signatura
-]  #: 
+    "sbn",  # ISBN / ISMN
+    "isn",  # ISBN / ISMN / ISSN
+    "ob",   # Obsazení (hudební díla)
+    "wpf",  # Periodicita
+    "wpv",  # Kód země vydání
+    "wln",  # Kód jazyka dokumentu
+    "wlo",  # Kód jazyka originálu
+    "wtp",  # Druh dokumentu
+    "sg",   # Signatura
+    "bar",  # Čárový kód
+    "cnb",  # Číslo národní bibl.
+    "icz",  # Identifikační číslo
+    "sys",  # Systémové číslo
+    "wpk",
+]
+"""
+- ``wrd`` - Všechny údaje [`All fields`]
+- ``wtl`` - Název [``]
+- ``wau`` - Autor (osoba, korporace) [`Author (person, corporation)`]
+- ``wkw`` - Předmět (klíčová slova) [`Subject (keywords)`]
+- ``txt`` - Slova z obsahu (table of cont.) [`Words from table of content`]
+- ``wpb`` - Nakladatel [`Publisher`]
+- ``wpp`` - Místo vydání [`Place of publication`]
+- ``wyr`` - Rok vydání [`Year of publication`]
+- ``ssn`` - ISSN
+- ``sbn`` - ISBN / ISMN
+- ``isn`` - ISBN / ISMN / ISSN
+- ``ob``  - Obsazení (hudební díla) [`Cast (musical works)`]
+- ``wpf`` - Periodicita [`Periodicity`]
+- ``wpv`` - Kód země vydání [`Country code`]
+- ``wln`` - Kód jazyka dokumentu [`Language code`]
+- ``wlo`` - Kód jazyka originálu [`Lanugage code of original`]
+- ``wtp`` - Druh dokumentu [`Type of document`]
+- ``sg``  - Signatura [`Signature`]
+- ``bar`` - Čárový kód [`Barcode`]
+- ``cnb`` - Číslo národní bibl. [`Number of national bibl.`]
+- ``icz`` - Identifikační číslo [`Identification number`]
+- ``sys`` - Systémové číslo [`System number`]
+- ``wpk``
+"""
 
 dhtmlparser.NONPAIR_TAGS = []  # used for parsing XML - see documentation
 
