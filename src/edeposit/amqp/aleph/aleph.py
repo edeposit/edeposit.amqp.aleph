@@ -76,7 +76,7 @@ Note:
 Other noteworthy properties
 ===========================
 
-List of valid bases can be obtained by calling :func:`_getListOfBases`, which
+List of valid bases can be obtained by calling :func:`getListOfBases`, which
 returns list of strings.
 
 There is also defined exception tree - see :class:`AlephException` doc-string
@@ -169,7 +169,7 @@ class DocumentID(namedtuple("DocumentID", ["id", "library", "base"])):
     pass
 
 
-def _getListOfBases():
+def getListOfBases():
     """
     This function is here mainly for purposes of unittest
 

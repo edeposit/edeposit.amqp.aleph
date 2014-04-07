@@ -132,10 +132,12 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
     Used for generic queries to Aleph.
 
     Args:
-        base (str)
-        phrase (str)
-        considerSimilar (bool)
-        field (str)
+        base (str): Which base in Aleph will be queried. This depends on
+                    settings of your server. See :func:`aleph.getListOfBases`
+                    for details.
+        phrase (str): What are you looking for.
+        considerSimilar (bool): Don't use this, it usually doesn't work.
+        field (str): Which field you want to use for search. See :attr:`aleph.VALID_ALEPH_FIELDS` for list of valid bases.
 
     For details of base/phrase/.. parameters, see :func:`aleph.searchInAleph`.
     All parameters also serves as properties.
@@ -167,7 +169,7 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
     Used to query Aleph to get books by ISBN.
 
     Args:
-        ISBN (str)
+        ISBN (str): ISBN 10/13.
         base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
                               is used.
 
@@ -192,7 +194,7 @@ class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
 
     Args:
         author (str): Author's name/lastname in UTF-8.
-        base (str, optional): If not set, ``settings.ALEPH_DEFAULT_BASE`` is
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
                               used.
 
     """
@@ -213,7 +215,7 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher", "base"]),
 
     Args:
         publisher (str): Publisher's name in UTF-8.
-        base (str, optional): If not set, ``settings.ALEPH_DEFAULT_BASE`` is
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
                               used.
 
     """
@@ -280,9 +282,63 @@ def reactToAMQPMessage(req, UUID):
     """
     React to given (AMQP) message.
 
+    This function is used by :mod:`edeposit.amqp.alephdaemon`. It works as
+    highlevel wrapper for whole module.
+
+    Example:
+        >>> import aleph
+
+        >>> request = aleph.SearchRequest(
+        ...     aleph.ISBNQuery("80-251-0225-4")
+        ... )
+        >>> request
+        SearchRequest(query=ISBNQuery(ISBN='80-251-0225-4', base='nkc'))
+
+        >>> response = aleph.reactToAMQPMessage(request, "UUID")
+
+        >>> response  # formated by hand for purposes of example
+        SearchResult(
+            records=[
+                AlephRecord(
+                    base='nkc',
+                    library='NKC01',
+                    docNumber=1492461,
+                    xml='HERE IS WHOLE MARC XML RECORD',
+                    epublication=EPublication(
+                        ISBN=['80-251-0225-4'],
+                        nazev='Umění programování v UNIXu /',
+                        podnazev='',
+                        vazba='(bro\xc5\xbe.) :',
+                        cena='K\xc4\x8d 590,00',
+                        castDil='',
+                        nazevCasti='',
+                        nakladatelVydavatel='Computer Press,',
+                        datumVydani='2004',
+                        poradiVydani='1. vyd.',
+                        zpracovatelZaznamu='BOA001',
+                        format='23 cm',
+                        url='',
+                        mistoVydani='Brno :',
+                        ISBNSouboruPublikaci=[],
+                        autori=[
+                            Author(
+                                firstName='Eric S.',
+                                lastName='Raymond',
+                                title=''
+                            )
+                        ],
+                        originaly=[
+                            'Art of UNIX programming'
+                        ],
+                        internal_url=''
+                    )
+                )
+            ]
+        )
+
     Args:
         req (Request class): any of the Request class from
-                             :class:`aleph.datastructures.requests`
+                          :class:`~edeposit.amqp.aleph.datastructures.requests`.
         UUID (str): unique ID of received message
 
     Returns:
