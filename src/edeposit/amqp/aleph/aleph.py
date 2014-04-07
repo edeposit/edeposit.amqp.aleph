@@ -62,12 +62,14 @@ So far, there are only getter wrappers:
     - :func:`getISBNsIDs`
     - :func:`getAuthorsBooksIDs`
     - :func:`getPublishersBooksIDs`
+    - :func:`getBooksTitleIDs`
 
 And counting functions:
 
     - :func:`getISBNCount`
     - :func:`getAuthorsBooksCount`
     - :func:`getPublishersBooksCount`
+    - :func:`getBooksTitleCount`
 
 Note:
     Counting functions are by one request faster than just counting results from
@@ -129,7 +131,7 @@ VALID_ALEPH_FIELDS = [
 ]
 """
 - ``wrd`` - Všechny údaje [`All fields`]
-- ``wtl`` - Název [``]
+- ``wtl`` - Název [`Title/name of the book`]
 - ``wau`` - Autor (osoba, korporace) [`Author (person, corporation)`]
 - ``wkw`` - Předmět (klíčová slova) [`Subject (keywords)`]
 - ``txt`` - Slova z obsahu (table of cont.) [`Words from table of content`]
