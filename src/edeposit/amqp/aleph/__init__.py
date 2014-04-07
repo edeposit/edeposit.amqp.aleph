@@ -7,14 +7,23 @@
 Query workflow
 ==============
 
-To query Aleph, just create one of the Queries - :class:`ISBNQuery` for example
-and put it into :class:`.SearchRequest` wrapper and send the message to the
-Aleph's exchange::
+AQMP is handled by `edeposit.amqp <http://edeposit-amqp.readthedocs.org>`_
+module, this package provides just datastructures and
+:func:`reactToAMQPMessage` function, which is used in daemon to translate
+highlevel requests to lowlevel queries to Aleph's webapi.
 
-    isbnq = ISBNQuery("80-251-0225-4")
-    request = SearchRequest(isbnq)
+AMQP query
+----------
+To query Aleph thru AMQP, start :mod:`edeposit.amqp.alephdaemon` (from
+:mod:`edeposit.amqp` package) and  create one of the Queries -
+:class:`ISBNQuery` for example and put it into :class:`.SearchRequest` wrapper
+and send the message to the Aleph's exchange::
 
-    amqp.send(
+    request = SearchRequest(
+        ISBNQuery("80-251-0225-4")
+    )
+
+    amqp.send(  # you can use pika library to send data to AMQP queue
         message    = serialize(request),
         properties = "..",
         exchange   = "ALEPH'S_EXCHANGE"
@@ -26,10 +35,10 @@ Note:
     You don't have to import all structures from :class:`datastructures`, they
     should be automatically imported and made global in ``__init__.py``.
 
-Example
--------
+Count requests
+--------------
 If you want to just get count of how many items is there in Aleph, just wrap
-the :class:`.ISBNQuery` with :class:`.CountRequest`::
+the :class:`.ISBNQuery` with :class:`.CountRequest` class::
 
     isbnq = ISBNQuery("80-251-0225-4")
     request = CountRequest(isbnq)
@@ -43,6 +52,19 @@ Note:
     :py:func:`len()` to :attr:`.SearchResult.records` - it doesn't put that
     much load to Aleph. Also Aleph is restricted to 150 requests per second.
 
+Direct queries
+--------------
+As I said, this module provides only direct access to Aleph, AMQP communication
+is handled in :mod:`edeposit.amqp`.
+
+If you want to access module directly, you can use :func:`reactToAMQPMessage`
+wrapper, or query :mod:`~edeposit.amqp.aleph.aleph` submodule directly.
+
+:func:`reactToAMQPMessage` is preferred, because in that case, you don't have
+to deal with Aleph lowlevel API, which can be little bit annoying.
+
+Diagrams
+--------
 Here is ASCII flow diagram for you::
 
  ISBNQuery      ----.                                 ,--> CountResult
@@ -74,11 +96,6 @@ Here is ASCII flow diagram for you::
            reactToAMQPMessage() ............... magic_happens()
 
 Neat, isn't it?
-
-Note:
-    AQMP is handled by `edeposit.amqp <http://edeposit-amqp.readthedocs.org>`_
-    module, edeposit.aqmp.aleph provides just datastructures and
-    :func:`reactToAMQPMessage`.
 
 API
 ---
