@@ -64,6 +64,8 @@ Or continuously using nosier:
 
     $ nosier -p src -b 'export' "pybot -W 80 --pythonpath src/edeposit/amqp/aleph/tests/ --pythonpath src src/edeposit/amqp/aleph/tests/"
 
+Command to run the test is wrapped in ``run_tests.sh`` in the root of the project.
+
 Status of acceptance tests
 ++++++++++++++++++++++++++
 

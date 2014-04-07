@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.4
+-----
+    - Documentation of the whole package updated.
+    - Fixed bugs in MARC XML parser and Aleph lowlevel API.
+    - Added ``run_tests.sh``.
 
 1.4.3
 -----
