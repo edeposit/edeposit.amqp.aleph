@@ -95,6 +95,10 @@ Here is ASCII flow diagram for you::
                     V                                  |
            reactToAMQPMessage() ............... magic_happens()
 
+and here is (pseudo) UML:
+
+.. image:: /_static/reactoamqpmessage.png
+
 Neat, isn't it?
 
 API

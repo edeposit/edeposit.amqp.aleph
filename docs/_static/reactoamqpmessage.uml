@@ -1,0 +1,116 @@
+@startuml
+package "Query structures (_​_init__.py)" as QS {
+    class TitleQuery {
+        title: str
+        base: default "nkc"
+    }
+    class AuthorQuery {
+        author: str
+        base: default "nkc"
+    }
+    class PublisherQuery {
+        publisher: str
+        base: default "nkc"
+    }
+    class ISBNQuery {
+        isbn: str
+        base: default "nkc"
+    }
+    class GenericQuery {
+        base: str
+        phrase: str
+        considerSimilar: bool
+        field: str
+    }
+    GenericQuery ..> TitleQuery
+    GenericQuery ..> AuthorQuery : extends
+    GenericQuery ..> PublisherQuery
+    GenericQuery ..> ISBNQuery
+}
+
+package aleph.datastructures.requests {
+    package "Query wrappers" as QW <<Rect>> {
+        class SearchRequest {
+            query : Query structure
+        }
+        class CountRequest {
+            query : Query structure
+        }
+    }
+    package "Generic requests" as GR <<Rect>> {
+        class ISBNValidationRequest {
+            ISBN : str
+        }
+        class ExportRequest {
+            epublication : EPublication structure
+        }
+    }
+}
+
+QS -left--> SearchRequest
+QS -down--> CountRequest
+
+class reactToAMQPMessage <<(F, red)>> {
+    Wrapper function over
+    lowlevel Aleph API.
+}
+
+ISBNValidationRequest -down--> reactToAMQPMessage: parameter
+ExportRequest -down--> reactToAMQPMessage: parameter
+SearchRequest -down--> reactToAMQPMessage: parameter
+CountRequest -down--> reactToAMQPMessage: parameter
+
+
+package aleph.datastructures.responses {
+    class SearchResult {
+        records : list
+    }
+    class CountResult {
+        num_of_records : int
+    }
+    class ISBNValidationResult {
+        is_valid : bool
+    }
+    class ExportResult {
+        ISBN : str
+    }
+}
+
+reactToAMQPMessage -down--> CountResult: returns
+reactToAMQPMessage -down--> ISBNValidationResult: returns
+reactToAMQPMessage -down--> ExportResult: returns
+
+class EPublication {
+    url : str
+    ISBN : str
+    cena : str
+    vazba : str
+    nazev : str
+    format : str
+    autori : list
+    castDil : str
+    podnazev : str
+    originaly : list
+    nazevCasti : str
+    datumVydani : str
+    mistoVydani : str
+    internal_url : str
+    poradiVydani : str
+    zpracovatelZaznamu : str
+    nakladatelVydavatel : str
+    ISBNSouboruPublikaci : list
+}
+class AlephRecord {
+    base : str
+    library : str
+    docNumber : str
+    xml : str
+    epublication : EPublication
+}
+
+reactToAMQPMessage -down--> EPublication: returns
+EPublication ---> AlephRecord: is contained
+AlephRecord ---> "1..*" SearchResult: is contained
+EPublication ---> ExportRequest: is contained
+
+@enduml
