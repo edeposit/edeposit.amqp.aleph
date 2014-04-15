@@ -4,7 +4,7 @@
 Module is containing all necessary global variables for package.
 
 Module also has ability to read user-defined data from two paths:
-$HOME/:attr:`SETTINGS_PATH` and /etc/:attr:`SETTINGS_PATH`.
+$HOME/:attr:`_SETTINGS_PATH` and /etc/:attr:`_SETTINGS_PATH`.
 
 Note:
     If the first path is found, other is ignored.
@@ -46,9 +46,9 @@ ALEPH_EXPORT_URL = "http://aleph.nkp.cz/aleph-cgi/e-deposit"
 
 
 #= user configuration reader ==================================================
-_ALLOWED = [str, int, float]
+_ALLOWED = [unicode, str, int, float]
 
-SETTINGS_PATH = "/edeposit/aleph.json"
+_SETTINGS_PATH = "/edeposit/aleph.json"
 """
 Path which is appended to default search paths (``$HOME`` and ``/etc``).
 
@@ -100,11 +100,11 @@ def substitute_globals(config_dict):
             globals()[key] = config_dict[key]
 
 
-# try to read data from configuration paths ($HOME/SETTINGS_PATH,
-# /etc/SETTINGS_PATH)
-if "HOME" in os.environ and os.path.exists(os.environ["HOME"] + SETTINGS_PATH):
-    with open(os.environ["HOME"] + SETTINGS_PATH) as f:
+# try to read data from configuration paths ($HOME/_SETTINGS_PATH,
+# /etc/_SETTINGS_PATH)
+if "HOME" in os.environ and os.path.exists(os.environ["HOME"] + _SETTINGS_PATH):
+    with open(os.environ["HOME"] + _SETTINGS_PATH) as f:
         substitute_globals(json.loads(f.read()))
-elif os.path.exists("/etc" + SETTINGS_PATH):
-    with open("/etc" + SETTINGS_PATH) as f:
+elif os.path.exists("/etc" + _SETTINGS_PATH):
+    with open("/etc" + _SETTINGS_PATH) as f:
         substitute_globals(json.loads(f.read()))
