@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.5
+-----
+    - Fixed bug in ISBN submodule.
+
 1.4.4
 -----
     - Documentation of the whole package updated.

@@ -26,7 +26,7 @@ def _clean_isbn(isbn):
     Returns:
         list: array of numbers (if "x" is found, it is converted to 10).
     """
-    if type(isbn) == str:
+    if type(isbn) in [str, unicode]:
         isbn = list(isbn.lower())
 
         # filter digits and "x"
