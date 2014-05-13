@@ -4,6 +4,7 @@ Changelog
 1.4.5
 -----
     - Fixed bug in ISBN submodule.
+    - Added unicode support to settings.py.
 
 1.4.4
 -----
