@@ -181,7 +181,7 @@ class PostData:
         # self._POST[""] = epub.datumProCopyright  # wut
 
         authors_fields = ["P1301ZAK__b", "P1302ZAK__c", "P1303ZAK__c"]
-        if len(epub.autori > 3):
+        if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])
             epub.autori = epub.autori[:3]
 
@@ -190,7 +190,7 @@ class PostData:
             assert type(author) in [str, unicode], \
                     "Bad type of author (%s) (str is required)." % type(author)
 
-        self._POST.upadte(zip(authors_fields, epub.autori))
+        self._POST.update(dict(zip(authors_fields, epub.autori)))
 
     def _apply_mapping(self, mapping):
         """
@@ -267,7 +267,7 @@ class PostData:
         # vazba/forma
         assert self._POST["P0502010__b"] != "", "Vazba/forma is required!"
 
-        assert self._PORT["P110185640u"] != "", "URL is required!"
+        assert self._POST["P110185640u"] != "", "URL is required!"
 
         # Formát (poze pro epublikace)
         if self._POST["P0502010__b"] == FormatEnum.ONLINE:
