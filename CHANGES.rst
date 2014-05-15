@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.6
+-----
+    - Fixed reported bugs in export script.
+
 1.4.5
 -----
     - Fixed bug in ISBN submodule.
