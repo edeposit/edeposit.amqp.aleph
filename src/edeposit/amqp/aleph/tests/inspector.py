@@ -125,6 +125,10 @@ class Inspector(object):
         xml = aleph.marcxml.MARCXMLRecord(xml)
 
         epub = convertor.toEPublication(xml)
+        epub = epub._replace(
+            autori=[epub.autori[0].firstName + " " + epub.autori[0].lastName],
+            url="Someurl"
+        )
         post = export.PostData(epub)
 
         assert(epub.nazev == post._POST["P07012001_a"])

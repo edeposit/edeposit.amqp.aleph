@@ -20,8 +20,7 @@ Převod EPublikace na POST request
 
 Pokus o odeslání špatné struktury
     [Documentation]  Zkusíme odeslat strukturu se špatným checksumem a hledáme chybovou hlášku. Pokud tam není, je něco špatně.
-    ${result} =      Try to send bad data
-    Log              ${result}
+    Run Keyword And Ignore Error  Try to send bad data
 
 Export do Alephu
     Fail  Not implemented yet.
