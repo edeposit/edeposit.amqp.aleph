@@ -80,7 +80,7 @@ class PostData:
             "sid": settings.EDEPOSIT_EXPORT_SIGNATURE,
             "P0100LDR__": "-----nam-a22------a-4500",
             "P0200FMT__": "BK",
-            "P0300BAS__a": "30",
+            "P0300BAS__a": "30",  # Báze, pro eknihy 49
             "P0501010__a": "",    # ISBN (uppercase)
             "P0502010__b": "online",  # vazba/forma
             "P0504010__d": "",    # cena
@@ -95,7 +95,7 @@ class PostData:
             "P1301ZAK__b": "",    # autor
             "P1302ZAK__c": "",    # autor2
             "P1303ZAK__c": "",    # autor3
-            "P10012252_a": "",    # edice
+            # "P10012252_a": "",    # edice
             "P10022252_v": "",    # Číslo svazku
             "P110185640u": "",    # URL
             "P0503010__x": "",    # Formát (poze pro epublikace)
@@ -133,12 +133,19 @@ class PostData:
                 "elektronický zdroj",
                 "ox",
             ],
+            # "else": [
+            #     "-----nam-a22------a-4500",
+            #     "BK",
+            #     "30",
+            #     "",
+            #     "ow"
+            # ]
             "else": [
                 "-----nam-a22------a-4500",
                 "BK",
-                "30",
-                "",
-                "ow"
+                "49",
+                "elektronický zdroj",
+                "ox",
             ]
         }
         self.mapping["DVD"] = self.mapping["CD-ROM"]
@@ -173,10 +180,17 @@ class PostData:
         # self._POST[""] = epub.kategorieProRIV  # TODO: wtf?
         # self._POST[""] = epub.datumProCopyright  # wut
 
-        authors = [x.lastName + ", " + x.firstName for x in epub.autori]
         authors_fields = ["P1301ZAK__b", "P1302ZAK__c", "P1303ZAK__c"]
-        for field, author in zip(authors_fields, authors):
-            self._POST[field] = author
+        if len(epub.autori > 3):
+            epub.autori[2] = ", ".join(epub.autori[2:])
+            epub.autori = epub.autori[:3]
+
+        # check whether the autors have required type (string)
+        for author in epub.autori:
+            assert type(author) in [str, unicode], \
+                    "Bad type of author (%s) (str is required)." % type(author)
+
+        self._POST.upadte(zip(authors_fields, epub.autori))
 
     def _apply_mapping(self, mapping):
         """
@@ -253,6 +267,8 @@ class PostData:
         # vazba/forma
         assert self._POST["P0502010__b"] != "", "Vazba/forma is required!"
 
+        assert self._PORT["P110185640u"] != "", "URL is required!"
+
         # Formát (poze pro epublikace)
         if self._POST["P0502010__b"] == FormatEnum.ONLINE:
             self._POST["P0503010__x"] != "", "Format is required!"
@@ -291,9 +307,14 @@ def _sendPostDict(post_dict):
     downer = Downloader()
     downer.headers["Referer"] = settings.EDEPOSIT_EXPORT_REFERER
     data = downer.download(settings.ALEPH_EXPORT_URL, post=post_dict)
+    rheaders = downer.response_headers
 
-    if "Požadavek byl odmítnut" in data:
-        raise ExportRejectedException("Export was rejected by Aleph form!")
+    if "aleph-info" in rheaders:
+        if rheaders["aleph-info"].lower().strip().startswith("error"):
+            raise ExportRejectedException(
+                "Export request was rejected by import webform: %s" %
+                rheaders["aleph-info"]
+            )
 
     return data
 
