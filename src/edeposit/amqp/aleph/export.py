@@ -168,7 +168,7 @@ class PostData:
         self._POST["P0801205__a"] = epub.poradiVydani
         self._POST["P1502IST1_b"] = epub.zpracovatelZaznamu
         self._POST["P0503010__x"] = epub.format
-        self._POST["P110185640u"] = epub.url
+        self._POST["P110185640u"] = epub.url if epub.url else "http://edeposit.nkp.cz/"
         self._POST["P0901210__a"] = epub.mistoVydani
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
         self._POST["P1801URL__u"] = epub.internal_url
@@ -267,7 +267,7 @@ class PostData:
         # vazba/forma
         assert self._POST["P0502010__b"] != "", "Vazba/forma is required!"
 
-        assert self._POST["P110185640u"] != "", "URL is required!"
+        # assert self._POST["P110185640u"] != "", "URL is required!"
 
         # Formát (poze pro epublikace)
         if self._POST["P0502010__b"] == FormatEnum.ONLINE:
