@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.7
+-----
+    - Fixed export bugs (see #21 and #22).
+
 1.4.6
 -----
     - Fixed reported bugs in export script.
