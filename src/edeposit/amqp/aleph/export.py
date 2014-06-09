@@ -29,6 +29,7 @@ Note:
 import isbn
 import settings
 from datastructures import FormatEnum
+from datastructures import EPublication
 
 from httpkie import Downloader
 
@@ -319,6 +320,21 @@ def _sendPostDict(post_dict):
     return data
 
 
+def _removeSpecialCharacters(epub):
+    """
+    Remove most of the unnecessary interpunction from epublication, which can
+    break unimark if not user properly.
+    """
+    special_chars = "/:;,- "
+
+    epub_dict = epub._asdict()
+
+    for key in epub_dict.keys():
+        epub_dict[key] = epub_dict[key].strip(special_chars)
+
+    return EPublication(**epub_dict)
+
+
 def exportEPublication(epub):
     """
     Send `epub` :class:`.EPublication` object to Aleph, where it will be
@@ -344,5 +360,6 @@ def exportEPublication(epub):
         - :attr:`.EPublication.format`
         - :attr:`.EPublication.nakladatelVydavatel`
     """
+    epub = _removeSpecialCharacters(epub)
     post_dict = PostData(epub).get_POST_data()
     return _sendPostDict(post_dict)
