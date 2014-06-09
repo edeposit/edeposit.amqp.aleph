@@ -29,7 +29,7 @@ Note:
 import isbn
 import settings
 from datastructures import FormatEnum
-from datastructures import EPublication
+from datastructures import EPublication, Author
 
 from httpkie import Downloader
 
@@ -330,7 +330,21 @@ def _removeSpecialCharacters(epub):
     epub_dict = epub._asdict()
 
     for key in epub_dict.keys():
-        epub_dict[key] = epub_dict[key].strip(special_chars)
+        if type(epub_dict[key]) in [str, unicode]:
+            epub_dict[key] = epub_dict[key].strip(special_chars)
+        elif type(epub_dict[key]) in [tuple, list]:
+            out = []
+            for item in epub_dict[key]:
+                if type(item) == Author:
+                    new_item = item._asdict()
+
+                    for key in new_item.keys():
+                        new_item[key] = new_item[key].strip(special_chars)
+
+                    out.append(Author(**new_item))
+                else:
+                    out.append(item)
+            epub_dict[key] = out
 
     return EPublication(**epub_dict)
 

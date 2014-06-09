@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4.8
+-----
+    - Fixed bug #23 in _removeSpecialCharacters().
+
 1.4.7
 -----
     - Fixed export bugs (see #21 and #22).
