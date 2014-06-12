@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.0
+-----
+    - Queries to test base are now handled by OAI API, which has access.
+    - Export is working.
+
 1.4.9
 -----
     - Fixed bug in export script.

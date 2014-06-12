@@ -127,7 +127,7 @@ class _QueryTemplate:
     def getSearchResult(self):
         records = []
         for doc_id, library, base in self._getIDs():
-            xml = aleph.downloadMARCXML(doc_id, library)
+            xml = aleph.downloadMARCOAI(doc_id, library)
 
             records.append(
                 AlephRecord(
@@ -346,7 +346,7 @@ def reactToAMQPMessage(req, UUID):
                     base='nkc',
                     library='NKC01',
                     docNumber=1492461,
-                    xml='HERE IS WHOLE MARC XML RECORD',
+                    xml='HERE IS WHOLE MARC OAI RECORD',
                     epublication=EPublication(
                         ISBN=['80-251-0225-4'],
                         nazev='Umění programování v UNIXu /',
