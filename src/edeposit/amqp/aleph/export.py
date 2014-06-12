@@ -199,7 +199,7 @@ class PostData:
         """
         self._POST["P0100LDR__"] = mapping[0]
         self._POST["P0200FMT__"] = mapping[1]
-        self._POST["P0502010__b"] = mapping[2]
+        self._POST["P0300BAS__a"] = mapping[2]
         self._POST["P07022001_b"] = mapping[3]
         self._POST["P1501IST1_a"] = mapping[4]
 
