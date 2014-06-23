@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.5.1
+-----
+    - Added new Query class - DocumentQuery.
+    - Documentation cleaned.
+    - Added documentation for convertor.
+    - Fixed bug in unittests.
+
 1.5.0
 -----
     - Queries to test base are now handled by OAI API, which has access.
