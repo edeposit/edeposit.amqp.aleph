@@ -70,14 +70,15 @@ Here is ASCII flow diagram for you::
  ISBNQuery      ----.                                 ,--> CountResult
  AuthorQuery    ----|                                 |       `- num_of_records
  PublisherQuery ----|                                 |
- TitleQuery     ----|          ExportRequest          |
- GenericQuery   ----|      ISBNValidationRequest      |--> SearchResult
-                    |                |                |       `- AlephRecord
-                    V                |                |
-       Count/Search/ExportRequest    |                |--> ISBNValidationResult
-                    |                |                |        - ISBN
-                    V                |                |
+ TitleQuery     ----|          ExportRequest          |--> SearchResult
+ GenericQuery   ----|      ISBNValidationRequest      |       `- AlephRecord
+ DocumentQuery  ----|                |                |
+                    |                |                |--> ISBNValidationResult
+                    V                |                |        - ISBN
+       Count/Search/ExportRequest    |                |
                     |                |                |--> ExportResult
+                    V                |                |
+                    |                |                |
                     V                |                |
                serialize()<----------'           deserialize()
                     |                                 ^
@@ -209,6 +210,53 @@ class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
         return aleph.getISBNCount(self.ISBN, base=self.base)
 
 
+class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
+    """
+    Query Aleph when you know the Document ID.
+
+    Args:
+        doc_id (str): ID number as string.
+        library (str, default settings.DEFAULT_LIBRARY): Library.
+    """
+    def __new__(cls, doc_id, library=settings.DEFAULT_LIBRARY):
+        return super(DocumentQuery, cls).__new__(
+            cls,
+            doc_id,
+            library
+        )
+
+    def getSearchResult(self):
+        """
+        Returns:
+            object: :class:`SearchResult` document with given `doc_id`.
+
+        Raises:
+            aleph.DocumentNotFoundException: When document is not found.
+        """
+        xml = aleph.downloadMARCOAI(self.doc_id, self.library)
+
+        return SearchResult([
+            AlephRecord(
+                None,
+                self.library,
+                self.doc_id,
+                xml,
+                convertor.toEPublication(xml)
+            )
+        ])
+
+    def getCountResult(self):
+        """
+        Returns:
+            int: 0/1 whether the document is found or not.
+        """
+        try:
+            self.getSearchResult()
+            return 1
+        except aleph.DocumentNotFoundException:
+            return 0
+
+
 class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
                   _QueryTemplate):
     """
@@ -277,7 +325,8 @@ QUERY_TYPES = [
     AuthorQuery,
     PublisherQuery,
     TitleQuery,
-    GenericQuery
+    GenericQuery,
+    DocumentQuery
 ]
 
 REQUEST_TYPES = [
@@ -392,7 +441,6 @@ def reactToAMQPMessage(req, UUID):
     Raises:
         ValueError: If bad type of `req` structure is given.
     """
-    # TODO: pridat podporu exportnich typu
     if not _iiOfAny(req, REQUEST_TYPES):
         raise ValueError(
             "Unknown type of request: '" + str(type(req)) + "'!"
@@ -400,10 +448,13 @@ def reactToAMQPMessage(req, UUID):
 
     if _iiOfAny(req, CountRequest) and _iiOfAny(req.query, QUERY_TYPES):
         return req.query.getCountResult()
+
     elif _iiOfAny(req, SearchRequest) and _iiOfAny(req.query, QUERY_TYPES):
         return req.query.getSearchResult()
+
     elif _iiOfAny(req, ISBNValidationRequest):
         return ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
+
     elif _iiOfAny(req, ExportRequest):
         export.exportEPublication(req.epublication)
         return ExportResult(req.epublication.ISBN)
