@@ -22,6 +22,14 @@ package "Query structures (_​_init__.py)" as QS {
         considerSimilar: bool
         field: str
     }
+    class DocumentQuery {
+        doc_id: str
+        library: str
+        ---
+        Used to query Aleph
+        when you know
+        document ID.
+    }
     GenericQuery ..> TitleQuery
     GenericQuery ..> AuthorQuery : extends
     GenericQuery ..> PublisherQuery
