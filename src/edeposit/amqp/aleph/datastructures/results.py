@@ -17,7 +17,7 @@ from collections import namedtuple
 
 class ISBNValidationResult(namedtuple("ISBNValidationResult", ["is_valid"])):
     """
-    Response to ISBNValidationRequest.
+    Response to :class:`.ISBNValidationRequest`.
 
     Attributes:
         is_valid (bool): True, if ISBN is valid.
@@ -27,33 +27,33 @@ class ISBNValidationResult(namedtuple("ISBNValidationResult", ["is_valid"])):
 
 class SearchResult(namedtuple("SearchResult", ['records'])):
     """
-    This is response structure, which is sent back when SearchRequest is
-    received.
+    This is response structure, which is sent back when :class:`.SearchRequest`
+    is received.
 
     Attributes:
-        records (list): array of AlephRecord structures
+        records (list): Array of AlephRecord structures.
     """
     pass
 
 
 class CountResult(namedtuple("CountResult", ['num_of_records'])):
     """
-    This is returned back to client when he send CountRequest.
+    This is returned back to client when he send :class:`.CountRequest`.
 
     Attributes:
-        num_of_records (int): number of records.
+        num_of_records (int): Number of records.
     """
     pass
 
 
 class ExportResult(namedtuple("ExportResult", ["ISBN"])):
     """
-    Sent back as response to ExportRequest.
+    Sent back as response to :class:`.ExportRequest`.
 
     This class is blank at the moment, because there is no information, that
     can be sen't back.
 
     Attributes:
-        ISBN (str): ISBN of accepted publication
+        ISBN (str): ISBN of accepted publication.
     """
     pass

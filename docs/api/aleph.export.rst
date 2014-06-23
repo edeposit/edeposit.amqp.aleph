@@ -1,7 +1,6 @@
 Export module
 =============
 
-.. automodule:: edeposit.amqp.aleph.export
+.. automodule:: aleph.export
     :members:
     :undoc-members:
-    :show-inheritance:

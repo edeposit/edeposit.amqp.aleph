@@ -1,7 +1,6 @@
 ISBN validation module
 ======================
 
-.. automodule:: edeposit.amqp.aleph.isbn
+.. automodule:: aleph.isbn
     :members:
     :undoc-members:
-    :show-inheritance:

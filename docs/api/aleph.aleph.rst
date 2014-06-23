@@ -1,7 +1,6 @@
 Aleph lowlevel API
 ==================
 
-.. automodule:: edeposit.amqp.aleph.aleph
+.. automodule:: aleph.aleph
     :members:
     :undoc-members:
-    :show-inheritance:

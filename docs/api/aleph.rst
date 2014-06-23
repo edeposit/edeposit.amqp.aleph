@@ -1,7 +1,7 @@
 aleph package
 =============
 
-.. automodule:: edeposit.amqp.aleph
+.. automodule:: aleph
     :members:
     :undoc-members:
     :show-inheritance:
@@ -14,6 +14,7 @@ Submodules
    /api/aleph.aleph
    /api/aleph.marcxml
    /api/aleph.isbn
+   /api/aleph.convertor
    /api/aleph.export
    /api/aleph.settings
    /api/aleph.datastructures

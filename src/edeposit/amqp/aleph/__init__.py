@@ -14,7 +14,7 @@ highlevel requests to lowlevel queries to Aleph's webapi.
 
 AMQP query
 ----------
-To query Aleph thru AMQP, start :mod:`edeposit.amqp.alephdaemon` (from
+To query Aleph thru AMQP, run :class:`.edeposit_amqp_alephdaemon` (from
 :mod:`edeposit.amqp` package) and  create one of the Queries -
 :class:`ISBNQuery` for example and put it into :class:`.SearchRequest` wrapper
 and send the message to the Aleph's exchange::
@@ -58,7 +58,7 @@ As I said, this module provides only direct access to Aleph, AMQP communication
 is handled in :mod:`edeposit.amqp`.
 
 If you want to access module directly, you can use :func:`reactToAMQPMessage`
-wrapper, or query :mod:`~edeposit.amqp.aleph.aleph` submodule directly.
+wrapper, or query :mod:`aleph <aleph.aleph>` submodule directly.
 
 :func:`reactToAMQPMessage` is preferred, because in that case, you don't have
 to deal with Aleph lowlevel API, which can be little bit annoying.
@@ -429,14 +429,13 @@ def reactToAMQPMessage(req, UUID):
         )
 
     Args:
-        req (Request class): any of the Request class from
-                          :class:`~edeposit.amqp.aleph.datastructures.requests`.
-        UUID (str): unique ID of received message
+        req (Request class): Any of the Request class from
+                          :class:`aleph.datastructures.requests`.
+        UUID (str): Unique ID of received message.
 
     Returns:
         Result class: Result of search in Aleph. \
-                      See :mod:`~edeposit.amqp.aleph.datastructures.results` \
-                      submodule.
+                      See :mod:`aleph.datastructures.results` submodule.
 
     Raises:
         ValueError: If bad type of `req` structure is given.

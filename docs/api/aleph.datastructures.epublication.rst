@@ -1,7 +1,6 @@
 EPublication structure
 ======================
 
-.. automodule:: edeposit.amqp.aleph.datastructures.epublication
+.. automodule:: aleph.datastructures.epublication
     :members:
     :undoc-members:
-    :show-inheritance:

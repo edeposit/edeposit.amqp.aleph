@@ -1,7 +1,7 @@
 Settings and configuration
 ==========================
 
-.. automodule:: edeposit.amqp.aleph.settings
+.. automodule:: aleph.settings
     :members:
     :private-members:
     :special-members:

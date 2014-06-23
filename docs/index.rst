@@ -3,9 +3,8 @@
 Modul pro AMQP komunikaci se systémem Aleph
 ===========================================
 
-Modul zajištuje export metadat o publikacích do systému Aleph_. Modul je 
-vyvíjen
-v rámci projektu `E-Deposit`_.
+Modul is used to read and export metadata about epublications to/from Aleph_.
+Modul is developed as part of the `E-Deposit` project.
 
 .. _Aleph: http://www.exlibrisgroup.com/category/Aleph
 .. _E-Deposit: http://edeposit.nkp.cz

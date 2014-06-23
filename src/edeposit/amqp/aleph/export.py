@@ -53,8 +53,8 @@ class ExportRejectedException(ExportException):
 class PostData:
     """
     This class is used to transform data from
-    :class:`aleph.datastructures.epublication.EPublication` to dictionary,
-    which is sent as POST request to Aleph third-party webform_.
+    :class:`.EPublication` to dictionary, which is sent as POST request to
+    Aleph third-party webform_.
 
     .. _webform: http://aleph.nkp.cz/F/?func=file&file_name=service-isbn
 

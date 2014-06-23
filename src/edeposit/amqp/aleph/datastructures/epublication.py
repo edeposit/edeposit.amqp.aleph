@@ -53,11 +53,13 @@ class EPublication(namedtuple("EPublication", ["ISBN",
                                                'originaly',
                                                'internal_url'])):
     """
-    This structure is returned as result of users SearchRequest. It will be
-    also used in exporting new data to aleph, but that is not implemented yet.
+    This structure is returned as result of users :class:`.SearchRequest`. It
+    will be also used in exporting new data to aleph, but that is not
+    implemented yet.
 
-    In case of Search/Count requests, this structure is filled with data from
-    MARC XML record parsed by marcxml.py.
+    In case of :class:`Search <.SearchRequest>`/:class:`Count <.CountRequest>`
+    requests, this structure is filled with data from MARC XML record parsed
+    by :mod:`marcxml.py <aleph.marcxml>`.
 
     Attributes:
         url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)

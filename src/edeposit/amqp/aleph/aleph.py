@@ -8,7 +8,8 @@
 Aleph X-Service wrapper.
 
 This module allows you to query Aleph's X-Services_ module (Aleph server is
-defined by :attr:`~edeposit.amqp.aleph.settings.ALEPH_URL` in ``settings.py``).
+defined by :attr:`aleph.settings.ALEPH_URL` in :mod:`settings.py
+<aleph.settings>`).
 
 .. _X-Services: http://www.exlibrisgroup.com/category/MetaLibXServer
 
@@ -555,7 +556,7 @@ def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
     Args:
         isbn (str): ISBN string.
         base (str, optional): Base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -570,7 +571,7 @@ def getAuthorsBooksIDs(author, base=ALEPH_DEFAULT_BASE):
     Args:
         author (str): Authors name/lastname in UTF-8.
         base (str, optional): base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -586,7 +587,7 @@ def getPublishersBooksIDs(publisher, base=ALEPH_DEFAULT_BASE):
     Args:
         publisher (str): Name of publisher which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -603,7 +604,7 @@ def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
         title (str): Title (name) of the book which will be used to search in
                      Aleph.
         base (str, optional): base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         list: of :class:`DocumentID` objects
@@ -618,7 +619,7 @@ def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     Args:
         isbn (str): ISBN string.
         base (str, optional): Base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
@@ -633,7 +634,7 @@ def getAuthorsBooksCount(author, base=ALEPH_DEFAULT_BASE):
     Args:
         author (str): Authors name/lastname in UTF-8.
         base (str, optional): base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
@@ -648,7 +649,7 @@ def getPublishersBooksCount(publisher, base=ALEPH_DEFAULT_BASE):
     Args:
         publisher (str): Name of publisher which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
-                       :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                       :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
@@ -663,7 +664,7 @@ def getBooksTitleCount(title, base=ALEPH_DEFAULT_BASE):
     Args:
         title (str): Title (name) of book which will be used to search Aleph.
         base (str, optional): base on which will be search performed. Default
-                    :attr:`~edeposit.amqp.aleph.settings.ALEPH_DEFAULT_BASE`.
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
         int: Number of matching documents in Aleph.
