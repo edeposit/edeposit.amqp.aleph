@@ -31,6 +31,9 @@ BASE_PATH = (os.path.dirname(__file__))
 #: Default base used to search in Aleph
 ALEPH_DEFAULT_BASE = "nkc"
 
+#: Default library in aleph.
+DEFAULT_LIBRARY = "CZE01"
+
 #: URL used to read from Aleph. See Aleph's X-service module.
 ALEPH_URL = "http://aleph.nkp.cz"
 
