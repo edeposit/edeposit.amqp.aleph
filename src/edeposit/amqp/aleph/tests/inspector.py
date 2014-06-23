@@ -4,10 +4,15 @@
 # library for Robot Framework to inspect python modules
 #
 
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath('src/edeposit/amqp'))
+
 import imp
-import edeposit.amqp.aleph as aleph
-import edeposit.amqp.aleph.export as export
-import edeposit.amqp.aleph.convertor as convertor
+import aleph
+import aleph.export as export
+import aleph.convertor as convertor
 
 import os.path
 
