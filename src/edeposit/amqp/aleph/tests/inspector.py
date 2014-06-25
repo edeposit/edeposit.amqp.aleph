@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath('src/edeposit/amqp'))
 import imp
 import aleph
 import aleph.export as export
-import aleph.convertor as convertor
+import aleph.datastructures.convertor as convertor
 
 import os.path
 
