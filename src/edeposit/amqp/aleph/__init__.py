@@ -240,8 +240,7 @@ class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
                 None,
                 self.library,
                 self.doc_id,
-                xml,
-                convertor.toEPublication(xml)
+                xml
             )
         ])
 
