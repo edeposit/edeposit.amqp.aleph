@@ -14,7 +14,6 @@ Submodules
    /api/aleph.aleph
    /api/aleph.marcxml
    /api/aleph.isbn
-   /api/aleph.convertor
    /api/aleph.export
    /api/aleph.settings
    /api/aleph.datastructures

@@ -113,8 +113,8 @@ import isbn
 import aleph
 import export
 import settings
-import convertor
 from datastructures import *
+from datastructures import convertor
 
 
 #= Queries ====================================================================

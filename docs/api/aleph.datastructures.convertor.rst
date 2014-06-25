@@ -1,6 +1,6 @@
 Convertor
 =========
 
-.. automodule:: aleph.convertor
+.. automodule:: aleph.datastructures.convertor
     :members:
     :undoc-members:

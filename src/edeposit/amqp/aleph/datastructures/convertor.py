@@ -5,22 +5,25 @@
 #
 #= Imports ====================================================================
 """
-This module exists to provide ability to convert from AMQP data structures to
-Aleph's data structures, specifically to convert :class:`.MARCXMLRecord` to
+This module exists to provide ability to convert from Aleph's data structures
+to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 :class:`.EPublication` simplified data structure.
 """
-from marcxml import MARCXMLRecord
-from datastructures import *
+from ..marcxml import MARCXMLRecord
 from __init__ import *
 
 
 #= Functions & objects ========================================================
-def toEPublication(marcxml):
+def toSemanticInfo(xml):
+    return 1
+
+
+def toEPublication(xml):
     """
     Convert MARCXMLRecord object to :class:`.EPublication` named tuple.
 
     Args:
-        marcxml (str/MARCXMLRecord): MarcXML which will be converted to
+        xml (str/MARCXMLRecord): MarcXML which will be converted to
                 EPublication. In case of str, <record> tag is required.
 
     Returns:
@@ -30,9 +33,9 @@ def toEPublication(marcxml):
         :class:`aleph.datastructures.epublication` for details of
         :class:`.EPublication`, structure.
     """
-    parsed = marcxml
-    if not isinstance(marcxml, MARCXMLRecord):
-        parsed = MARCXMLRecord(str(marcxml))
+    parsed = xml
+    if not isinstance(xml, MARCXMLRecord):
+        parsed = MARCXMLRecord(str(xml))
 
     # distributor = ""  # FUTURE
     # mistoDistribuce = ""

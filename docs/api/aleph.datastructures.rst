@@ -8,6 +8,7 @@ List of defined structures:
 
 .. toctree::
 
+   aleph.datastructures.convertor
    aleph.datastructures.alephrecord
    aleph.datastructures.epublication
    aleph.datastructures.requests
