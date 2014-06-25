@@ -16,6 +16,18 @@ from semanticinfo import SemanticInfo
 
 #= Functions & objects ========================================================
 def toSemanticInfo(xml):
+    """
+    Pick informations from :class:`.MARCXMLRecord` object and use it to build
+    :class:`.SemanticInfo` structure.
+
+    Args:
+        xml (str/MARCXMLRecord): MarcXML which will be converted to
+            SemanticInfo. In case of str, ``<record>`` tag is required.
+
+    Returns:
+        structure: :class:`.SemanticInfo`.
+
+    """
     hasAcquisitionFields = False
     hasISBNAgencyFields = False
     hasCatalogizationFields = False
@@ -36,14 +48,15 @@ def toSemanticInfo(xml):
 
 def toEPublication(xml):
     """
-    Convert MARCXMLRecord object to :class:`.EPublication` named tuple.
+    Convert :class:`.MARCXMLRecord` object to :class:`.EPublication` namedtuple.
 
     Args:
         xml (str/MARCXMLRecord): MarcXML which will be converted to
-                EPublication. In case of str, <record> tag is required.
+            EPublication. In case of str, ``<record>`` tag is required.
 
     Returns:
-        EPublication: named tuple with data about publication.
+        structure: :class:`.EPublication` namedtuple with data about \
+                   publication.
 
     See Also:
         :class:`aleph.datastructures.epublication` for details of
