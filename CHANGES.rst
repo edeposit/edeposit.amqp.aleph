@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.5.2
+-----
+    - Added tracking of export progress.
+
 1.5.1
 -----
     - Added new Query class - DocumentQuery.
