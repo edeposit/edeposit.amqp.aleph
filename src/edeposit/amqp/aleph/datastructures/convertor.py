@@ -11,11 +11,27 @@ to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 """
 from ..marcxml import MARCXMLRecord
 from __init__ import *
+from semanticinfo import SemanticInfo
 
 
 #= Functions & objects ========================================================
 def toSemanticInfo(xml):
-    return 1
+    hasAcquisitionFields = False
+    hasISBNAgencyFields = False
+    hasCatalogizationFields = False
+
+    parsed = xml
+    if not isinstance(xml, MARCXMLRecord):
+        parsed = MARCXMLRecord(str(xml))
+
+    if "HLD" in parsed.datafields:
+        hasAcquisitionFields = True
+
+    return SemanticInfo(
+        hasAcquisitionFields,
+        hasISBNAgencyFields,
+        hasCatalogizationFields
+    )
 
 
 def toEPublication(xml):
