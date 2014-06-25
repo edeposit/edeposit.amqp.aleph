@@ -12,29 +12,11 @@ API
 from collections import namedtuple
 
 
-from ..marcxml import MARCXMLRecord
 import convertor
+from ..marcxml import MARCXMLRecord
 
 
 # Structures ==================================================================
-class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
-                                               "hasISBNAgencyFields",
-                                               "hasCatalogizationFields"])):
-    """
-    This structure is used to represent informations about export progress in
-    Aleph.
-
-    It contains informations about state of the record, so it can be tracked
-    from edeposit project.
-
-    Attributes:
-        hasAcquisitionFields (bool): Was the record aproved by acquisition?
-        hasISBNAgencyFields (bool):  Was the record approved by ISBN agency?
-        hasCatalogizationFields (bool): Does it have catalogization fileds.
-    """
-    pass
-
-
 class AlephRecord(namedtuple("AlephRecord", ['base',
                                              'library',
                                              'docNumber',
@@ -58,7 +40,7 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                      :class:`.EPublication` structure.
         semantic_info (namedtuple, default None): Export progress informations
                       from :attr:`.xml` attribute represented as
-                      :class:`SemanticInfo` structure.
+                      :class:`.SemanticInfo` structure.
 
     Note:
         :attr:`semantic_info` and :attr:`epublication` attributes are parsed
