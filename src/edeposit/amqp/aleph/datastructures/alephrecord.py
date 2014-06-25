@@ -5,13 +5,21 @@
 #
 #= Imports ====================================================================
 from collections import namedtuple
+import convertor
+
+
+class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
+                                               "hasISBNAgencyFields",
+                                               "hasCatalogizationFields"])):
+    pass
 
 
 class AlephRecord(namedtuple("AlephRecord", ['base',
                                              'library',
                                              'docNumber',
                                              'xml',
-                                             'epublication'])):
+                                             'epublication',
+                                             'semantic_info'])):
     """
     This structure is returned as response to :class:`.SearchRequest` inside
     :class:`.SearchResult`.
@@ -28,4 +36,17 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
         epublication (EPublication): Parsed ``.xml`` to :class:`.EPublication`
                                      structure.
     """
-    pass
+    def __new__(cls, base, library, docNumber, xml, epublication,
+                semantic_info=None):
+        if not semantic_info and xml.strip():
+            semantic_info = convertor.toSemanticInfo(xml)
+
+        return super(AlephRecord, cls).__new__(
+            cls,
+            base,
+            library,
+            docNumber,
+            xml,
+            epublication,
+            semantic_info
+        )
