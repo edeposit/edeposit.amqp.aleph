@@ -4,3 +4,4 @@ from results import *
 from requests import *
 from alephrecord import *
 from epublication import *
+from semanticinfo import *

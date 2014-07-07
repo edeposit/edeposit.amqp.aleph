@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.5.3
+-----
+    - Fixed bug in deserialization of semanticinfo.
+
 1.5.2
 -----
     - Added tracking of export progress.
