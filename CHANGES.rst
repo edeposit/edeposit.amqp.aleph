@@ -1,16 +1,15 @@
 Changelog
 =========
 
+1.5.4
+-----
+
+    - Updated setup.py to new version of dhtmlparser.
+
 1.5.3
 -----
     - Fixed bug in deserialization of semanticinfo.
-
-1.5.2
------
     - Added tracking of export progress.
-
-1.5.1
------
     - Added new Query class - DocumentQuery.
     - Documentation cleaned.
     - Added documentation for convertor.

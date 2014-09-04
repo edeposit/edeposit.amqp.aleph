@@ -82,7 +82,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'setuptools',
-        "pyDHTMLParser>=1.7.4,<2.0.0",
+        "pyDHTMLParser>=2.0.0",
         "httpkie>=1.1.0,<2.0.0",
     ],
     extras_require={
