@@ -1,32 +1,26 @@
 Changelog
 =========
 
-1.5.4
+1.5.5
 -----
+    - Added detection of ``ISBNQuery`` in ``ISBNValidationRequest``.
 
+1.5.0 - 1.5.4
+-------------
     - Updated setup.py to new version of dhtmlparser.
-
-1.5.3
------
     - Fixed bug in deserialization of semanticinfo.
     - Added tracking of export progress.
     - Added new Query class - DocumentQuery.
     - Documentation cleaned.
     - Added documentation for convertor.
     - Fixed bug in unittests.
-
-1.5.0
------
     - Queries to test base are now handled by OAI API, which has access.
     - Export is working.
 
-1.4.9
------
+1.4.5 - 1.4.9
+-------------
     - Fixed bug in export script.
     - Changelog made more compact.
-
-1.4.5 - 1.4.8
--------------
     - Fixed bug #23 in _removeSpecialCharacters().
     - Fixed export bugs (see #21 and #22).
     - Fixed reported bugs in export script.

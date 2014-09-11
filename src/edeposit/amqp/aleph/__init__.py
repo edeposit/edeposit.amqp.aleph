@@ -451,7 +451,12 @@ def reactToAMQPMessage(req, UUID):
         return req.query.getSearchResult()
 
     elif _iiOfAny(req, ISBNValidationRequest):
-        return ISBNValidationResult(isbn.is_valid_isbn(req.ISBN))
+        ISBN = req.ISBN
+
+        if _iiOfAny(ISBN, ISBNQuery):
+            ISBN = ISBN.ISBN
+
+        return ISBNValidationResult(isbn.is_valid_isbn(ISBN))
 
     elif _iiOfAny(req, ExportRequest):
         export.exportEPublication(req.epublication)
