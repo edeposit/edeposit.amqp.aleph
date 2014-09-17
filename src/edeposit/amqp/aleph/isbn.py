@@ -99,7 +99,13 @@ def get_isbn13_checksum(isbn):
         int: Last checksum digit for given `isbn`.
     """
     multipliers = map(lambda x: int(x), list("13" * 6))
-    return 10 - sum([i * x for i, x in zip(multipliers, isbn)]) % 10
+
+    rest = sum([i * x for i, x in zip(multipliers, isbn)]) % 10
+
+    if rest == 0:
+        return rest
+
+    return 10 - rest
 
 
 @_isbn_cleaner

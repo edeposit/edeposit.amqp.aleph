@@ -50,6 +50,8 @@ Dotaz na validaci ISBN
     ISBN je validní         ${result}
     ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("80-251-0225-x")}
     ISBN není validní       ${result}
+    ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-80-85979-64-0")}
+    ISBN je validní       ${result}
     ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("80-251-0225")}
     ISBN není validní       ${result}
     ${result} =             Dotaz do Alephu  ${aleph.ISBNValidationRequest("978-0-306-40615-7")}

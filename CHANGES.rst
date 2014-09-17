@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.5.6
+-----
+    - Fixed bug in ISBN submodule.
+
 1.5.5
 -----
     - Added detection of ``ISBNQuery`` in ``ISBNValidationRequest``.
