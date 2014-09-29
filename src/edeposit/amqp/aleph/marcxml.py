@@ -10,20 +10,21 @@
 """
 Module for parsing and high-level processing of MARC XML records.
 
-About format and how the class work; Standard MARC record is made from
-three parts:
+Standard MARC record is made from three parts:
 
-* `leader` - binary something, you can probably ignore it
-* `controlfileds` - marc fields < 10
-* `datafields` - important information you actually want
+* `leader` - Binary something, you can probably ignore it.
+* `controlfileds` - MARC fields with ``ID < 10``.
+* `datafields` - Informations you actually want.
 
-Basic MARC XML scheme uses this structure::
+Basic MARC XML scheme has this structure::
 
     <record xmlns=definition..>
         <leader>optional_binary_something</leader>
+
         <controlfield tag="001">data</controlfield>
         ...
         <controlfield tag="010">data</controlfield>
+
         <datafield tag="011" ind1=" " ind2=" ">
             <subfield code="scode">data</subfield>
             <subfield code="a">data</subfield>
@@ -31,17 +32,19 @@ Basic MARC XML scheme uses this structure::
             ...
             <subfield code"scode+">another data</subfield>
         </datafield>
+
         ...
+
         <datafield tag="999" ind1=" " ind2=" ">
-        ...
+            ...
         </datafield>
     </record>
 
 `<leader>` is optional and it is parsed into :attr:`MARCXMLRecord.leader` as
 string.
 
-`<controlfield>s` are optional and parsed as dictionary into
-:class:`MARCXMLRecord.controlfields`, and dictionary for data from example
+`<controlfield>s` are optional and are parsed as dictionary into
+:class:`MARCXMLRecord.controlfields`. Dictionary for data in example above
 would look like this::
 
     MARCXMLRecord.controlfields = {
@@ -94,9 +97,6 @@ Example dict::
             }
         ]
     }
-
-As you can see in ``910`` record example, sometimes there are multiple records
-in a list!
 
 Warning:
     NOTICE, THAT RECORDS ARE STORED IN ARRAY, NO MATTER IF IT IS JUST ONE
@@ -483,7 +483,7 @@ class MARCXMLRecord:
 
         # append dict, or add new dict into self.datafields
         if name in self.datafields:
-            self.datafields.append(subfields_dict)
+            self.datafields[name].append(subfields_dict)
         else:
             self.datafields[name] = [subfields_dict]
 
@@ -742,10 +742,14 @@ class MARCXMLRecord:
         """
         return self.getDataRecords("765", "t", False)
 
-    def getI(self, num):
+    def getI(self, num, is_oai=None):
         """
         This method is used mainly internally, but it can be handy if you work
         with with raw MARC XML object and not using getters.
+
+        Args:
+            num (int): Which indicator you need (1/2).
+            is_oai (bool/None): If None, :attr:`MARCXMLRecord.oai_marc` is used.
 
         Returns:
             str: current name of ``i1``/``ind1`` parameter based on \
@@ -754,7 +758,10 @@ class MARCXMLRecord:
         if num != 1 and num != 2:
             raise ValueError("num parameter have to be 1 or 2!")
 
-        i_name = "ind" if not self.oai_marc else "i"
+        if is_oai is None:
+            is_oai = self.oai_marc
+
+        i_name = "ind" if not is_oai else "i"
 
         return i_name + str(num)
 
@@ -921,7 +928,7 @@ class MARCXMLRecord:
 
         # parse body in respect of OAI MARC format possibility
         if self.oai_marc:
-            self.__parseControlFields(record.find("fixfield"))
+            self.__parseControlFields(record.find("fixfield"), "id")
             self.__parseDataFields(record.find("varfield"), "id", "label")
         else:
             self.__parseControlFields(record.find("controlfield"), "tag")
@@ -1003,6 +1010,11 @@ class MARCXMLRecord:
 
         output = ""
         for field_id in resorted(self.controlfields):
+            # some control fields are specific for oai
+            # if not self.oai_marc and field_id in ["LDR", "FMT"]:
+            if not self.oai_marc and not field_id.isdigit:
+                continue
+
             output += Template(template).substitute(
                 TAGNAME=tagname,
                 FIELD_NAME=field_name,
@@ -1046,12 +1058,19 @@ class MARCXMLRecord:
         for field_id in resorted(self.datafields):
             # unpac dicts from array
             for dict_field in self.datafields[field_id]:
-                i1_val = dict_field[i1_name]
-                i2_val = dict_field[i2_name]
+                # this allows to convert between OAI and XML formats simply
+                # by switching .oai_marc property
+                real_i1_name = i1_name if i1_name in dict_field \
+                                       else self.getI(1, not self.oai_marc)
+                real_i2_name = i2_name if i2_name in dict_field \
+                                       else self.getI(2, not self.oai_marc)
+
+                i1_val = dict_field[real_i1_name]
+                i2_val = dict_field[real_i2_name]
 
                 # temporarily remove i1/i2 from dict
-                del dict_field[i1_name]
-                del dict_field[i2_name]
+                del dict_field[real_i1_name]
+                del dict_field[real_i2_name]
 
                 output += Template(template).substitute(
                     TAGNAME=tagname,
@@ -1065,8 +1084,8 @@ class MARCXMLRecord:
                 )
 
                 # put back temporarily removed i1/i2
-                dict_field[i1_name] = i1_val
-                dict_field[i2_name] = i2_val
+                dict_field[real_i1_name] = i1_val
+                dict_field[real_i2_name] = i2_val
 
         return output
 
@@ -1088,16 +1107,34 @@ $DATA_FIELDS
 </record>
 """
 
-        # serialize leader, if it is present
+        oai_template = """<record>
+<metadata>
+<oai_marc>
+$LEADER$CONTROL_FIELDS
+$DATA_FIELDS
+</oai_marc>
+</metadata>
+</record>
+"""
+
+        # serialize leader, if it is present and record is marc xml
         leader = self.leader if self.leader is not None else ""
-        if not self.oai_marc and leader != "":  # print only visible leaders
+        if leader:  # print only visible leaders
             leader = "<leader>" + leader + "</leader>"
 
-        return Template(marcxml_template).substitute(
+        # discard leader for oai
+        if self.oai_marc:
+            leader = ""
+
+        # serialize
+        xml_template = oai_template if self.oai_marc else marcxml_template
+        xml_output = Template(xml_template).substitute(
             LEADER=leader.strip(),
             CONTROL_FIELDS=self.__serializeControlFields().strip(),
             DATA_FIELDS=self.__serializeDataFields().strip()
         )
+
+        return xml_output
 
     def __str__(self):
         return self.toXML()
