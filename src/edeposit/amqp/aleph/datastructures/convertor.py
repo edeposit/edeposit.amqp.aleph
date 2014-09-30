@@ -39,6 +39,9 @@ def toSemanticInfo(xml):
     if "HLD" in parsed.datafields:
         hasAcquisitionFields = True
 
+    if parsed.getISBNs():
+        hasISBNAgencyFields = True
+
     return SemanticInfo(
         hasAcquisitionFields,
         hasISBNAgencyFields,
