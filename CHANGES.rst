@@ -2,20 +2,15 @@ Changelog
 =========
 
 
-1.5.8
+1.5.9
 -----
-    - Added more detections to convertor.py / toSemanticInfo().
+    - Fixed bug in marcxml.py.
 
-1.5.7
------
-    - marcxml.py changed and fixed. It can now convert MARC XML <-> OAI without any problems, just by changing .oai_marc property.
-
-1.5.6
------
-    - Fixed bug in ISBN submodule.
-
-1.5.0 - 1.5.5
+1.5.0 - 1.5.8
 -------------
+    - Added more detections to convertor.py / toSemanticInfo().
+    - marcxml.py changed and fixed. It can now convert MARC XML <-> OAI without any problems, just by changing .oai_marc property.
+    - Fixed bug in ISBN submodule.
     - Added detection of ``ISBNQuery`` in ``ISBNValidationRequest``.
     - Updated setup.py to new version of dhtmlparser.
     - Fixed bug in deserialization of semanticinfo.

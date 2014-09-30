@@ -1012,7 +1012,7 @@ class MARCXMLRecord:
         for field_id in resorted(self.controlfields):
             # some control fields are specific for oai
             # if not self.oai_marc and field_id in ["LDR", "FMT"]:
-            if not self.oai_marc and not field_id.isdigit:
+            if not self.oai_marc and not field_id.isdigit():
                 continue
 
             output += Template(template).substitute(
