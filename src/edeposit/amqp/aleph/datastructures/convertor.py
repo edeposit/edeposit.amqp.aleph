@@ -36,11 +36,14 @@ def toSemanticInfo(xml):
     if not isinstance(xml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(xml))
 
-    if "HLD" in parsed.datafields:
+    if "HLD" in parsed.datafields or "HLD" in parsed.controlfields:
         hasAcquisitionFields = True
 
     if parsed.getISBNs():
         hasISBNAgencyFields = True
+
+    if "STZ" in parsed.datafields or "STZ" in parsed.controlfields:
+        hasCatalogizationFields = True
 
     return SemanticInfo(
         hasAcquisitionFields,

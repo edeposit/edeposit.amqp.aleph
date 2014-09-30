@@ -1,6 +1,11 @@
 Changelog
 =========
 
+
+1.5.8
+-----
+    - Added more detections to convertor.py / toSemanticInfo().
+
 1.5.7
 -----
     - marcxml.py changed and fixed. It can now convert MARC XML <-> OAI without any problems, just by changing .oai_marc property.
