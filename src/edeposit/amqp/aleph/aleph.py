@@ -104,6 +104,9 @@ ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER" + \
                              "&start_point=1&no_docs=$NUMBER_OF_DOCS"
 ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
 ALEPH_GET_OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
+GET_RECORD_TEMPLATE = "/X?op=present&set_number=$SET_NUM&set_entry=$RECORD_NUM"
+
+MAX_RECORDS = 30
 
 
 VALID_ALEPH_FIELDS = [
@@ -363,6 +366,50 @@ def searchInAleph(base, phrase, considerSimilar, field):
         return result
     else:
         raise AlephException(result["error"])
+
+
+def download_records(search_result, from_doc=1):
+    """
+    Download `MAX_RECORDS` documents from `search_result` starting from
+    `from_doc`.
+
+    Attr:
+        search_result (dict): returned from :func:`searchInAleph`.
+        from_doc (int, default 1): Start from document number `from_doc`.
+
+    Returns:
+        list: List of XML strings with documents in MARC OAI.
+    """
+    downer = Downloader()
+
+    if "set_number" not in search_result:
+        return []
+
+    # set numbers should be probably aligned to some length
+    set_number = str(search_result["set_number"])
+    if len(set_number) < 6:
+        set_number = (6 - len(set_number)) * "0" + set_number
+
+    # download all no_records
+    records = []
+    for cnt in range(search_result["no_records"]):
+        doc_number = from_doc + cnt
+
+        if cnt >= MAX_RECORDS or doc_number > search_result["no_records"]:
+            break
+
+        print doc_number
+
+        set_data = downer.download(
+            ALEPH_URL + Template(GET_RECORD_TEMPLATE).substitute(
+                SET_NUM=set_number,
+                RECORD_NUM=doc_number,
+            )
+        )
+
+        records.append(set_data)
+
+    return records
 
 
 def getDocumentIDs(aleph_search_result, number_of_docs=-1):
