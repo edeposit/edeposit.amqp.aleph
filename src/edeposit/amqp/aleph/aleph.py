@@ -99,35 +99,36 @@ from settings import *
 
 #= Variables ==================================================================
 # String.Template() variable convention is used
-ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE&adjacent=$SIMILAR"
-ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER&start_point=1&no_docs=$NUMBER_OF_DOCS"
+ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE"
+ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER" + \
+                             "&start_point=1&no_docs=$NUMBER_OF_DOCS"
 ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
 ALEPH_GET_OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
 
 
 VALID_ALEPH_FIELDS = [
-    "wrd",  # Všechny údaje
-    "wtl",  # Název
-    "wau",  # Autor (osoba, korporace)
-    "wkw",  # Předmět (klíčová slova)
-    "txt",  # Slova z obsahu (table of cont.)
-    "wpb",  # Nakladatel
-    "wpp",  # Místo vydání
-    "wyr",  # Rok vydání
-    "ssn",  # ISSN
-    "sbn",  # ISBN / ISMN
-    "isn",  # ISBN / ISMN / ISSN
-    "ob",   # Obsazení (hudební díla)
-    "wpf",  # Periodicita
-    "wpv",  # Kód země vydání
-    "wln",  # Kód jazyka dokumentu
-    "wlo",  # Kód jazyka originálu
-    "wtp",  # Druh dokumentu
-    "sg",   # Signatura
-    "bar",  # Čárový kód
-    "cnb",  # Číslo národní bibl.
-    "icz",  # Identifikační číslo
-    "sys",  # Systémové číslo
+    "wrd",
+    "wtl",
+    "wau",
+    "wkw",
+    "txt",
+    "wpb",
+    "wpp",
+    "wyr",
+    "ssn",
+    "sbn",
+    "isn",
+    "ob",
+    "wpf",
+    "wpv",
+    "wln",
+    "wlo",
+    "wtp",
+    "sg",
+    "bar",
+    "cnb",
+    "icz",
+    "sys",
     "wpk",
 ]
 """
@@ -446,7 +447,7 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
     return ids
 
 
-def downloadMARCXML(doc_id, library):
+def downloadMARCXML(doc_id, library, base="nkc"):
     """
     Download MARC XML document with given `doc_id` from given `library`.
 
@@ -477,24 +478,24 @@ def downloadMARCXML(doc_id, library):
     # check if there are any errors
     # bad library error
     error = dom.find("login")
-    if len(error) > 0:
-        error = error[0].find("error")
+    if error:
+        error_msg = error[0].find("error")
 
-        if len(error) > 0:
+        if error_msg:
             raise LibraryNotFoundException(
                 "Can't download document doc_id: '" + str(doc_id) + "' " +
                 "(probably bad library: '" + library + "')!\nMessage: " +
-                error.getContent()
+                "\n".join(map(lambda x: x.getContent(), error_msg))
             )
 
     # another error - document not found
     error = dom.find("ill-get-doc")
-    if len(error) > 0:
-        error = error[0].find("error")
+    if error:
+        error_msg = error[0].find("error")
 
-        if len(error) > 0:
+        if error_msg:
             raise DocumentNotFoundException(
-                error[0].getContent()
+                "\n".join(map(lambda x: x.getContent(), error_msg))
             )
 
     return data  # MARCxml of document with given doc_id
