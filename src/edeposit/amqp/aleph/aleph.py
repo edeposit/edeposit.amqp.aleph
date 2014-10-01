@@ -21,6 +21,7 @@ Lowlevel
 You can use this functions to access Aleph::
 
     searchInAleph(base, phrase, considerSimilar, field)
+    downloadRecords(search_result, [from_doc])
     getDocumentIDs(aleph_search_result, [number_of_docs])
     downloadMARCXML(doc_id, library)
     downloadMARCOAI(doc_id, base)
@@ -58,14 +59,31 @@ Lets look at some code::
 High-level
 ==========
 
-So far, there are only getter wrappers:
+XML wrappers
+````````````
+This wrappers returns full XML records from Aleph:
+
+    - :func:`getISBNsXML`
+    - :func:`getAuthorsBooksXML`
+    - :func:`getPublishersBooksXML`
+    - :func:`getBooksTitleIDs`
+
+ID wrappers
+```````````
+There are wrappers, which returns ID's of matching document in Aleph:
 
     - :func:`getISBNsIDs`
     - :func:`getAuthorsBooksIDs`
     - :func:`getPublishersBooksIDs`
     - :func:`getBooksTitleIDs`
 
-And counting functions:
+You can theh download them using :func:`downloadMARCXML` or
+:func:`downloadMARCOAI`.
+
+Count wrappers
+``````````````
+Count wrappers returns just the number of records with given parameters are
+there in aleph.
 
     - :func:`getISBNCount`
     - :func:`getAuthorsBooksCount`
@@ -89,22 +107,20 @@ from collections import namedtuple
 from string import Template
 from urllib import quote_plus
 
-
 import dhtmlparser
 from httpkie import Downloader
-
 
 from settings import *
 
 
 #= Variables ==================================================================
 # String.Template() variable convention is used
-ALEPH_SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE"
-ALEPH_GET_SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER" + \
-                             "&start_point=1&no_docs=$NUMBER_OF_DOCS"
-ALEPH_GET_DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
-ALEPH_GET_OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
-GET_RECORD_TEMPLATE = "/X?op=present&set_number=$SET_NUM&set_entry=$RECORD_NUM"
+SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE"
+SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER" + \
+                   "&start_point=1&no_docs=$NUMBER_OF_DOCS"
+DOC_URL_TEMPLATE = "/X?op=ill_get_doc&doc_number=$DOC_ID&library=$LIBRARY"
+OAI_DOC_URL_TEMPLATE = "/X?op=find_doc&doc_num=$DOC_ID&base=$BASE"
+RECORD_URL_TEMPLATE = "/X?op=present&set_number=$SET_NUM&set_entry=$RECORD_NUM"
 
 MAX_RECORDS = 30
 
@@ -336,7 +352,7 @@ def searchInAleph(base, phrase, considerSimilar, field):
     if field.lower() not in VALID_ALEPH_FIELDS:
         raise InvalidAlephFieldException("Unknown field '" + field + "'!")
 
-    param_url = Template(ALEPH_SEARCH_URL_TEMPLATE).substitute(
+    param_url = Template(SEARCH_URL_TEMPLATE).substitute(
         PHRASE=quote_plus(phrase),  # urlencode phrase
         BASE=base,
         FIELD=field,
@@ -368,7 +384,7 @@ def searchInAleph(base, phrase, considerSimilar, field):
         raise AlephException(result["error"])
 
 
-def download_records(search_result, from_doc=1):
+def downloadRecords(search_result, from_doc=1):
     """
     Download `MAX_RECORDS` documents from `search_result` starting from
     `from_doc`.
@@ -401,7 +417,7 @@ def download_records(search_result, from_doc=1):
         print doc_number
 
         set_data = downer.download(
-            ALEPH_URL + Template(GET_RECORD_TEMPLATE).substitute(
+            ALEPH_URL + Template(RECORD_URL_TEMPLATE).substitute(
                 SET_NUM=set_number,
                 RECORD_NUM=doc_number,
             )
@@ -448,7 +464,7 @@ def getDocumentIDs(aleph_search_result, number_of_docs=-1):
 
     # download data about given set
     set_data = downer.download(
-        ALEPH_URL + Template(ALEPH_GET_SET_URL_TEMPLATE).substitute(
+        ALEPH_URL + Template(SET_URL_TEMPLATE).substitute(
             SET_NUMBER=set_number,
             NUMBER_OF_DOCS=number_of_docs,
         )
@@ -514,7 +530,7 @@ def downloadMARCXML(doc_id, library, base="nkc"):
     downer = Downloader()
 
     data = downer.download(
-        ALEPH_URL + Template(ALEPH_GET_DOC_URL_TEMPLATE).substitute(
+        ALEPH_URL + Template(DOC_URL_TEMPLATE).substitute(
             DOC_ID=doc_id,
             LIBRARY=library
         )
@@ -573,7 +589,7 @@ def downloadMARCOAI(doc_id, base):
     downer = Downloader()
 
     data = downer.download(
-        ALEPH_URL + Template(ALEPH_GET_OAI_DOC_URL_TEMPLATE).substitute(
+        ALEPH_URL + Template(OAI_DOC_URL_TEMPLATE).substitute(
             DOC_ID=doc_id,
             BASE=base
         )
@@ -595,6 +611,95 @@ def downloadMARCOAI(doc_id, base):
             error[0].getContent() + "\n" +
             "The base you are trying to access probably doesn't exist."
         )
+
+
+# High level API ==============================================================
+def getISBNsXML(isbn, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `isbn` in `base`.
+
+    Args:
+        isbn (str): ISBN of the books you want to get.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        str: String with full **OAI** XML representation of the record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            isbn,
+            False,
+            "sbn"hm
+        )
+    )
+
+
+def getAuthorsBooksXML(author, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `author` in `base`.
+
+    Args:
+        author (str): Name of the `author` of the books you want to get.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        str: String with full **OAI** XML representation of the record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            isbn,
+            False,
+            "sbn"hm
+        )
+    )
+
+
+def getPublishersBooksXML(publisher, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `publisher` in `base`.
+
+    Args:
+        publisher (str): Name of the `publisher` of the books you want to get.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        str: String with full **OAI** XML representation of the record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            isbn,
+            False,
+            "sbn"hm
+        )
+    )
+
+
+def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `title` in `base`.
+
+    Args:
+        title (str): `title` of the books you want to get.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        str: String with full **OAI** XML representation of the record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            isbn,
+            False,
+            "sbn"hm
+        )
+    )
 
 
 def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
