@@ -3,18 +3,20 @@
 #
 # Interpreter version: python 2.7
 #
-#= Imports ====================================================================
 """
 This module exists to provide ability to convert from Aleph's data structures
 to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 :class:`.EPublication` simplified data structure.
 """
+# Imports =====================================================================
+import dhtmlparser
+
 from ..marcxml import MARCXMLRecord
 from __init__ import *
 from semanticinfo import SemanticInfo
 
 
-#= Functions & objects ========================================================
+# Functions & objects =========================================================
 def toSemanticInfo(xml):
     """
     Pick informations from :class:`.MARCXMLRecord` object and use it to build
@@ -54,7 +56,8 @@ def toSemanticInfo(xml):
 
 def toEPublication(xml):
     """
-    Convert :class:`.MARCXMLRecord` object to :class:`.EPublication` namedtuple.
+    Convert :class:`.MARCXMLRecord` object to :class:`.EPublication`
+    namedtuple.
 
     Args:
         xml (str/MARCXMLRecord): MarcXML which will be converted to
@@ -126,3 +129,23 @@ def toEPublication(xml):
         originaly           = parsed.getOriginals(),
         internal_url        = ""  # TODO
     )
+
+
+def getDocNumber(xml):
+    """
+    Parse <doc_number> tag from `xml`.
+
+    Args:
+        xml (str): XML string returned from :func:`aleph.aleph.downloadRecords`
+
+    Returns:
+        str: Doc ID as string or "-1" if not found.
+    """
+    dom = dhtmlparser.parseString(xml)
+
+    doc_number_tag = dom.find("doc_number")
+
+    if not doc_number_tag:
+        return "-1"
+
+    return doc_number_tag[0].getContent().strip()
