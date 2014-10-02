@@ -1,13 +1,20 @@
 Changelog
 =========
 
-
-1.5.9
+1.6.0
 -----
-    - Fixed bug in marcxml.py.
+    - Fixed bugs, old code, small improvements.
+    - aleph.py: Added new function downloadRecords().
+    - aleph.py: Added four new functions: getISBNsXML(), getAuthorsBooksXML(), getPublishersBooksXML() and getBooksTitleIDs().
+    - aleph.py: Refactored few unnecessarily long variables.
+    - convertor.py: Added new function getDocNumber().
+    - __init__.py switched to use aleph.downloadRecord().
+    - Fixed #27 - parsing of internal url field.
+    - convertor.py refactored slightly, fixed few little bugs.
 
-1.5.0 - 1.5.8
+1.5.0 - 1.5.9
 -------------
+    - Fixed bug in marcxml.py.
     - Added more detections to convertor.py / toSemanticInfo().
     - marcxml.py changed and fixed. It can now convert MARC XML <-> OAI without any problems, just by changing .oai_marc property.
     - Fixed bug in ISBN submodule.
