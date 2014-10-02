@@ -66,7 +66,7 @@ This wrappers returns full XML records from Aleph:
     - :func:`getISBNsXML`
     - :func:`getAuthorsBooksXML`
     - :func:`getPublishersBooksXML`
-    - :func:`getBooksTitleIDs`
+    - :func:`getBooksTitleXML`
 
 ID wrappers
 ```````````
@@ -631,7 +631,7 @@ def getISBNsXML(isbn, base=ALEPH_DEFAULT_BASE):
             base,
             isbn,
             False,
-            "sbn"hm
+            "sbn"
         )
     )
 
@@ -653,7 +653,7 @@ def getAuthorsBooksXML(author, base=ALEPH_DEFAULT_BASE):
             base,
             isbn,
             False,
-            "sbn"hm
+            "sbn"
         )
     )
 
@@ -675,12 +675,12 @@ def getPublishersBooksXML(publisher, base=ALEPH_DEFAULT_BASE):
             base,
             isbn,
             False,
-            "sbn"hm
+            "sbn"
         )
     )
 
 
-def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
+def getBooksTitleXML(title, base=ALEPH_DEFAULT_BASE):
     """
     Download full XML record for given `title` in `base`.
 
@@ -697,7 +697,7 @@ def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
             base,
             isbn,
             False,
-            "sbn"hm
+            "sbn"
         )
     )
 
