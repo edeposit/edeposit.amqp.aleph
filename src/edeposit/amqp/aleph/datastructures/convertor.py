@@ -88,15 +88,15 @@ def toEPublication(xml):
 
     # zpracovatel
     zpracovatel = parsed.getDataRecords("040", "a", False)
-    zpracovatel = zpracovatel[0] if len(zpracovatel) >= 1 else ""
+    zpracovatel = zpracovatel[0] if zpracovatel else ""
 
     # url
     url = parsed.getDataRecords("856", "u", False)
-    url = url[0] if len(url) >= 1 else ""
+    url = url[0] if url else ""
 
     # internal url
     internal_url = parsed.getDataRecords("998", "a", False)
-    internal_url = internal_url[0] if len(internal_url) >= 1 else ""
+    internal_url = internal_url[0] if internal_url else ""
 
     binding = parsed.getBinding()
 
@@ -106,7 +106,7 @@ def toEPublication(xml):
         ISBN                = parsed.getISBNs(),
         nazev               = parsed.getName(),
         podnazev            = parsed.getSubname(),
-        vazba               = binding[0] if len(binding) > 0 else "",
+        vazba               = binding[0] if binding else "",
         cena                = parsed.getPrice(),
         castDil             = parsed.getPart(),
         nazevCasti          = parsed.getPartName(),
@@ -119,7 +119,7 @@ def toEPublication(xml):
         # datumDistribuce     = datumDistribuce,
         # datumProCopyright   = "",
         format              = parsed.getFormat(),
-        url                 = url,
+        url                 = url.replace("&amp;", "&"),
         mistoVydani         = parsed.getPubPlace(),
         ISBNSouboruPublikaci= [],
         autori              = map(  # convert Persons to amqp's Authors
@@ -131,7 +131,7 @@ def toEPublication(xml):
             parsed.getAuthors()
         ),
         originaly           = parsed.getOriginals(),
-        internal_url        = internal_url
+        internal_url        = internal_url.replace("&amp;", "&")
     )
 
 
