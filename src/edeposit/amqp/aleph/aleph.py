@@ -60,7 +60,7 @@ High-level
 ==========
 
 XML wrappers
-````````````
+************
 This wrappers returns full XML records from Aleph:
 
     - :func:`getISBNsXML`
@@ -69,7 +69,7 @@ This wrappers returns full XML records from Aleph:
     - :func:`getBooksTitleXML`
 
 ID wrappers
-```````````
+***********
 There are wrappers, which returns ID's of matching document in Aleph:
 
     - :func:`getISBNsIDs`
@@ -81,7 +81,7 @@ You can theh download them using :func:`downloadMARCXML` or
 :func:`downloadMARCOAI`.
 
 Count wrappers
-``````````````
+**************
 Count wrappers returns just the number of records with given parameters are
 there in aleph.
 
