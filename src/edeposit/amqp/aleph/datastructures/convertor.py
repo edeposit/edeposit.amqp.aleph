@@ -94,6 +94,10 @@ def toEPublication(xml):
     url = parsed.getDataRecords("856", "u", False)
     url = url[0] if len(url) >= 1 else ""
 
+    # internal url
+    internal_url = parsed.getDataRecords("998", "a", False)
+    internal_url = internal_url[0] if len(internal_url) >= 1 else ""
+
     binding = parsed.getBinding()
 
     # i know, that this is not PEP8, but you dont want to see it without proper
@@ -127,7 +131,7 @@ def toEPublication(xml):
             parsed.getAuthors()
         ),
         originaly           = parsed.getOriginals(),
-        internal_url        = ""  # TODO
+        internal_url        = internal_url
     )
 
 
