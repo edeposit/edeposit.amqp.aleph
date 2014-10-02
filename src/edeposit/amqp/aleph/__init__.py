@@ -105,7 +105,7 @@ Neat, isn't it?
 API
 ---
 """
-#= Imports ====================================================================
+# Imports =====================================================================
 from collections import namedtuple
 
 
@@ -117,7 +117,7 @@ from datastructures import *
 from datastructures import convertor
 
 
-#= Queries ====================================================================
+# Queries =====================================================================
 class _QueryTemplate:
     """
     This class is here to just save some effort by using common ancestor with
@@ -127,16 +127,13 @@ class _QueryTemplate:
     """
     def getSearchResult(self):
         records = []
-        for doc_id, library, base in self._getIDs():
-            xml = aleph.downloadMARCOAI(doc_id, library)
-
+        for xml in self._getXML():
             records.append(
                 AlephRecord(
-                    base,
-                    library,
-                    doc_id,
-                    xml,
-                    convertor.toEPublication(xml)
+                    base=self.base,
+                    library=settings.DEFAULT_LIBRARY,
+                    docNumber=convertor.getDocNumber(xml),
+                    xml=xml
                 )
             )
 
@@ -160,7 +157,9 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
                     for details.
         phrase (str): What are you looking for.
         considerSimilar (bool): Don't use this, it usually doesn't work.
-        field (str): Which field you want to use for search. See :attr:`aleph.VALID_ALEPH_FIELDS` for list of valid bases.
+        field (str): Which field you want to use for search.
+                     See :attr:`aleph.VALID_ALEPH_FIELDS` for list of valid
+                     bases.
 
     For details of base/phrase/.. parameters, see :func:`aleph.searchInAleph`.
     All parameters also serves as properties.
@@ -187,32 +186,12 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
         )["no_entries"]
 
 
-class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
-    """
-    Used to query Aleph to get books by ISBN.
-
-    Args:
-        ISBN (str): ISBN 10/13.
-        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
-                              is used.
-
-    Note:
-        ISBN is not unique, so you can get back lot of books with same ISBN.
-        Some books also have two or more ISBNs.
-    """
-    def __new__(self, ISBN, base=settings.ALEPH_DEFAULT_BASE):
-        return super(ISBNQuery, self).__new__(self, ISBN, base)
-
-    def _getIDs(self):
-        return aleph.getISBNsIDs(self.ISBN, base=self.base)
-
-    def _getCount(self):
-        return aleph.getISBNCount(self.ISBN, base=self.base)
-
-
 class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
     """
     Query Aleph when you know the Document ID.
+
+    Warning:
+        This doesn't work with ``cze-dep`` base.
 
     Args:
         doc_id (str): ID number as string.
@@ -256,6 +235,29 @@ class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
             return 0
 
 
+class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
+    """
+    Used to query Aleph to get books by ISBN.
+
+    Args:
+        ISBN (str): ISBN 10/13.
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
+
+    Note:
+        ISBN is not unique, so you can get back lot of books with same ISBN.
+        Some books also have two or more ISBNs.
+    """
+    def __new__(self, ISBN, base=settings.ALEPH_DEFAULT_BASE):
+        return super(ISBNQuery, self).__new__(self, ISBN, base)
+
+    def _getXML(self):
+        return aleph.getISBNsXML(self.ISBN, base=self.base)
+
+    def _getCount(self):
+        return aleph.getISBNCount(self.ISBN, base=self.base)
+
+
 class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
                   _QueryTemplate):
     """
@@ -263,15 +265,14 @@ class AuthorQuery(namedtuple("AuthorQuery", ["author", "base"]),
 
     Args:
         author (str): Author's name/lastname in UTF-8.
-        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
-                              used.
-
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
     """
     def __new__(self, author, base=settings.ALEPH_DEFAULT_BASE):
         return super(AuthorQuery, self).__new__(self, author, base)
 
-    def _getIDs(self):
-        return aleph.getAuthorsBooksIDs(self.author, base=self.base)
+    def _getXML(self):
+        return aleph.getAuthorsBooksXML(self.author, base=self.base)
 
     def _getCount(self):
         return aleph.getAuthorsBooksCount(self.author, base=self.base)
@@ -284,15 +285,14 @@ class PublisherQuery(namedtuple("PublisherQuery", ["publisher", "base"]),
 
     Args:
         publisher (str): Publisher's name in UTF-8.
-        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
-                              used.
-
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
     """
     def __new__(self, publisher, base=settings.ALEPH_DEFAULT_BASE):
         return super(PublisherQuery, self).__new__(self, publisher, base)
 
-    def _getIDs(self):
-        return aleph.getPublishersBooksIDs(self.publisher, base=self.base)
+    def _getXML(self):
+        return aleph.getPublishersBooksXML(self.publisher, base=self.base)
 
     def _getCount(self):
         return aleph.getPublishersBooksCount(self.publisher, base=self.base)
@@ -305,20 +305,20 @@ class TitleQuery(_QueryTemplate,
 
     Args:
         title (str): Book's title in UTF-8.
-        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE` is
-                              used.
-
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
     """
     def __new__(self, title, base=settings.ALEPH_DEFAULT_BASE):
         return super(TitleQuery, self).__new__(self, title, base)
 
-    def _getIDs(self):
-        return aleph.getBooksTitleIDs(self.title, base=self.base)
+    def _getXML(self):
+        return aleph.getBooksTitleXML(self.title, base=self.base)
 
     def _getCount(self):
         return aleph.getBooksTitleCount(self.title, base=self.base)
 
-#= Variables ==================================================================
+
+# Variables ===================================================================
 QUERY_TYPES = [
     ISBNQuery,
     AuthorQuery,
@@ -336,7 +336,7 @@ REQUEST_TYPES = [
 ]
 
 
-#= Interface for an external world ============================================
+# Interface for an external world =============================================
 def _iiOfAny(instance, classes):
     """
     Returns true, if `instance` is instance of any (_iiOfAny) of the `classes`.
@@ -368,7 +368,7 @@ def _iiOfAny(instance, classes):
     return any(map(lambda x: type(instance).__name__ == x.__name__, classes))
 
 
-#= Functions ==================================================================
+# Functions ===================================================================
 def reactToAMQPMessage(req, UUID):
     """
     React to given (AMQP) message.
