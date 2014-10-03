@@ -414,8 +414,6 @@ def downloadRecords(search_result, from_doc=1):
         if cnt >= MAX_RECORDS or doc_number > search_result["no_records"]:
             break
 
-        print doc_number
-
         set_data = downer.download(
             ALEPH_URL + Template(RECORD_URL_TEMPLATE).substitute(
                 SET_NUM=set_number,
@@ -651,9 +649,9 @@ def getAuthorsBooksXML(author, base=ALEPH_DEFAULT_BASE):
     return downloadRecords(
         searchInAleph(
             base,
-            isbn,
+            author,
             False,
-            "sbn"
+            "wau"
         )
     )
 
@@ -673,9 +671,9 @@ def getPublishersBooksXML(publisher, base=ALEPH_DEFAULT_BASE):
     return downloadRecords(
         searchInAleph(
             base,
-            isbn,
+            publisher,
             False,
-            "sbn"
+            "wpb"
         )
     )
 
@@ -695,9 +693,9 @@ def getBooksTitleXML(title, base=ALEPH_DEFAULT_BASE):
     return downloadRecords(
         searchInAleph(
             base,
-            isbn,
+            title,
             False,
-            "sbn"
+            "wtl"
         )
     )
 

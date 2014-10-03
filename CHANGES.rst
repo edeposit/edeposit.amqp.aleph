@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.1
+-----
+    - Fixed few bugs in aleph.py.
+
 1.6.0
 -----
     - Fixed bugs, old code, small improvements.
