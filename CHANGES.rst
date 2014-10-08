@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.2
+-----
+    - Added new fields to SemanticInfo structure.
+
 1.6.1
 -----
     - Fixed few bugs in aleph.py.
