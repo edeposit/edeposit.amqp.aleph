@@ -1,10 +1,9 @@
 .. _index:
 
-Modul pro AMQP komunikaci se systémem Aleph
-===========================================
+Aleph API
+=========
 
-Modul is used to read and export metadata about epublications to/from Aleph_.
-Modul is developed as part of the `E-Deposit` project.
+This module is used to read and export metadata about epublications to/from Aleph_. Module is developed as part of the `E-Deposit` project.
 
 .. _Aleph: http://www.exlibrisgroup.com/category/Aleph
 .. _E-Deposit: http://edeposit.nkp.cz
@@ -14,8 +13,8 @@ Modul is developed as part of the `E-Deposit` project.
 
    api/aleph
 
-Third party API description
----------------------------
+Aleph API description
+---------------------
 
 .. toctree::
    :maxdepth: 2
