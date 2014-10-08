@@ -32,7 +32,10 @@ def toSemanticInfo(xml):
     """
     hasAcquisitionFields = False
     hasISBNAgencyFields = False
-    hasCatalogizationFields = False
+    hasDescriptiveCatFields = False
+    hasDescriptiveCatReviewFields = False
+    hasSubjectCatFields = False
+    hasSubjectCatReviewFields = False
 
     parsed = xml
     if not isinstance(xml, MARCXMLRecord):
@@ -44,13 +47,24 @@ def toSemanticInfo(xml):
     if parsed.getISBNs():
         hasISBNAgencyFields = True
 
-    if "STZ" in parsed.datafields or "STZ" in parsed.controlfields:
-        hasCatalogizationFields = True
+    # look for catalogization fields
+    for status in parsed.getDataRecords("IST", "a"):
+        if status.startswith("jp2"):
+            hasDescriptiveCatFields = True
+        elif status.startswith("jr2"):
+            hasDescriptiveCatReviewFields = True
+        elif status.startswith("vp"):
+            hasSubjectCatFields = True
+        elif status.startswith("vr"):
+            hasSubjectCatReviewFields = True
 
     return SemanticInfo(
         hasAcquisitionFields,
         hasISBNAgencyFields,
-        hasCatalogizationFields
+        hasDescriptiveCatFields,
+        hasDescriptiveCatReviewFields,
+        hasSubjectCatFields,
+        hasSubjectCatReviewFields,
     )
 
 

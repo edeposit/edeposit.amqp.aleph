@@ -10,7 +10,10 @@ from collections import namedtuple
 # Structures ==================================================================
 class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
                                                "hasISBNAgencyFields",
-                                               "hasCatalogizationFields"])):
+                                               "hasDescriptiveCatFields",
+                                               "hasDescriptiveCatReviewFields",
+                                               "hasSubjectCatFields",
+                                               "hasSubjectCatReviewFields"])):
     """
     This structure is used to represent informations about export progress in
     Aleph.
@@ -21,6 +24,13 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
     Attributes:
         hasAcquisitionFields (bool): Was the record aproved by acquisition?
         hasISBNAgencyFields (bool):  Was the record approved by ISBN agency?
-        hasCatalogizationFields (bool): Does it have catalogization fileds.
+        hasDescriptiveCatFields (bool): Does the record get thru name
+                                        description (jmenný popis).
+        hasDescriptiveCatReviewFields (bool): Does the record get thru name
+                                              revision (jmenná revize).
+        hasSubjectCatFields (bool): Does the record get thru subject
+                                    description (věcný popis).
+        hasSubjectCatReviewFields (bool): Does the record get thru subject
+                                          revision (věcná revize).
     """
     pass
