@@ -24,13 +24,13 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
     Attributes:
         hasAcquisitionFields (bool): Was the record aproved by acquisition?
         hasISBNAgencyFields (bool):  Was the record approved by ISBN agency?
-        hasDescriptiveCatFields (bool): Does the record get thru name
+        hasDescriptiveCatFields (bool): Did the record get thru name
                                         description (jmenný popis).
-        hasDescriptiveCatReviewFields (bool): Does the record get thru name
+        hasDescriptiveCatReviewFields (bool): Did the record get thru name
                                               revision (jmenná revize).
-        hasSubjectCatFields (bool): Does the record get thru subject
+        hasSubjectCatFields (bool): Did the record get thru subject
                                     description (věcný popis).
-        hasSubjectCatReviewFields (bool): Does the record get thru subject
+        hasSubjectCatReviewFields (bool): Did the record get thru subject
                                           revision (věcná revize).
     """
     pass
