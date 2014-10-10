@@ -44,11 +44,10 @@ def toSemanticInfo(xml):
     if "HLD" in parsed.datafields or "HLD" in parsed.controlfields:
         hasAcquisitionFields = True
 
-    if parsed.getISBNs():
-        hasISBNAgencyFields = True
-
     # look for catalogization fields
     for status in parsed.getDataRecords("IST", "a"):
+        status = status.replace(" ", "")  # remove spaces
+
         if status.startswith("jp2"):
             hasDescriptiveCatFields = True
         elif status.startswith("jr2"):
@@ -57,6 +56,8 @@ def toSemanticInfo(xml):
             hasSubjectCatFields = True
         elif status.startswith("vr"):
             hasSubjectCatReviewFields = True
+        elif status.startswith("ii2"):
+            hasISBNAgencyFields = True
 
     return SemanticInfo(
         hasAcquisitionFields,
