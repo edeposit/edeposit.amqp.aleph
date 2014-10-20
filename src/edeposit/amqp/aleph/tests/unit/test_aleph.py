@@ -10,10 +10,9 @@ from edeposit.amqp.aleph import aleph
 
 
 # Variables ===================================================================
-
-
-
 # Functions & objects =========================================================
+
+# Tests =======================================================================
 def test_variables():
     assert "/" in aleph.SEARCH_URL_TEMPLATE
     assert "/" in aleph.SET_URL_TEMPLATE
@@ -57,3 +56,9 @@ def test_DocumentID():
     assert did.base == "somebase"
 
 
+def test_tryConvertToInt():
+    assert aleph._tryConvertToInt("11") == 11
+    assert aleph._tryConvertToInt("1s") == "1s"
+
+
+# def test_alephResultToDict():
