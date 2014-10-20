@@ -4,16 +4,109 @@
 # Interpreter version: python 2.7
 #
 # Imports =====================================================================
+import time
+
+import pytest
+
 from edeposit.amqp.aleph import aleph
 
 
-
 # Variables ===================================================================
-
-
-
 # Functions & objects =========================================================
+def sleep_some():
+    """
+    Aleph has it's limits to max. users connected in one second.
+
+    This helps to keep those limits in norm.
+    """
+    time.sleep(0.2)
+
+
+# Tests =======================================================================
 def test_getListOfBases():
     bases = aleph.getListOfBases()
 
     assert "nkc" in bases
+
+
+def test_searchInAleph():
+    result = aleph.searchInAleph("nkc", "unixu", False, "wtl")
+
+    assert "session-id" in result
+    assert "set_number" in result
+
+    assert "no_records" in result
+    assert "no_entries" in result
+
+    assert result["no_records"] >= 1
+    assert result["no_entries"] >= 1
+
+    sleep_some()
+
+
+def test_searchInAleph_fail():
+    with pytest.raises(aleph.InvalidAlephFieldException):
+        aleph.searchInAleph("nkc", "unixu", False, "azgabash")
+
+    sleep_some()
+
+    result = aleph.searchInAleph("nkc", "azgabash", False, "wtl")
+
+    sleep_some()
+
+    assert "error" in result
+
+    with pytest.raises(aleph.AlephException):
+        aleph.searchInAleph("nkf", "unixu", False, "azgabash")
+
+    sleep_some()
+
+
+def test_downloadRecords():
+    result = aleph.searchInAleph("nkc", "unixu", False, "wtl")
+
+    records = aleph.downloadRecords(result)
+
+    assert len(records) >= 5
+    assert "xml" in records[0]
+
+    sleep_some()
+
+
+def test_getDocumentIDs():
+    result = aleph.searchInAleph("nkc", "unixu", False, "wtl")
+
+    records = aleph.getDocumentIDs(result)
+
+    assert len(records) >= 5
+    assert isinstance(records[0], aleph.DocumentID)
+
+    sleep_some()
+
+
+def test_downloadMARCXML():
+    result = aleph.searchInAleph("nkc", "unixu", False, "wtl")
+    records = aleph.getDocumentIDs(result)
+
+    record = aleph.downloadMARCXML(records[0].id, records[0].library)
+
+    assert "MARC21slim" in record
+    assert "controlfield" in record
+    assert "datafield" in record
+    assert "subfield" in record
+
+    sleep_some()
+
+
+def test_downloadMARCOAI():
+    result = aleph.searchInAleph("nkc", "unixu", False, "wtl")
+    records = aleph.getDocumentIDs(result)
+
+    record = aleph.downloadMARCOAI(records[0].id, records[0].library)
+
+    assert "<oai_marc" in record
+    assert "varfield" in record
+    assert "fixfield" in record
+    assert "subfield" in record
+
+    sleep_some()
