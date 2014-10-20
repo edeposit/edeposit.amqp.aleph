@@ -125,7 +125,7 @@ def test_getISBNsXML():
 def test_get_ISBNsXML_fail():
     result = aleph.getISBNsXML("80-86056-31-8")
 
-    assert len(result) == 0
+    assert not result
 
     sleep_some()
 
@@ -133,7 +133,7 @@ def test_get_ISBNsXML_fail():
 def test_getAuthorsBooksXML():
     result = aleph.getAuthorsBooksXML("Brendan Kehoe")
 
-    assert len(result) == 1
+    assert len(result) >= 1
     assert "Zen a umění Internetu" in result[0]
 
     sleep_some()
@@ -142,6 +142,40 @@ def test_getAuthorsBooksXML():
 def test_getAuthorsBooksXML_fail():
     result = aleph.getAuthorsBooksXML("Brendan Kehoeeeeeeeeeeeee")
 
-    assert len(result) == 0
+    assert not result
+
+    sleep_some()
+
+
+def test_getPublishersBooksXML():
+    result = aleph.getPublishersBooksXML("Nostromo")
+
+    assert len(result) >= 1
+    assert "Čakra kentaura" in result[0].lower()
+
+    sleep_some()
+
+
+def test_getPublishersBooksXML_fail():
+    result = aleph.getPublishersBooksXML("Nostromooooo")
+
+    assert not result
+
+    sleep_some()
+
+
+def test_getBooksTitleXML():
+    result = aleph.getBooksTitleXML("Zen a umění Internetu")
+
+    assert len(result) >= 1
+    assert "Zen a umění Internetu" in result[0]
+
+    sleep_some()
+
+
+def test_getBooksTitleXML_fail():
+    result = aleph.getBooksTitleXML("azgabash, azgabash, azgabash!")
+
+    assert not result
 
     sleep_some()
