@@ -110,3 +110,38 @@ def test_downloadMARCOAI():
     assert "subfield" in record
 
     sleep_some()
+
+
+# Tests of highlevel API ======================================================
+def test_getISBNsXML():
+    result = aleph.getISBNsXML("80-86056-31-7")
+
+    assert len(result) == 1
+    assert "Zen a umění Internetu" in result[0]
+
+    sleep_some()
+
+
+def test_get_ISBNsXML_fail():
+    result = aleph.getISBNsXML("80-86056-31-8")
+
+    assert len(result) == 0
+
+    sleep_some()
+
+
+def test_getAuthorsBooksXML():
+    result = aleph.getAuthorsBooksXML("Brendan Kehoe")
+
+    assert len(result) == 1
+    assert "Zen a umění Internetu" in result[0]
+
+    sleep_some()
+
+
+def test_getAuthorsBooksXML_fail():
+    result = aleph.getAuthorsBooksXML("Brendan Kehoeeeeeeeeeeeee")
+
+    assert len(result) == 0
+
+    sleep_some()
