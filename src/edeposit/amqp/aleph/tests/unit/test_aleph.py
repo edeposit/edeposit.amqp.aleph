@@ -9,9 +9,6 @@ import pytest
 from edeposit.amqp.aleph import aleph
 
 
-# Variables ===================================================================
-# Functions & objects =========================================================
-
 # Tests =======================================================================
 def test_variables():
     assert "/" in aleph.SEARCH_URL_TEMPLATE

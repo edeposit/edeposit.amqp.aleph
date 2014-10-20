@@ -179,3 +179,68 @@ def test_getBooksTitleXML_fail():
     assert not result
 
     sleep_some()
+
+
+# Test counters ===============================================================
+def test_getISBNCount():
+    result = aleph.getISBNCount("80-86056-31-7")
+
+    assert result >= 1
+
+    sleep_some()
+
+
+def test_getISBNCount_fail():
+    result = aleph.getISBNCount("80-86056-31-8888888888")
+
+    assert not result
+
+    sleep_some()
+
+
+def test_getAuthorsBooksCount():
+    result = aleph.getAuthorsBooksCount("Brendan Kehoe")
+
+    assert result >= 1
+
+    sleep_some()
+
+
+def test_getAuthorsBooksCount_fail():
+    result = aleph.getAuthorsBooksCount("Brendan Keho8888888888")
+
+    assert not result
+
+    sleep_some()
+
+
+def test_getPublishersBooksCount():
+    result = aleph.getPublishersBooksCount("Nostromo")
+
+    assert result >= 1
+
+    sleep_some()
+
+
+def test_getPublishersBooksCount_fail():
+    result = aleph.getPublishersBooksCount("Nostrom8888888888")
+
+    assert not result
+
+    sleep_some()
+
+
+def test_getBooksTitleCount():
+    result = aleph.getBooksTitleCount("Zen a umění Internetu")
+
+    assert result >= 1
+
+    sleep_some()
+
+
+def test_getBooksTitleCount_fail():
+    result = aleph.getBooksTitleCount("Zen a umění Internet8888888888")
+
+    assert not result
+
+    sleep_some()
