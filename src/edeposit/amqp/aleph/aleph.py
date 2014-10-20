@@ -3,7 +3,7 @@
 #
 # Interpreter version: python 2.7
 #
-#= Imports ====================================================================
+# Imports =====================================================================
 """
 Aleph X-Service wrapper.
 
@@ -39,8 +39,9 @@ This dictionary can be later used as parameter to :func:`getDocumentIDs`
 function, which will give you list of :class:`DocumentID` named tuples.
 
 Note:
-    :py:func:`~collections.namedtuple` is used, because to access your document,
-    you don't need just `document ID` number, but also `library ID` string.
+    :py:func:`~collections.namedtuple` is used, because to access your
+    document, you don't need just `document ID` number, but also `library ID`
+    string.
 
 Depending on your system, there may be just only one accessible library, or
 multiple ones, and then you will be glad, that you get both of this
@@ -91,8 +92,8 @@ there in aleph.
     - :func:`getBooksTitleCount`
 
 Note:
-    Counting functions are by one request faster than just counting results from
-    standard getters. It is preferred to use them to reduce load to Aleph.
+    Counting functions are by one request faster than just counting results
+    from standard getters. It is preferred to use them to reduce load to Aleph.
 
 Other noteworthy properties
 ===========================
@@ -113,7 +114,7 @@ from httpkie import Downloader
 from settings import *
 
 
-#= Variables ==================================================================
+# Variables ===================================================================
 # String.Template() variable convention is used
 SEARCH_URL_TEMPLATE = "/X?op=find&request=$FIELD=$PHRASE&base=$BASE"
 SET_URL_TEMPLATE = "/X?op=ill_get_set&set_number=$SET_NUMBER" + \
@@ -179,7 +180,7 @@ VALID_ALEPH_FIELDS = [
 dhtmlparser.NONPAIR_TAGS = []  # used for parsing XML - see documentation
 
 
-#= Functions & objects ========================================================
+# Functions & objects =========================================================
 class AlephException(Exception):
     """
     Exception tree::
@@ -222,8 +223,8 @@ class DocumentID(namedtuple("DocumentID", ["id", "library", "base"])):
         id (int): ID of document.
         library (str): This can be different for each document, depend on your
                        system.
-        base (str): Default "``nkc``", but really depends on what bases you have
-                    defined in your Aleph server.
+        base (str): Default "``nkc``", but really depends on what bases you
+                    have defined in your Aleph server.
     """
     pass
 
