@@ -623,7 +623,8 @@ def getISBNsXML(isbn, base=ALEPH_DEFAULT_BASE):
                     :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
-        str: String with full **OAI** XML representation of the record.
+        list: List of strings with full **OAI** XML representation of the \
+              record.
     """
     return downloadRecords(
         searchInAleph(
@@ -645,7 +646,8 @@ def getAuthorsBooksXML(author, base=ALEPH_DEFAULT_BASE):
                     :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
-        str: String with full **OAI** XML representation of the record.
+        list: List of strings with full **OAI** XML representation of the \
+              record.
     """
     return downloadRecords(
         searchInAleph(
@@ -667,7 +669,8 @@ def getPublishersBooksXML(publisher, base=ALEPH_DEFAULT_BASE):
                     :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
-        str: String with full **OAI** XML representation of the record.
+        list: List of strings with full **OAI** XML representation of the \
+              record.
     """
     return downloadRecords(
         searchInAleph(
@@ -689,7 +692,8 @@ def getBooksTitleXML(title, base=ALEPH_DEFAULT_BASE):
                     :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
 
     Returns:
-        str: String with full **OAI** XML representation of the record.
+        list: List of strings with full **OAI** XML representation of the \
+              record.
     """
     return downloadRecords(
         searchInAleph(
