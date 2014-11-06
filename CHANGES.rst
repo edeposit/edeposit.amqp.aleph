@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.4
+-----
+    - Fixed bug in convertor.py.
+
 1.6.3
 -----
     - Added different way of tracking SemanticInfo.hasISBNAgencyFields.

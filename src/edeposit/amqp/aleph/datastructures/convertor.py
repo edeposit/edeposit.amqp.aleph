@@ -45,7 +45,7 @@ def toSemanticInfo(xml):
         hasAcquisitionFields = True
 
     # look for catalogization fields
-    for status in parsed.getDataRecords("IST", "a"):
+    for status in parsed.getDataRecords("IST", "a", []):
         status = status.replace(" ", "")  # remove spaces
 
         if status.startswith("jp2"):
