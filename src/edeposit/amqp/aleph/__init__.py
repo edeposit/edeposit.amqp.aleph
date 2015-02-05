@@ -369,7 +369,7 @@ def _iiOfAny(instance, classes):
 
 
 # Functions ===================================================================
-def reactToAMQPMessage(req, UUID):
+def reactToAMQPMessage(req, send_back):
     """
     React to given (AMQP) message.
 
@@ -385,7 +385,7 @@ def reactToAMQPMessage(req, UUID):
         >>> request
         SearchRequest(query=ISBNQuery(ISBN='80-251-0225-4', base='nkc'))
 
-        >>> response = aleph.reactToAMQPMessage(request, "UUID")
+        >>> response = aleph.reactToAMQPMessage(request, None)
 
         >>> response  # formated by hand for purposes of example
         SearchResult(
@@ -430,7 +430,10 @@ def reactToAMQPMessage(req, UUID):
     Args:
         req (Request class): Any of the Request class from
                           :class:`aleph.datastructures.requests`.
-        UUID (str): Unique ID of received message.
+        send_back (fn reference): Reference to function for responding. This is
+                  useful for progress monitoring for example. Function takes
+                  one parameter, which may be response structure/namedtuple, or
+                  string or whatever would be normally returned.
 
     Returns:
         Result class: Result of search in Aleph. \

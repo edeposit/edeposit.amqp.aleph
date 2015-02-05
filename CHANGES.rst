@@ -1,15 +1,15 @@
 Changelog
 =========
 
+1.6.5
+-----
+    - ``reactToAMQPMessage()`` parameters modified.
+
 1.6.4
 -----
     - Fixed bug in convertor.py.
 
-1.6.3
------
-    - Added different way of tracking SemanticInfo.hasISBNAgencyFields.
-
-1.6.0 - 1.6.2
+1.6.0 - 1.6.3
 -------------
     - Added new fields to SemanticInfo structure.
     - Fixed few bugs in aleph.py.
@@ -21,6 +21,7 @@ Changelog
     - __init__.py switched to use aleph.downloadRecord().
     - Fixed #27 - parsing of internal url field.
     - convertor.py refactored slightly, fixed few little bugs.
+    - Added different way of tracking SemanticInfo.hasISBNAgencyFields.
 
 1.5.0 - 1.5.9
 -------------
@@ -39,8 +40,17 @@ Changelog
     - Queries to test base are now handled by OAI API, which has access.
     - Export is working.
 
-1.4.5 - 1.4.9
+1.4.0 - 1.4.9
 -------------
+    - API change in reactToAMQPmessage(), which now takes just two parameters and returns values, instead of calling callbacks.
+    - Documentation updated and made useful.
+    - Documentation of export.py updated.
+    - Assertions in export.py are now annotated (useful for debugging).
+    - Version of package and documentation is now automatically parsed from this file.
+    - Documentation of the whole package updated.
+    - Fixed bugs in MARC XML parser and Aleph lowlevel API.
+    - Added ``run_tests.sh``.
+    - Added TitleQuery.
     - Fixed bug in export script.
     - Changelog made more compact.
     - Fixed bug #23 in _removeSpecialCharacters().
@@ -48,24 +58,6 @@ Changelog
     - Fixed reported bugs in export script.
     - Fixed bug in ISBN submodule.
     - Added unicode support to settings.py.
-
-1.4.4
------
-    - Documentation of the whole package updated.
-    - Fixed bugs in MARC XML parser and Aleph lowlevel API.
-    - Added ``run_tests.sh``.
-    - Added TitleQuery.
-
-1.4.1 - 1.4.3
--------------
-    - Documentation of export.py updated.
-    - Assertions in export.py are now annotated (useful for debugging).
-    - Version of package and documentation is now automatically parsed from this file.
-
-1.4.0
------
-    - API change in reactToAMQPmessage(), which now takes just two parameters and returns values, instead of calling callbacks.
-    - Documentation updated and made useful.
 
 1.3.0
 -----
