@@ -768,6 +768,22 @@ def getBooksTitleIDs(title, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, title, False, "wtl"))
 
 
+def getICZBooksIDs(icz, base=ALEPH_DEFAULT_BASE):
+    """
+    Get list of :class:`DocumentID` objects of documents with given
+    `icz` (identification number).
+
+    Args:
+        icz (str): Identification number used to search Aleph.
+        base (str, optional): base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        list: of :class:`DocumentID` objects
+    """
+    return getDocumentIDs(searchInAleph(base, icz, False, "icz"))
+
+
 def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     """
     Get number of records in Aleph which match given `isbn`.
@@ -826,3 +842,18 @@ def getBooksTitleCount(title, base=ALEPH_DEFAULT_BASE):
         int: Number of matching documents in Aleph.
     """
     return searchInAleph(base, title, False, "wtl")["no_entries"]
+
+
+def getICZBooksCount(icz, base=ALEPH_DEFAULT_BASE):
+    """
+    Get number of records in Aleph which match given `title`.
+
+    Args:
+        icz (str): Identification number used to search Aleph.
+        base (str, optional): base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        int: Number of matching documents in Aleph.
+    """
+    return searchInAleph(base, icz, False, "icz")["no_entries"]
