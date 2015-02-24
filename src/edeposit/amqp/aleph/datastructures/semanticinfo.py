@@ -34,22 +34,21 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
         hasAcquisitionFields (bool): Was the record aproved by acquisition?
         hasISBNAgencyFields (bool):  Was the record approved by ISBN agency?
         hasDescriptiveCatFields (bool): Did the record get thru name
-                                        description (jmenný popis).
+            description (jmenný popis).
         hasDescriptiveCatReviewFields (bool): Did the record get thru name
-                                              revision (jmenná revize).
+            revision (jmenná revize).
         hasSubjectCatFields (bool): Did the record get thru subject
-                                    description (věcný popis).
+            description (věcný popis).
         hasSubjectCatReviewFields (bool): Did the record get thru subject
-                                          revision (věcná revize).
+            revision (věcná revize).
         isClosed (bool): Was the record closed? This sometimes happen when bad
-                         ISBN is given by creator of the record, but different
-                         is in the book.
+            ISBN is given by creator of the record, but different is in the
+            book.
         parsedSummaryRecordSysNumber (str): Same as
-              :attr:`summaryRecordSysNumber` but without natural language
-              details.
+            :attr:`summaryRecordSysNumber` but without natural language
+            details.
         summaryRecordSysNumber (str): Identificator of the new record if
-                               `.isClosed` is True. Format of the string is
-                               not specified and can be different for each
-                               record.
+            `.isClosed` is True. Format of the string is not specified and can
+            be different for each record.
     """
     pass
