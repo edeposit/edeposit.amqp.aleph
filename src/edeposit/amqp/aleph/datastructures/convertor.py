@@ -17,6 +17,22 @@ from semanticinfo import SemanticInfo
 
 
 # Functions & objects =========================================================
+def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
+    def number_of_digits(token):
+        digits = filter(lambda x: x.isdigit(), token)
+        return len(digits)
+
+    tokens = summaryRecordSysNumber.split()
+
+    # pick only tokens that contains 3 digits
+    contains_digits = filter(lambda x: number_of_digits(x) > 3, tokens)
+
+    if not contains_digits:
+        return ""
+
+    return contains_digits[0]
+
+
 def toSemanticInfo(xml):
     """
     Pick informations from :class:`.MARCXMLRecord` object and use it to build
@@ -37,6 +53,8 @@ def toSemanticInfo(xml):
     hasSubjectCatFields = False
     hasSubjectCatReviewFields = False
     isClosed = False
+    summaryRecordSysNumber = ""
+    parsedSummaryRecordSysNumber = ""
 
     parsed = xml
     if not isinstance(xml, MARCXMLRecord):
@@ -66,14 +84,25 @@ def toSemanticInfo(xml):
         if status == "90":
             isClosed = True
 
+    # detect link to 'new' record, if the old one was 'closed'
+    for status in parsed.getDataRecords("PJM", "a", []):
+        if status:
+            summaryRecordSysNumber = status
+            parsedSummaryRecordSysNumber = _parse_summaryRecordSysNumber(
+                summaryRecordSysNumber
+            )
+            break
+
     return SemanticInfo(
-        hasAcquisitionFields,
-        hasISBNAgencyFields,
-        hasDescriptiveCatFields,
-        hasDescriptiveCatReviewFields,
-        hasSubjectCatFields,
-        hasSubjectCatReviewFields,
-        isClosed,
+        hasAcquisitionFields=hasAcquisitionFields,
+        hasISBNAgencyFields=hasISBNAgencyFields,
+        hasDescriptiveCatFields=hasDescriptiveCatFields,
+        hasDescriptiveCatReviewFields=hasDescriptiveCatReviewFields,
+        hasSubjectCatFields=hasSubjectCatFields,
+        hasSubjectCatReviewFields=hasSubjectCatReviewFields,
+        isClosed=isClosed,
+        parsedSummaryRecordSysNumber=parsedSummaryRecordSysNumber,
+        summaryRecordSysNumber=summaryRecordSysNumber,
     )
 
 
