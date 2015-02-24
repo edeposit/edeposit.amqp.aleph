@@ -18,7 +18,9 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
                                                "hasDescriptiveCatReviewFields",
                                                "hasSubjectCatFields",
                                                "hasSubjectCatReviewFields",
-                                               "isClosed"])):
+                                               "isClosed",
+                                               "parsedSummaryRecordSysNumber",
+                                               "summaryRecordSysNumber"])):
     """
     This structure is used to represent informations about export progress in
     Aleph.
@@ -42,5 +44,12 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
         isClosed (bool): Was the record closed? This sometimes happen when bad
                          ISBN is given by creator of the record, but different
                          is in the book.
+        parsedSummaryRecordSysNumber (str): Same as
+              :attr:`summaryRecordSysNumber` but without natural language
+              details.
+        summaryRecordSysNumber (str): Identificator of the new record if
+                               `.isClosed` is True. Format of the string is
+                               not specified and can be different for each
+                               record.
     """
     pass
