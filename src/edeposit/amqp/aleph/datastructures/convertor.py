@@ -36,6 +36,7 @@ def toSemanticInfo(xml):
     hasDescriptiveCatReviewFields = False
     hasSubjectCatFields = False
     hasSubjectCatReviewFields = False
+    isClosed = False
 
     parsed = xml
     if not isinstance(xml, MARCXMLRecord):
@@ -59,6 +60,12 @@ def toSemanticInfo(xml):
         elif status.startswith("ii2"):
             hasISBNAgencyFields = True
 
+    # look whether the record was 'closed' by catalogizators
+    # if "BAS" in parsed.controlfields:
+    for status in parsed.getDataRecords("BAS", "a", []):
+        if status == "90":
+            isClosed = True
+
     return SemanticInfo(
         hasAcquisitionFields,
         hasISBNAgencyFields,
@@ -66,6 +73,7 @@ def toSemanticInfo(xml):
         hasDescriptiveCatReviewFields,
         hasSubjectCatFields,
         hasSubjectCatReviewFields,
+        isClosed,
     )
 
 
