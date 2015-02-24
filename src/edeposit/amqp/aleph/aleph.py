@@ -68,6 +68,7 @@ This wrappers returns full XML records from Aleph:
     - :func:`getAuthorsBooksXML`
     - :func:`getPublishersBooksXML`
     - :func:`getBooksTitleXML`
+    - :func:`getICZBooksXML`
 
 ID wrappers
 ***********
@@ -77,6 +78,7 @@ There are wrappers, which returns ID's of matching document in Aleph:
     - :func:`getAuthorsBooksIDs`
     - :func:`getPublishersBooksIDs`
     - :func:`getBooksTitleIDs`
+    - :func:`getICZBooksIDs`
 
 You can theh download them using :func:`downloadMARCXML` or
 :func:`downloadMARCOAI`.
@@ -90,6 +92,7 @@ there in aleph.
     - :func:`getAuthorsBooksCount`
     - :func:`getPublishersBooksCount`
     - :func:`getBooksTitleCount`
+    - :func:`getICZBooksCount`
 
 Note:
     Counting functions are by one request faster than just counting results
@@ -705,6 +708,30 @@ def getBooksTitleXML(title, base=ALEPH_DEFAULT_BASE):
     )
 
 
+def getICZBooksXML(icz, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `icz` (identification number) in `base`.
+
+    Args:
+        icz (str): Identification number used to search Aleph.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        list: List of strings with full **OAI** XML representation of the \
+              record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            icz,
+            False,
+            "icz"
+        )
+    )
+
+
+# ID getters ==================================================================
 def getISBNsIDs(isbn, base=ALEPH_DEFAULT_BASE):
     """
     Get list of :class:`DocumentID` objects of documents with given `isbn`.
@@ -784,6 +811,7 @@ def getICZBooksIDs(icz, base=ALEPH_DEFAULT_BASE):
     return getDocumentIDs(searchInAleph(base, icz, False, "icz"))
 
 
+# Counters ====================================================================
 def getISBNCount(isbn, base=ALEPH_DEFAULT_BASE):
     """
     Get number of records in Aleph which match given `isbn`.
