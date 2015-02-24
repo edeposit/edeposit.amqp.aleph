@@ -73,11 +73,12 @@ Here is ASCII flow diagram for you::
  TitleQuery     ----|          ExportRequest          |--> SearchResult
  GenericQuery   ----|      ISBNValidationRequest      |       `- AlephRecord
  DocumentQuery  ----|                |                |
-                    |                |                |--> ISBNValidationResult
-                    V                |                |        - ISBN
-       Count/Search/ExportRequest    |                |
-                    |                |                |--> ExportResult
+ ICZQuery       ----|                |                |--> ISBNValidationResult
+                    |                |                |        - ISBN
                     V                |                |
+       Count/Search/ExportRequest    |                |--> ExportResult
+                    |                |                |
+                    |                |                |
                     |                |                |
                     V                |                |
                serialize()<----------'           deserialize()
@@ -190,9 +191,6 @@ class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
     """
     Query Aleph when you know the Document ID.
 
-    Warning:
-        This doesn't work with ``cze-dep`` base.
-
     Args:
         doc_id (str): ID number as string.
         library (str, default settings.DEFAULT_LIBRARY): Library.
@@ -230,9 +228,10 @@ class DocumentQuery(namedtuple("DocumentQuery", ["doc_id", "library"])):
         """
         try:
             self.getSearchResult()
-            return 1
         except aleph.DocumentNotFoundException:
             return 0
+
+        return 1
 
 
 class ISBNQuery(namedtuple("ISBNQuery", ["ISBN", "base"]), _QueryTemplate):
@@ -318,6 +317,25 @@ class TitleQuery(_QueryTemplate,
         return aleph.getBooksTitleCount(self.title, base=self.base)
 
 
+class ICZQuery(_QueryTemplate, namedtuple("ICZQuery", ["icz", "base"])):
+    """
+    Used to query Aleph to get books by record's identification number `icz`.
+
+    Args:
+        icz (str): Identification number (``nkc20150003029`` for example).
+        base (str, optional): If not set, :attr:`settings.ALEPH_DEFAULT_BASE`
+                              is used.
+    """
+    def __new__(self, icz, base=settings.ALEPH_DEFAULT_BASE):
+        return super(ICZQuery, self).__new__(self, icz, base)
+
+    def _getXML(self):
+        return aleph.getICZBooksXML(self.icz, base=self.base)
+
+    def _getCount(self):
+        return aleph.getICZBooksCount(self.icz, base=self.base)
+
+
 # Variables ===================================================================
 QUERY_TYPES = [
     ISBNQuery,
@@ -325,14 +343,15 @@ QUERY_TYPES = [
     PublisherQuery,
     TitleQuery,
     GenericQuery,
-    DocumentQuery
+    DocumentQuery,
+    ICZQuery,
 ]
 
 REQUEST_TYPES = [
     SearchRequest,
     CountRequest,
     ExportRequest,
-    ISBNValidationRequest
+    ISBNValidationRequest,
 ]
 
 

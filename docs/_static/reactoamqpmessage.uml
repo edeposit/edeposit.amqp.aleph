@@ -16,6 +16,10 @@ package "Query structures (_​_init__.py)" as QS {
         isbn: str
         base: default "nkc"
     }
+    class ICZQuery {
+        icz: str
+        base: default "nkc"
+    }
     class GenericQuery {
         base: str
         phrase: str
@@ -34,6 +38,7 @@ package "Query structures (_​_init__.py)" as QS {
     GenericQuery ..> AuthorQuery : extends
     GenericQuery ..> PublisherQuery
     GenericQuery ..> ISBNQuery
+    GenericQuery ..> ICZQuery
 }
 
 package aleph.datastructures.requests {
