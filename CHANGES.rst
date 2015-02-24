@@ -1,15 +1,12 @@
 Changelog
 =========
 
-1.6.5
+1.7.0
 -----
-    - ``reactToAMQPMessage()`` parameters modified.
+    - Added new items to ``SemanticInfo`` structure (``.isClosed``, ``.summaryRecordSysNumber``, ``.parsedSummaryRecordSysNumber``).
+    - Added new query ``ICZQuery``.
 
-1.6.4
------
-    - Fixed bug in convertor.py.
-
-1.6.0 - 1.6.3
+1.6.0 - 1.6.5
 -------------
     - Added new fields to SemanticInfo structure.
     - Fixed few bugs in aleph.py.
@@ -22,6 +19,8 @@ Changelog
     - Fixed #27 - parsing of internal url field.
     - convertor.py refactored slightly, fixed few little bugs.
     - Added different way of tracking SemanticInfo.hasISBNAgencyFields.
+    - Fixed bug in convertor.py.
+    - ``reactToAMQPMessage()`` parameters modified.
 
 1.5.0 - 1.5.9
 -------------
