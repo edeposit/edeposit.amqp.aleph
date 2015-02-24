@@ -3,17 +3,14 @@
 #
 # Interpreter version: python 2.7
 #
-## TODO:
-#    - Add setters
-#
-#= Imports ====================================================================
+# Imports =====================================================================
 """
 Module for parsing and high-level processing of MARC XML records.
 
 Standard MARC record is made from three parts:
 
 * `leader` - Binary something, you can probably ignore it.
-* `controlfileds` - MARC fields with ``ID < 10``.
+* `controlfields` - MARC fields with ``ID < 10``.
 * `datafields` - Informations you actually want.
 
 Basic MARC XML scheme has this structure::
@@ -174,7 +171,7 @@ import dhtmlparser
 from dhtmlparser import HTMLElement
 
 
-#= Functions & objects ========================================================
+# Functions ===================================================================
 def _undefinedPattern(value, fn, undefined):
     """
     If ``fn(value) == True``, return `undefined`, else `value`.
@@ -210,6 +207,7 @@ def resorted(values):
     return words + numbers
 
 
+# Classes =====================================================================
 class Person(namedtuple("Person", ["name",
                                    "second_name",
                                    "surname",
@@ -236,6 +234,7 @@ class Corporation(namedtuple("Corporation", ["name", "place", "date"])):
         place (str): Location of the corporation/action.
         date (str):  Date in unspecified format.
     """
+    pass
 
 
 class MarcSubrecord(str):
@@ -749,7 +748,8 @@ class MARCXMLRecord:
 
         Args:
             num (int): Which indicator you need (1/2).
-            is_oai (bool/None): If None, :attr:`MARCXMLRecord.oai_marc` is used.
+            is_oai (bool/None): If None, :attr:`MARCXMLRecord.oai_marc` is
+                   used.
 
         Returns:
             str: current name of ``i1``/``ind1`` parameter based on \
