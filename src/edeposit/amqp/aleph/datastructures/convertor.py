@@ -79,7 +79,6 @@ def toSemanticInfo(xml):
             hasISBNAgencyFields = True
 
     # look whether the record was 'closed' by catalogizators
-    # if "BAS" in parsed.controlfields:
     for status in parsed.getDataRecords("BAS", "a", []):
         if status == "90":
             isClosed = True
