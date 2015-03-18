@@ -11,11 +11,10 @@ See :func:`is_valid_isbn` for details.
 API
 ---
 """
-
 from functools import wraps
 
 
-#= Functions & objects ========================================================
+# Functions & objects =========================================================
 def _clean_isbn(isbn):
     """
     Remove all non-digit and non "x" characters from given string.
@@ -26,7 +25,7 @@ def _clean_isbn(isbn):
     Returns:
         list: array of numbers (if "x" is found, it is converted to 10).
     """
-    if type(isbn) in [str, unicode]:
+    if isinstance(isbn, basestring):
         isbn = list(isbn.lower())
 
         # filter digits and "x"

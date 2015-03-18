@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.7.1
+-----
+    - Small improvements in ISBN module.
+
 1.7.0
 -----
     - Added new items to ``SemanticInfo`` structure (``.isClosed``, ``.summaryRecordSysNumber``, ``.parsedSummaryRecordSysNumber``).
