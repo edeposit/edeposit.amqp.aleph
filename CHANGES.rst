@@ -3,7 +3,9 @@ Changelog
 
 1.7.1
 -----
-    - Small improvements in ISBN module.
+    - Small syntax improvements in ISBN module.
+    - Improved parsing of `summaryRecordSysNumber` in SemanticInfo submodule.
+    - Fixed paths in ``run_tests.sh``.
 
 1.7.0
 -----
