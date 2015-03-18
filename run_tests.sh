@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-PYTHONPATH="$PYTHONPATH:src/"
+PYTHONPATH="$PYTHONPATH:src/edeposit/amqp"
 TEST_PATH="src/edeposit/amqp/aleph/tests"
 
 function show_help {
