@@ -17,12 +17,39 @@ from semanticinfo import SemanticInfo
 
 
 # Functions & objects =========================================================
+def _remove_hairs(inp, hairs=r" .,:;<>(){}[]\/"):
+    """
+    Remove "special" characters from beginning and the end of the `inp`. For
+    example ``,a-sd,-/`` -> ``a-sd``.
+
+    Args:
+        inp (str): Input string.
+
+    Returns:
+        str: Cleaned string.
+    """
+    while inp and inp[-1] in hairs:
+        inp = inp[:-1]
+
+    while inp and inp[0] in hairs:
+        inp = inp[1:]
+
+    return inp
+
+
 def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
+    """
+    Try to parse vague, not likely machine-readable description and return
+    first token, which contains enough numbers in it.
+    """
     def number_of_digits(token):
         digits = filter(lambda x: x.isdigit(), token)
         return len(digits)
 
-    tokens = summaryRecordSysNumber.split()
+    tokens = map(
+        lambda x: _remove_hairs(x),
+        summaryRecordSysNumber.split()
+    )
 
     # pick only tokens that contains 3 digits
     contains_digits = filter(lambda x: number_of_digits(x) > 3, tokens)
@@ -44,7 +71,6 @@ def toSemanticInfo(xml):
 
     Returns:
         structure: :class:`.SemanticInfo`.
-
     """
     hasAcquisitionFields = False
     hasISBNAgencyFields = False
