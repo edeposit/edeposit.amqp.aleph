@@ -109,8 +109,8 @@ API
 # Imports =====================================================================
 from collections import namedtuple
 
+import isbn_validator
 
-import isbn
 import aleph
 import export
 import settings
@@ -478,7 +478,7 @@ def reactToAMQPMessage(req, send_back):
         if _iiOfAny(ISBN, ISBNQuery):
             ISBN = ISBN.ISBN
 
-        return ISBNValidationResult(isbn.is_valid_isbn(ISBN))
+        return ISBNValidationResult(isbn_validator.is_valid_isbn(ISBN))
 
     elif _iiOfAny(req, ExportRequest):
         export.exportEPublication(req.epublication)
