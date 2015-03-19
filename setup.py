@@ -84,6 +84,7 @@ setup(
         'setuptools',
         "pyDHTMLParser>=2.0.7",
         "httpkie>=1.1.0,<2.0.0",
+        "isbn_validator",
     ],
     extras_require={
         "test": [
