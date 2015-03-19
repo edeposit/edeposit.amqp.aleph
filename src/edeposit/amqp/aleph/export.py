@@ -25,16 +25,16 @@ Note:
     by third party), but it is possible, that it will be in future. This will
     highly depend on number of people, which will use this project.
 """
-#= Imports ====================================================================
-import isbn
+# Imports =====================================================================
+import isbn_validator
+from httpkie import Downloader
+
 import settings
 from datastructures import FormatEnum
 from datastructures import EPublication, Author
 
-from httpkie import Downloader
 
-
-#= Functions & objects ========================================================
+# Functions & objects =========================================================
 class ExportException(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
@@ -181,16 +181,16 @@ class PostData:
         # self._POST[""] = epub.kategorieProRIV  # TODO: wtf?
         # self._POST[""] = epub.datumProCopyright  # wut
 
-        authors_fields = ["P1301ZAK__b", "P1302ZAK__c", "P1303ZAK__c"]
         if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])
             epub.autori = epub.autori[:3]
 
         # check whether the autors have required type (string)
         for author in epub.autori:
-            assert type(author) in [str, unicode], \
-                    "Bad type of author (%s) (str is required)." % type(author)
+            error_msg = "Bad type of author (%s) (str is required)."
+            assert isinstance(author, basestring), (error_msg % type(author))
 
+        authors_fields = ("P1301ZAK__b", "P1302ZAK__c", "P1303ZAK__c")
         self._POST.update(dict(zip(authors_fields, epub.autori)))
 
     def _apply_mapping(self, mapping):
@@ -204,16 +204,16 @@ class PostData:
         self._POST["P1501IST1_a"] = mapping[4]
 
     def _validate_isbn(self, raw_isbn, accept_blank=False):
-        if isinstance(raw_isbn, list) and len(raw_isbn) > 0:
+        if type(raw_isbn) in [tuple, list] and raw_isbn:
             raw_isbn = raw_isbn[0]
 
         # blank list -> blank str
         raw_isbn = "" if raw_isbn == [] else raw_isbn
 
-        if raw_isbn == "" and accept_blank:
+        if not raw_isbn and accept_blank:
             return raw_isbn
 
-        if not isbn.is_valid_isbn(raw_isbn):
+        if not isbn_validator.is_valid_isbn(raw_isbn):
             raise InvalidISBNException(
                 raw_isbn + " has invalid ISBN checksum!"
             )
@@ -310,12 +310,14 @@ def _sendPostDict(post_dict):
     data = downer.download(settings.ALEPH_EXPORT_URL, post=post_dict)
     rheaders = downer.response_headers
 
-    if "aleph-info" in rheaders:
-        if rheaders["aleph-info"].lower().strip().startswith("error"):
-            raise ExportRejectedException(
-                "Export request was rejected by import webform: %s" %
-                rheaders["aleph-info"]
-            )
+    if "aleph-info" not in rheaders:
+        return data
+
+    if rheaders["aleph-info"].lower().strip().startswith("error"):
+        raise ExportRejectedException(
+            "Export request was rejected by import webform: %s" %
+            rheaders["aleph-info"]
+        )
 
     return data
 
