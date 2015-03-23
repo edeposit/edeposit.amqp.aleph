@@ -12,6 +12,7 @@ to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 import dhtmlparser
 
 from ..marcxml import MARCXMLRecord
+from ..aleph import DocumentNotFoundException
 from __init__ import *
 from semanticinfo import SemanticInfo
 
@@ -151,6 +152,10 @@ def toEPublication(xml):
     parsed = xml
     if not isinstance(xml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(xml))
+
+    # check whether the document was deleted
+    if "DEL" in parsed.datafields:
+        raise DocumentNotFoundException("Document was deleted.")
 
     # distributor = ""  # FUTURE
     # mistoDistribuce = ""

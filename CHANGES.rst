@@ -1,18 +1,16 @@
 Changelog
 =========
 
-1.7.2
+1.7.3
 -----
-    - isbn.py is no longer part of the edeposit.amqp.aleph, but `standalone module <https://github.com/edeposit/isbn_validator>`_.
+    - Fixed #41 - case of deleted record with stub left after deletion.
 
-1.7.1
------
+1.7.0 - 1.7.2
+-------------
+    - isbn.py is no longer part of the edeposit.amqp.aleph, but `standalone module <https://github.com/edeposit/isbn_validator>`_.
     - Small syntax improvements in ISBN module.
     - Improved parsing of `summaryRecordSysNumber` in SemanticInfo submodule.
     - Fixed paths in ``run_tests.sh``.
-
-1.7.0
------
     - Added new items to ``SemanticInfo`` structure (``.isClosed``, ``.summaryRecordSysNumber``, ``.parsedSummaryRecordSysNumber``).
     - Added new query ``ICZQuery``.
 
