@@ -82,10 +82,19 @@ def toSemanticInfo(xml):
     isClosed = False
     summaryRecordSysNumber = ""
     parsedSummaryRecordSysNumber = ""
+    isSummaryRecord = False
+    contentOfFMT = ""
 
     parsed = xml
     if not isinstance(xml, MARCXMLRecord):
         parsed = MARCXMLRecord(str(xml))
+
+    # handle FMT record
+    if "FMT" in parsed.controlfields:
+        contentOfFMT = parsed.getControlRecord("FMT")
+
+        if contentOfFMT == "SE":
+            isSummaryRecord = True
 
     if "HLD" in parsed.datafields or "HLD" in parsed.controlfields:
         hasAcquisitionFields = True
@@ -127,6 +136,8 @@ def toSemanticInfo(xml):
         hasSubjectCatFields=hasSubjectCatFields,
         hasSubjectCatReviewFields=hasSubjectCatReviewFields,
         isClosed=isClosed,
+        isSummaryRecord=isSummaryRecord,
+        contentOfFMT=contentOfFMT,
         parsedSummaryRecordSysNumber=parsedSummaryRecordSysNumber,
         summaryRecordSysNumber=summaryRecordSysNumber,
     )
