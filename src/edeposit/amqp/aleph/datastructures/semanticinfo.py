@@ -19,6 +19,8 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
                                                "hasSubjectCatFields",
                                                "hasSubjectCatReviewFields",
                                                "isClosed",
+                                               "isSummaryRecord",
+                                               "contentOfFMT",
                                                "parsedSummaryRecordSysNumber",
                                                "summaryRecordSysNumber"])):
     """
@@ -44,6 +46,8 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
         isClosed (bool): Was the record closed? This sometimes happen when bad
             ISBN is given by creator of the record, but different is in the
             book.
+        isSummaryRecord (bool): Is the content of FMT == "SE"?
+        contentOfFMT (str, default ""): Content of FMT subrecord.
         parsedSummaryRecordSysNumber (str): Same as
             :attr:`summaryRecordSysNumber` but without natural language
             details.
