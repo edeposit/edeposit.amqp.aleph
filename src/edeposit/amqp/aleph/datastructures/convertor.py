@@ -11,6 +11,8 @@ to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 # Imports =====================================================================
 import dhtmlparser
 
+from remove_hairs import remove_hairs
+
 from ..marcxml import MARCXMLRecord
 from ..aleph import DocumentNotFoundException
 from __init__ import *
@@ -18,26 +20,6 @@ from semanticinfo import SemanticInfo
 
 
 # Functions & objects =========================================================
-def _remove_hairs(inp, hairs=r" .,:;<>(){}[]\/"):
-    """
-    Remove "special" characters from beginning and the end of the `inp`. For
-    example ``,a-sd,-/`` -> ``a-sd``.
-
-    Args:
-        inp (str): Input string.
-
-    Returns:
-        str: Cleaned string.
-    """
-    while inp and inp[-1] in hairs:
-        inp = inp[:-1]
-
-    while inp and inp[0] in hairs:
-        inp = inp[1:]
-
-    return inp
-
-
 def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
     """
     Try to parse vague, not likely machine-readable description and return
@@ -48,7 +30,7 @@ def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
         return len(digits)
 
     tokens = map(
-        lambda x: _remove_hairs(x),
+        lambda x: remove_hairs(x, r" .,:;<>(){}[]\/"),
         summaryRecordSysNumber.split()
     )
 

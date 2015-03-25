@@ -85,11 +85,13 @@ setup(
         "pyDHTMLParser>=2.0.7",
         "httpkie>=1.1.0,<2.0.0",
         "isbn_validator",
+        "remove_hairs",
     ],
     extras_require={
         "test": [
             "unittest2",
             "robotsuite",
+            "pytest",
             "mock",
             "robotframework-httplibrary"
         ],

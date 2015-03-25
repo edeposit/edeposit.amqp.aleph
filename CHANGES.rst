@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.7.4
+-----
+    - Implemented #43 - new attributes to SemanticInfo.
+    - Removed ``_remove_hairs()`` function, which is now in stanalone package.
+    - Added dependency to ``remove_hairs`` standalone package.
+
 1.7.3
 -----
     - Fixed #41 - case of deleted record with stub left after deletion.

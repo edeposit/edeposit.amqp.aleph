@@ -8,10 +8,6 @@ from aleph.datastructures import convertor
 
 
 # Tests =======================================================================
-def test_remove_hairs():
-    assert convertor._remove_hairs(",a-sd,./") == "a-sd"
-
-
 def test_parse_summaryRecordSysNumber():
     num = convertor._parse_summaryRecordSysNumber(
         "Souborný záznam viz nkc20150003029."
