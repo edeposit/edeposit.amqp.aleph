@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
-PYTHONPATH="$PYTHONPATH:src/edeposit/amqp"
-TEST_PATH="src/edeposit/amqp/aleph/tests"
+PYTHONPATH="src/edeposit/amqp:$PYTHONPATH"
+TEST_PATH="tests"
 
 function show_help {
     echo -e "Usage: $0 [-h] [-a] [-i] [-u]"
