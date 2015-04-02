@@ -51,8 +51,8 @@ http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
 </datafield>
 <datafield tag="100" ind1="1" ind2=" ">
 <subfield code="a">Raymond, Eric S.</subfield>
-<subfield code="4">aut</subfield>
 <subfield code="7">jn20020721375</subfield>
+<subfield code="4">aut</subfield>
 </datafield>
 <datafield tag="245" ind1="1" ind2="0">
 <subfield code="a">Umění programování v UNIXu /</subfield>
@@ -82,18 +82,18 @@ http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
 </datafield>
 <datafield tag="650" ind1="0" ind2="7">
 <subfield code="a">UNIX</subfield>
-<subfield code="2">czenas</subfield>
 <subfield code="7">ph117153</subfield>
+<subfield code="2">czenas</subfield>
 </datafield>
 <datafield tag="650" ind1="0" ind2="7">
 <subfield code="a">operační systémy</subfield>
-<subfield code="2">czenas</subfield>
 <subfield code="7">ph115593</subfield>
+<subfield code="2">czenas</subfield>
 </datafield>
 <datafield tag="650" ind1="0" ind2="7">
 <subfield code="a">programování</subfield>
-<subfield code="2">czenas</subfield>
 <subfield code="7">ph115891</subfield>
+<subfield code="2">czenas</subfield>
 </datafield>
 <datafield tag="650" ind1="0" ind2="9">
 <subfield code="a">UNIX</subfield>
@@ -109,8 +109,8 @@ http://www.loc.gov/standards/marcxml/schema/MARC21slim.xsd">
 </datafield>
 <datafield tag="655" ind1=" " ind2="7">
 <subfield code="a">příručky</subfield>
-<subfield code="2">czenas</subfield>
 <subfield code="7">fd133209</subfield>
+<subfield code="2">czenas</subfield>
 </datafield>
 <datafield tag="655" ind1=" " ind2="9">
 <subfield code="a">handbooks, manuals, etc.</subfield>
