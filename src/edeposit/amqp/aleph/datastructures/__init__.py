@@ -2,6 +2,9 @@
 
 from results import *
 from requests import *
-from alephrecord import *
-from epublication import *
-from semanticinfo import *
+
+from author import Author
+from format_enum import FormatEnum
+from alephrecord import AlephRecord
+from epublication import EPublication
+from semanticinfo import SemanticInfo
