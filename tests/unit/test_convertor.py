@@ -137,3 +137,61 @@ def test_toEPublication_unix(unix_example):
     assert epub.autori == [author]
     assert epub.originaly == ['Art of UNIX programming']
     assert epub.internal_url == ""
+
+
+def test_toEPublication_echa(echa_example):
+    epub = convertor.toEPublication(echa_example)
+
+    author = convertor.Author(
+        firstName='Jiří',
+        lastName='Brabec',
+        title=''
+    )
+
+    assert epub.ISBN == []
+    assert epub.nazev == "Echa ... :"
+    assert epub.podnazev == "[fórum pro literární vědu] /"
+    assert epub.vazba == ''
+    assert epub.cena == ""
+    assert epub.castDil == ""
+    assert epub.nazevCasti == ""
+    assert epub.nakladatelVydavatel == "Institut pro studium literatury,"
+    assert epub.datumVydani == "[2014?]-"
+    assert epub.poradiVydani == ""
+    assert epub.zpracovatelZaznamu == "ABA001"
+    assert epub.format == ""
+    assert epub.url == "http://edeposit-test.nkp.cz/producents/nakladatelstvi-delta/epublications/echa-2010-2011/echa-2010-2011-eva-jelinkova-michael-spirit-eds.pdf"
+    assert epub.mistoVydani == "Praha :"
+    assert epub.ISBNSouboruPublikaci == []
+    assert epub.autori == [author]
+    assert epub.originaly == []
+    assert epub.internal_url == "http://aleph.nkp.cz/F/?func=direct&doc_number=000003059&local_base=CZE-DEP"
+
+
+def test_toEPublication_pasivni_domy(pasivni_domy_example):
+    epub = convertor.toEPublication(pasivni_domy_example)
+
+    author = convertor.Author(
+        firstName='Jan',
+        lastName='Bárta',
+        title=''
+    )
+
+    assert epub.ISBN == ['978-80-904739-3-5']
+    assert epub.nazev == "Pasivní domy 2013 /"
+    assert epub.podnazev == ""
+    assert epub.vazba == ''
+    assert epub.cena == ""
+    assert epub.castDil == ""
+    assert epub.nazevCasti == ""
+    assert epub.nakladatelVydavatel == "Centrum pasivního domu,"
+    assert epub.datumVydani == "2013"
+    assert epub.poradiVydani == "[1. vyd.]"
+    assert epub.zpracovatelZaznamu == "ABA001"
+    assert epub.format == ""
+    assert epub.url == "http://edeposit-test.nkp.cz/producents/nakladatelstvi-gama/epublications/pasivni-domy-2013/pd2013_sbornik.pdf"
+    assert epub.mistoVydani == "Brno :"
+    assert epub.ISBNSouboruPublikaci == []
+    assert epub.autori == [] # TODO: [author]
+    assert epub.originaly == []
+    assert epub.internal_url == "http://aleph.nkp.cz/F/?func=direct&doc_number=000003035&local_base=CZE-DEP"
