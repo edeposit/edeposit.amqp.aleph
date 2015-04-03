@@ -127,6 +127,13 @@ def toSemanticInfo(xml):
     )
 
 
+def _first_or_blank_string(items):
+    if not items:
+        return ""
+
+    return items[0]
+
+
 def toEPublication(xml):
     """
     Convert :class:`.MARCXMLRecord` object to :class:`.EPublication`
@@ -152,30 +159,17 @@ def toEPublication(xml):
     if "DEL" in parsed.datafields:
         raise DocumentNotFoundException("Document was deleted.")
 
-    # distributor = ""  # FUTURE
-    # mistoDistribuce = ""
-    # datumDistribuce = ""
+    zpracovatel = _first_or_blank_string(parsed["040a"])
 
-    # # parse information about distributors
-    # distributors = parsed.getCorporations("dst")
-    # if len(distributors) >= 1:
-    #     mistoDistribuce = distributors[0].place
-    #     datumDistribuce = distributors[0].date
-    #     distributor = distributors[0].name
-
-    # zpracovatel
-    zpracovatel = parsed["040a"]
-    zpracovatel = zpracovatel[0] if zpracovatel else ""
-
-    # url
-    url = parsed["856u"]
-    url = url[0] if url else ""
-
-    # internal url
-    internal_url = parsed["998a"]
-    internal_url = internal_url[0] if internal_url else ""
-
-    binding = parsed.get_binding()
+    # convert Persons objects to amqp's Authors namedtuple
+    authors = map(
+        lambda a: Author(
+            (a.name + " " + a.second_name).strip(),
+            a.surname,
+            a.title
+        ),
+        parsed.get_authors()
+    )
 
     # i know, that this is not PEP8, but you dont want to see it without proper
     # formating (it looks bad, really bad)
@@ -183,7 +177,7 @@ def toEPublication(xml):
         ISBN                = parsed.get_ISBNs(),
         nazev               = parsed.get_name(),
         podnazev            = parsed.get_subname(),
-        vazba               = binding[0] if binding else "",
+        vazba               = _first_or_blank_string(parsed.get_binding()),
         cena                = parsed.get_price(),
         castDil             = parsed.get_part(),
         nazevCasti          = parsed.get_part_name(),
@@ -196,19 +190,12 @@ def toEPublication(xml):
         # datumDistribuce     = datumDistribuce,
         # datumProCopyright   = "",
         format              = parsed.get_format(),
-        url                 = url.replace("&amp;", "&"),
+        url                 = parsed.get_urls(),
         mistoVydani         = parsed.get_pub_place(),
         ISBNSouboruPublikaci= [],
-        autori              = map(  # convert Persons to amqp's Authors
-            lambda a: Author(
-                (a.name + " " + a.second_name).strip(),
-                a.surname,
-                a.title
-            ),
-            parsed.get_authors()
-        ),
+        autori              = authors,
         originaly           = parsed.get_originals(),
-        internal_url        = internal_url.replace("&amp;", "&")
+        internal_url        = parsed.get_internal_urls()
     )
 
 
