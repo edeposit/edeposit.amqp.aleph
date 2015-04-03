@@ -30,8 +30,9 @@ import isbn_validator
 from httpkie import Downloader
 
 import settings
+from datastructures import Author
 from datastructures import FormatEnum
-from datastructures import EPublication, Author
+from datastructures import EPublication
 
 
 # Functions & objects =========================================================
