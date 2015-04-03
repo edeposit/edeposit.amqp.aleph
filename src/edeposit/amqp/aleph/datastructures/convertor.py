@@ -15,8 +15,10 @@ from remove_hairs import remove_hairs
 from marcxml_parser import MARCXMLRecord
 
 from ..aleph import DocumentNotFoundException
-from __init__ import *
-from semanticinfo import SemanticInfo
+
+from __init__ import Author
+from __init__ import EPublication
+from __init__ import SemanticInfo
 
 
 # Functions & objects =========================================================
@@ -82,7 +84,7 @@ def toSemanticInfo(xml):
         hasAcquisitionFields = True
 
     # look for catalogization fields
-    for status in parsed.getDataRecords("IST", "a", []):
+    for status in parsed["ISTa"]:
         status = status.replace(" ", "")  # remove spaces
 
         if status.startswith("jp2"):
@@ -97,12 +99,12 @@ def toSemanticInfo(xml):
             hasISBNAgencyFields = True
 
     # look whether the record was 'closed' by catalogizators
-    for status in parsed.getDataRecords("BAS", "a", []):
+    for status in parsed["BASa"]:
         if status == "90":
             isClosed = True
 
     # detect link to 'new' record, if the old one was 'closed'
-    for status in parsed.getDataRecords("PJM", "a", []):
+    for status in parsed["PJMa"]:
         if status:
             summaryRecordSysNumber = status
             parsedSummaryRecordSysNumber = _parse_summaryRecordSysNumber(
@@ -162,15 +164,15 @@ def toEPublication(xml):
     #     distributor = distributors[0].name
 
     # zpracovatel
-    zpracovatel = parsed.getDataRecords("040", "a", False)
+    zpracovatel = parsed["040a"]
     zpracovatel = zpracovatel[0] if zpracovatel else ""
 
     # url
-    url = parsed.getDataRecords("856", "u", False)
+    url = parsed["856u"]
     url = url[0] if url else ""
 
     # internal url
-    internal_url = parsed.getDataRecords("998", "a", False)
+    internal_url = parsed["998a"]
     internal_url = internal_url[0] if internal_url else ""
 
     binding = parsed.get_binding()
