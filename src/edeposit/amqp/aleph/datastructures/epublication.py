@@ -58,8 +58,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
     implemented yet.
 
     In case of :class:`Search <.SearchRequest>`/:class:`Count <.CountRequest>`
-    requests, this structure is filled with data from MARC XML record parsed
-    by :mod:`marcxml.py <aleph.marcxml>`.
+    requests, this structure is filled with data from MARC XML record.
 
     Attributes:
         url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)
