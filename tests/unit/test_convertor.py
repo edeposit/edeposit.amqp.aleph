@@ -120,19 +120,19 @@ def test_toEPublication_unix(unix_example):
     )
 
     assert epub.ISBN == ['80-251-0225-4']
-    assert epub.nazev == "Umění programování v UNIXu /"
+    assert epub.nazev == "Umění programování v UNIXu"
     assert epub.podnazev == ""
-    assert epub.vazba == '(brož.) :'
+    assert epub.vazba == 'brož.'
     assert epub.cena == "Kč 590,00"
     assert epub.castDil == ""
     assert epub.nazevCasti == ""
-    assert epub.nakladatelVydavatel == "Computer Press,"
+    assert epub.nakladatelVydavatel == "Computer Press"
     assert epub.datumVydani == "2004"
     assert epub.poradiVydani == "1. vyd."
     assert epub.zpracovatelZaznamu == "BOA001"
     assert epub.format == "23 cm"
     assert epub.url == ""
-    assert epub.mistoVydani == "Brno :"
+    assert epub.mistoVydani == "Brno"
     assert epub.ISBNSouboruPublikaci == []
     assert epub.autori == [author]
     assert epub.originaly == ['Art of UNIX programming']
@@ -149,19 +149,19 @@ def test_toEPublication_echa(echa_example):
     )
 
     assert epub.ISBN == []
-    assert epub.nazev == "Echa ... :"
-    assert epub.podnazev == "[fórum pro literární vědu] /"
+    assert epub.nazev == "Echa ..."
+    assert epub.podnazev == "fórum pro literární vědu"
     assert epub.vazba == ''
     assert epub.cena == ""
     assert epub.castDil == ""
     assert epub.nazevCasti == ""
-    assert epub.nakladatelVydavatel == "Institut pro studium literatury,"
-    assert epub.datumVydani == "[2014?]-"
+    assert epub.nakladatelVydavatel == "Institut pro studium literatury"
+    assert epub.datumVydani == "2014?"
     assert epub.poradiVydani == ""
     assert epub.zpracovatelZaznamu == "ABA001"
     assert epub.format == ""
     assert epub.url == "http://edeposit-test.nkp.cz/producents/nakladatelstvi-delta/epublications/echa-2010-2011/echa-2010-2011-eva-jelinkova-michael-spirit-eds.pdf"
-    assert epub.mistoVydani == "Praha :"
+    assert epub.mistoVydani == "Praha"
     assert epub.ISBNSouboruPublikaci == []
     assert epub.autori == [author]
     assert epub.originaly == []
@@ -178,19 +178,19 @@ def test_toEPublication_pasivni_domy(pasivni_domy_example):
     )
 
     assert epub.ISBN == ['978-80-904739-3-5']
-    assert epub.nazev == "Pasivní domy 2013 /"
+    assert epub.nazev == "Pasivní domy 2013"
     assert epub.podnazev == ""
     assert epub.vazba == ''
     assert epub.cena == ""
     assert epub.castDil == ""
     assert epub.nazevCasti == ""
-    assert epub.nakladatelVydavatel == "Centrum pasivního domu,"
+    assert epub.nakladatelVydavatel == "Centrum pasivního domu"
     assert epub.datumVydani == "2013"
-    assert epub.poradiVydani == "[1. vyd.]"
+    assert epub.poradiVydani == "1. vyd."
     assert epub.zpracovatelZaznamu == "ABA001"
     assert epub.format == ""
     assert epub.url == "http://edeposit-test.nkp.cz/producents/nakladatelstvi-gama/epublications/pasivni-domy-2013/pd2013_sbornik.pdf"
-    assert epub.mistoVydani == "Brno :"
+    assert epub.mistoVydani == "Brno"
     assert epub.ISBNSouboruPublikaci == []
     assert epub.autori == [] # TODO: [author]
     assert epub.originaly == []
