@@ -108,3 +108,32 @@ def test_toSemanticInfo_pasivni_domy(pasivni_domy_example):
     assert semantic_info.parsedSummaryRecordSysNumber == "nkc20150003043"
     assert not semantic_info.isSummaryRecord
     assert semantic_info.contentOfFMT == "BK"
+
+
+def test_toEPublication_unix(unix_example):
+    epub = convertor.toEPublication(unix_example)
+
+    author = convertor.Author(
+        firstName='Eric S.',
+        lastName='Raymond',
+        title=''
+    )
+
+    assert epub.ISBN == ['80-251-0225-4']
+    assert epub.nazev == "Umění programování v UNIXu /"
+    assert epub.podnazev == ""
+    assert epub.vazba == '(brož.) :'
+    assert epub.cena == "Kč 590,00"
+    assert epub.castDil == ""
+    assert epub.nazevCasti == ""
+    assert epub.nakladatelVydavatel == "Computer Press,"
+    assert epub.datumVydani == "2004"
+    assert epub.poradiVydani == "1. vyd."
+    assert epub.zpracovatelZaznamu == "BOA001"
+    assert epub.format == "23 cm"
+    assert epub.url == ""
+    assert epub.mistoVydani == "Brno :"
+    assert epub.ISBNSouboruPublikaci == []
+    assert epub.autori == [author]
+    assert epub.originaly == ['Art of UNIX programming']
+    assert epub.internal_url == ""
