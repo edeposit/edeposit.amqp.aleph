@@ -1,17 +1,22 @@
 Changelog
 =========
 
+1.8.0
+-----
+    - Removed old robot tests and added alternatives in pytest. More will come.
+    - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
+    - Removed ``marcxml.py`` (#45), which was moved into standalone module [marcxml_parser](https://github.com/edeposit/marcxml_parser).
+    - Module refactored to work with ``marcxml.py``, which brings many improvements.
+    - Implemented #46: ``convertor.py`` removed, functions moved to static methods and standalone submodule (see ``doc_number.py``).
+    - Updated documentation.
+
 1.7.4
 -----
     - Implemented #43 - new attributes to SemanticInfo.
     - Removed ``_remove_hairs()`` function, which is now in stanalone package.
     - Added dependency to ``remove_hairs`` standalone package.
 
-1.7.3
------
-    - Fixed #41 - case of deleted record with stub left after deletion.
-
-1.7.0 - 1.7.2
+1.7.0 - 1.7.3
 -------------
     - isbn.py is no longer part of the edeposit.amqp.aleph, but `standalone module <https://github.com/edeposit/isbn_validator>`_.
     - Small syntax improvements in ISBN module.
@@ -19,6 +24,7 @@ Changelog
     - Fixed paths in ``run_tests.sh``.
     - Added new items to ``SemanticInfo`` structure (``.isClosed``, ``.summaryRecordSysNumber``, ``.parsedSummaryRecordSysNumber``).
     - Added new query ``ICZQuery``.
+    - Fixed #41 - case of deleted record with stub left after deletion.
 
 1.6.0 - 1.6.5
 -------------
