@@ -9,11 +9,7 @@ sys.path.insert(0, os.path.abspath('../src/edeposit/amqp'))
 
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.graphviz',
-    'sphinx.ext.todo',
-    'sphinx.ext.coverage',
     'sphinx.ext.viewcode',
-    "sphinxcontrib_robotdoc",
     'sphinxcontrib.napoleon',
     'sphinx.ext.intersphinx'
 ]
@@ -46,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'edeposit.amqp.aleph'
-copyright = u'2014 E-deposit team'
+copyright = u'2015 E-deposit team'
 
 # The full version, including alpha/beta/rc tags.
 try:

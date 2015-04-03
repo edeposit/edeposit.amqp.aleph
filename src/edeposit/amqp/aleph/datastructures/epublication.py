@@ -16,6 +16,15 @@ from ..aleph import DocumentNotFoundException
 
 # Functions ===================================================================
 def _first_or_blank_string(items):
+    """
+    Return first `item` from `items` or blank string.
+
+    Args:
+        items (list/tuple): Indexable object.
+
+    Returns:
+        str: Content of first item, or blank string.
+    """
     if not items:
         return ""
 
@@ -83,16 +92,12 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         namedtuple.
 
         Args:
-            xml (str/MARCXMLRecord): MarcXML which will be converted to
+            xml (str/MARCXMLRecord): MARC XML which will be converted to
                 EPublication. In case of str, ``<record>`` tag is required.
 
         Returns:
             structure: :class:`.EPublication` namedtuple with data about \
                        publication.
-
-        See Also:
-            :class:`aleph.datastructures.epublication` for details of
-            :class:`.EPublication`, structure.
         """
         parsed = xml
         if not isinstance(xml, MARCXMLRecord):

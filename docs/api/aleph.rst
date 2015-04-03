@@ -12,8 +12,6 @@ Submodules
    :maxdepth: 1
 
    /api/aleph.aleph
-   /api/aleph.marcxml
-   /api/aleph.isbn
    /api/aleph.export
    /api/aleph.settings
    /api/aleph.datastructures
