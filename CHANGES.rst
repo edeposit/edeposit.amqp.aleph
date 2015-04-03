@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.1
+-----
+    - README.rst updated.
+
 1.8.0
 -----
     - Removed old robot tests and added alternatives in pytest. More will come.
