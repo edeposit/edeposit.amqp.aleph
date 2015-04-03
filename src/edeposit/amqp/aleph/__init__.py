@@ -114,8 +114,8 @@ import isbn_validator
 import aleph
 import export
 import settings
+import doc_number
 from datastructures import *
-from datastructures import convertor
 
 
 # Queries =====================================================================
@@ -133,7 +133,7 @@ class _QueryTemplate:
                 AlephRecord(
                     base=self.base,
                     library=settings.DEFAULT_LIBRARY,
-                    docNumber=convertor.getDocNumber(xml),
+                    docNumber=doc_number.getDocNumber(xml),
                     xml=xml
                 )
             )
