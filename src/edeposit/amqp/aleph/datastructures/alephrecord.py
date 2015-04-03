@@ -11,9 +11,10 @@ API
 # Imports =====================================================================
 from collections import namedtuple
 
-
-import convertor
 from marcxml_parser import MARCXMLRecord
+
+from semanticinfo import SemanticInfo
+from epublication import EPublication
 
 
 # Structures ==================================================================
@@ -54,10 +55,10 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                 parsed = MARCXMLRecord(str(parsed))
 
             if not semantic_info:
-                semantic_info = convertor.toSemanticInfo(parsed)
+                semantic_info = SemanticInfo.from_xml(parsed)
 
             if not epublication:
-                epublication = convertor.toEPublication(parsed)
+                epublication = EPublication.from_xml(parsed)
 
         return super(AlephRecord, cls).__new__(
             cls,
