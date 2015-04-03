@@ -13,7 +13,7 @@ from collections import namedtuple
 
 
 import convertor
-from ..marcxml import MARCXMLRecord
+from marcxml_parser import MARCXMLRecord
 
 
 # Structures ==================================================================
