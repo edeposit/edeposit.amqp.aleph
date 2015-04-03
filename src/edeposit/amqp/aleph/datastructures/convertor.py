@@ -12,8 +12,8 @@ to AMQP data structures, specifically to convert :class:`.MARCXMLRecord` to
 import dhtmlparser
 
 from remove_hairs import remove_hairs
+from marcxml_parser import MARCXMLRecord
 
-from ..marcxml import MARCXMLRecord
 from ..aleph import DocumentNotFoundException
 from __init__ import *
 from semanticinfo import SemanticInfo
@@ -73,7 +73,7 @@ def toSemanticInfo(xml):
 
     # handle FMT record
     if "FMT" in parsed.controlfields:
-        contentOfFMT = parsed.getControlRecord("FMT")
+        contentOfFMT = parsed["FMT"]
 
         if contentOfFMT == "SE":
             isSummaryRecord = True
@@ -173,29 +173,29 @@ def toEPublication(xml):
     internal_url = parsed.getDataRecords("998", "a", False)
     internal_url = internal_url[0] if internal_url else ""
 
-    binding = parsed.getBinding()
+    binding = parsed.get_binding()
 
     # i know, that this is not PEP8, but you dont want to see it without proper
     # formating (it looks bad, really bad)
     return EPublication(
-        ISBN                = parsed.getISBNs(),
-        nazev               = parsed.getName(),
-        podnazev            = parsed.getSubname(),
+        ISBN                = parsed.get_ISBNs(),
+        nazev               = parsed.get_name(),
+        podnazev            = parsed.get_subname(),
         vazba               = binding[0] if binding else "",
-        cena                = parsed.getPrice(),
-        castDil             = parsed.getPart(),
-        nazevCasti          = parsed.getPartName(),
-        nakladatelVydavatel = parsed.getPublisher(),
-        datumVydani         = parsed.getPubDate(),
-        poradiVydani        = parsed.getPubOrder(),
+        cena                = parsed.get_price(),
+        castDil             = parsed.get_part(),
+        nazevCasti          = parsed.get_part_name(),
+        nakladatelVydavatel = parsed.get_publisher(),
+        datumVydani         = parsed.get_pub_date(),
+        poradiVydani        = parsed.get_pub_order(),
         zpracovatelZaznamu  = zpracovatel,
         # mistoDistribuce     = mistoDistribuce,  # FUTURE
         # distributor         = distributor,
         # datumDistribuce     = datumDistribuce,
         # datumProCopyright   = "",
-        format              = parsed.getFormat(),
+        format              = parsed.get_format(),
         url                 = url.replace("&amp;", "&"),
-        mistoVydani         = parsed.getPubPlace(),
+        mistoVydani         = parsed.get_pub_place(),
         ISBNSouboruPublikaci= [],
         autori              = map(  # convert Persons to amqp's Authors
             lambda a: Author(
@@ -203,9 +203,9 @@ def toEPublication(xml):
                 a.surname,
                 a.title
             ),
-            parsed.getAuthors()
+            parsed.get_authors()
         ),
-        originaly           = parsed.getOriginals(),
+        originaly           = parsed.get_originals(),
         internal_url        = internal_url.replace("&amp;", "&")
     )
 
