@@ -3,33 +3,26 @@
 #
 # Interpreter version: python 2.7
 #
+# Imports =====================================================================
 from collections import namedtuple
 
+from marcxml_parser import MARCXMLRecord
 
-class FormatEnum:
-    """
-    Enum used as format in :class:`EPublication`.
-    """
-    CD = "CD-ROM"
-    DVD = "DVD"
-    BROZ = "brož."
-    MAPA = "mapa"
-    VAZANA = "váz."
-    ONLINE = "online"
+from .author import Author
+from .format_enum import FormatEnum
+
+from ..aleph import DocumentNotFoundException
 
 
-class Author(namedtuple("Author", ['firstName', 'lastName', 'title'])):
-    """
-    Informations about author (or person).
+# Functions ===================================================================
+def _first_or_blank_string(items):
+    if not items:
+        return ""
 
-    Attributes:
-        firstName (str)
-        lastName (str)
-        title (str)
-    """
-    pass
+    return items[0]
 
 
+# Structures ==================================================================
 class EPublication(namedtuple("EPublication", ["ISBN",
                                                'nazev',
                                                'podnazev',
@@ -82,7 +75,71 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         ISBNSouboruPublikaci (list): list of strings with ISBN of the book
                                      series
     """
-    pass
+
+    @staticmethod
+    def from_xml(xml):
+        """
+        Convert :class:`.MARCXMLRecord` object to :class:`.EPublication`
+        namedtuple.
+
+        Args:
+            xml (str/MARCXMLRecord): MarcXML which will be converted to
+                EPublication. In case of str, ``<record>`` tag is required.
+
+        Returns:
+            structure: :class:`.EPublication` namedtuple with data about \
+                       publication.
+
+        See Also:
+            :class:`aleph.datastructures.epublication` for details of
+            :class:`.EPublication`, structure.
+        """
+        parsed = xml
+        if not isinstance(xml, MARCXMLRecord):
+            parsed = MARCXMLRecord(str(xml))
+
+        # check whether the document was deleted
+        if "DEL" in parsed.datafields:
+            raise DocumentNotFoundException("Document was deleted.")
+
+        zpracovatel = _first_or_blank_string(parsed["040a"])
+
+        # convert Persons objects to amqp's Authors namedtuple
+        authors = map(
+            lambda a: Author(
+                (a.name + " " + a.second_name).strip(),
+                a.surname,
+                a.title
+            ),
+            parsed.get_authors()
+        )
+
+        # i know, that this is not PEP8, but you dont want to see it without
+        # proper formating (it looks bad, really bad)
+        return EPublication(
+            ISBN                = parsed.get_ISBNs(),
+            nazev               = parsed.get_name(),
+            podnazev            = parsed.get_subname(),
+            vazba               = _first_or_blank_string(parsed.get_binding()),
+            cena                = parsed.get_price(),
+            castDil             = parsed.get_part(),
+            nazevCasti          = parsed.get_part_name(),
+            nakladatelVydavatel = parsed.get_publisher(),
+            datumVydani         = parsed.get_pub_date(),
+            poradiVydani        = parsed.get_pub_order(),
+            zpracovatelZaznamu  = zpracovatel,
+            # mistoDistribuce     = mistoDistribuce,  # FUTURE
+            # distributor         = distributor,
+            # datumDistribuce     = datumDistribuce,
+            # datumProCopyright   = "",
+            format              = parsed.get_format(),
+            url                 = parsed.get_urls(),
+            mistoVydani         = parsed.get_pub_place(),
+            ISBNSouboruPublikaci= [],
+            autori              = authors,
+            originaly           = parsed.get_originals(),
+            internal_url        = parsed.get_internal_urls()
+        )
 
 
 # class Producent(namedtuple("Producent", ['title',
