@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.2
+-----
+    - Fixed small bug in MANIFEST.in.
+
 1.8.1
 -----
     - README.rst updated.
