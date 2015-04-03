@@ -9,7 +9,8 @@ import os.path
 
 import pytest
 
-from aleph.datastructures import convertor
+from aleph.datastructures import Author
+from aleph.datastructures import EPublication
 
 
 # Fixtures ====================================================================
@@ -28,92 +29,20 @@ def unix_example():
 
 
 @pytest.fixture
-def pasivni_domy_example():
-    return read_file("pasivni_domy.xml")
-
-
-@pytest.fixture
 def echa_example():
     return read_file("echa.xml")
 
 
+@pytest.fixture
+def pasivni_domy_example():
+    return read_file("pasivni_domy.xml")
+
+
 # Tests =======================================================================
-def test_parse_summaryRecordSysNumber():
-    num = convertor._parse_summaryRecordSysNumber(
-        "Souborný záznam viz nkc20150003029."
-    )
-
-    assert num == "nkc20150003029"
-
-    num = convertor._parse_summaryRecordSysNumber(
-        "Souborný záznam viz 978-80-87899-15-1."
-    )
-
-    assert num == "978-80-87899-15-1"
-
-
-def test_toSemanticInfo_unix(unix_example):
-    semantic_info = convertor.toSemanticInfo(unix_example)
-
-    assert semantic_info
-
-    assert not semantic_info.isClosed
-
-    # normal records doesn't use semantic info
-    assert not semantic_info.hasAcquisitionFields
-    assert not semantic_info.hasISBNAgencyFields
-    assert not semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
-    assert not semantic_info.summaryRecordSysNumber
-    assert not semantic_info.parsedSummaryRecordSysNumber
-    assert not semantic_info.isSummaryRecord
-    assert not semantic_info.contentOfFMT
-
-
-def test_toSemanticInfo_echa(echa_example):
-    semantic_info = convertor.toSemanticInfo(echa_example)
-
-    assert semantic_info
-
-    assert not semantic_info.isClosed
-
-    assert not semantic_info.hasAcquisitionFields
-    assert not semantic_info.hasISBNAgencyFields
-    assert semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
-    assert not semantic_info.summaryRecordSysNumber
-    assert not semantic_info.parsedSummaryRecordSysNumber
-    assert semantic_info.isSummaryRecord
-    assert semantic_info.contentOfFMT == "SE"
-
-
-def test_toSemanticInfo_pasivni_domy(pasivni_domy_example):
-    semantic_info = convertor.toSemanticInfo(pasivni_domy_example)
-
-    assert semantic_info
-
-    assert semantic_info.isClosed
-
-    assert semantic_info.hasAcquisitionFields
-    assert  semantic_info.hasISBNAgencyFields
-    assert semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
-    assert semantic_info.summaryRecordSysNumber == "Seriálový záznam viz nkc20150003043"
-    assert semantic_info.parsedSummaryRecordSysNumber == "nkc20150003043"
-    assert not semantic_info.isSummaryRecord
-    assert semantic_info.contentOfFMT == "BK"
-
-
 def test_toEPublication_unix(unix_example):
-    epub = convertor.toEPublication(unix_example)
+    epub = EPublication.from_xml(unix_example)
 
-    author = convertor.Author(
+    author = Author(
         firstName='Eric S.',
         lastName='Raymond',
         title=''
@@ -140,9 +69,9 @@ def test_toEPublication_unix(unix_example):
 
 
 def test_toEPublication_echa(echa_example):
-    epub = convertor.toEPublication(echa_example)
+    epub = EPublication.from_xml(echa_example)
 
-    author = convertor.Author(
+    author = Author(
         firstName='Jiří',
         lastName='Brabec',
         title=''
@@ -176,9 +105,9 @@ def test_toEPublication_echa(echa_example):
 
 
 def test_toEPublication_pasivni_domy(pasivni_domy_example):
-    epub = convertor.toEPublication(pasivni_domy_example)
+    epub = EPublication.from_xml(pasivni_domy_example)
 
-    author = convertor.Author(
+    author = Author(
         firstName='Jan',
         lastName='Bárta',
         title=''
