@@ -107,12 +107,6 @@ def test_toEPublication_echa(echa_example):
 def test_toEPublication_pasivni_domy(pasivni_domy_example):
     epub = EPublication.from_xml(pasivni_domy_example)
 
-    author = Author(
-        firstName='Jan',
-        lastName='Bárta',
-        title=''
-    )
-
     assert epub.ISBN == ['978-80-904739-3-5']
     assert epub.nazev == "Pasivní domy 2013"
     assert epub.podnazev == ""
@@ -128,7 +122,7 @@ def test_toEPublication_pasivni_domy(pasivni_domy_example):
     assert epub.url == ["http://edeposit-test.nkp.cz/"]
     assert epub.mistoVydani == "Brno"
     assert epub.ISBNSouboruPublikaci == []
-    assert epub.autori == [] # TODO: [author]
+    assert epub.autori == []
     assert epub.originaly == []
     assert epub.internal_url == [
         'http://edeposit-test.nkp.cz/producents/nakladatelstvi-gama/epublications/pasivni-domy-2013/pd2013_sbornik.pdf',
