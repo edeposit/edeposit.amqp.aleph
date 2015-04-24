@@ -1,22 +1,20 @@
 Changelog
 =========
 
-1.8.2
+1.8.3
 -----
-    - Fixed small bug in MANIFEST.in.
+    - ISBN is now discriminated to valid and INVALID. See ``EPublication.invalid_ISBN``.
 
-1.8.1
------
-    - README.rst updated.
-
-1.8.0
------
+1.8.0 - 1.8.2
+-------------
     - Removed old robot tests and added alternatives in pytest. More will come.
     - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
     - Removed ``marcxml.py`` (#45), which was moved into standalone module [marcxml_parser](https://github.com/edeposit/marcxml_parser).
     - Module refactored to work with ``marcxml.py``, which brings many improvements.
     - Implemented #46: ``convertor.py`` removed, functions moved to static methods and standalone submodule (see ``doc_number.py``).
     - Updated documentation.
+    - README.rst updated.
+    - Fixed small bug in MANIFEST.in.
 
 1.7.4
 -----

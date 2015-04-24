@@ -33,6 +33,7 @@ def _first_or_blank_string(items):
 
 # Structures ==================================================================
 class EPublication(namedtuple("EPublication", ["ISBN",
+                                               "invalid_ISBN",
                                                'nazev',
                                                'podnazev',
                                                'vazba',
@@ -64,7 +65,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
 
     Attributes:
         url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)
-        ISBN   (str): ISBN of the book
+        ISBN  (list): List of ISBNs for the book
         cena   (str): price of the book
         vazba  (str): bidding of the book
         nazev  (str): name of the book
@@ -79,6 +80,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         mistoVydani (str): city/country origin of the publication
         internal_url (str): link to edeposit/kramerius system
         poradiVydani (str): order of publication
+        invalid_ISBN (list): List of INVALID ISBNs for this book.
         zpracovatelZaznamu   (str):  processor/manufacturer of record
         nakladatelVydavatel  (str):  publisher's name
         ISBNSouboruPublikaci (list): list of strings with ISBN of the book
@@ -123,6 +125,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         # proper formating (it looks bad, really bad)
         return EPublication(
             ISBN                = parsed.get_ISBNs(),
+            invalid_ISBN        = parsed.get_invalid_ISBNs(),
             nazev               = parsed.get_name(),
             podnazev            = parsed.get_subname(),
             vazba               = _first_or_blank_string(parsed.get_binding()),
