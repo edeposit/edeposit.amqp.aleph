@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.4
+-----
+    - External URL is now voluntary in export structure.
+
 1.8.3
 -----
     - ISBN is now discriminated to valid and INVALID. See ``EPublication.invalid_ISBN``.
