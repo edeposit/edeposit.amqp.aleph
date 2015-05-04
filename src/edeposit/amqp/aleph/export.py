@@ -241,19 +241,27 @@ class PostData:
         )
         self._POST["P1601ISB__a"] = self._POST["P0501010__a"]
 
+    @staticmethod
+    def _czech_isbn_check(isbn_field):
+        isbn_field = isbn_field.replace("-", "").strip()
+
+        return any([
+            isbn_field.startswith("80"),
+            isbn_field.startswith("97880"),
+        ])
+
     def _check_required_fields(self):
         """
         Make sure, that internal dictionary contains all fields, which are
         required by the webform.
         """
-        # export script accepts only czech ISBNs
-        isbn_check = self._POST["P0501010__a"].startswith("80") or \
-                     self._POST["P0501010__a"].startswith("978-80")
-        hidden_isbn_check = self._POST["P1601ISB__a"].startswith("80") or \
-                            self._POST["P1601ISB__a"].startswith("978-80")
-        assert isbn_check and hidden_isbn_check, "Only czech ISBN is accepted!"
-
         assert self._POST["P0501010__a"] != "", "ISBN is required!"
+
+        # export script accepts only czech ISBNs
+        for isbn_field_name in ("P0501010__a", "P1601ISB__a"):
+            check = PostData._czech_isbn_check(self._POST[isbn_field_name])
+            assert check, "Only czech ISBN is accepted!"
+
         assert self._POST["P1601ISB__a"] != "", "Hidden ISBN field is required!"
 
         assert self._POST["P07012001_a"] != "", "Nazev is required!"

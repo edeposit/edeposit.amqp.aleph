@@ -1,15 +1,15 @@
 Changelog
 =========
 
+1.8.5
+-----
+    - Fixed #50 - problem with checking for czech ISBN.
+
 1.8.4
 -----
     - External URL is now voluntary in export structure.
 
-1.8.3
------
-    - ISBN is now discriminated to valid and INVALID. See ``EPublication.invalid_ISBN``.
-
-1.8.0 - 1.8.2
+1.8.0 - 1.8.3
 -------------
     - Removed old robot tests and added alternatives in pytest. More will come.
     - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
@@ -19,14 +19,9 @@ Changelog
     - Updated documentation.
     - README.rst updated.
     - Fixed small bug in MANIFEST.in.
+    - ISBN is now discriminated to valid and INVALID. See ``EPublication.invalid_ISBN``.
 
-1.7.4
------
-    - Implemented #43 - new attributes to SemanticInfo.
-    - Removed ``_remove_hairs()`` function, which is now in stanalone package.
-    - Added dependency to ``remove_hairs`` standalone package.
-
-1.7.0 - 1.7.3
+1.7.0 - 1.7.4
 -------------
     - isbn.py is no longer part of the edeposit.amqp.aleph, but `standalone module <https://github.com/edeposit/isbn_validator>`_.
     - Small syntax improvements in ISBN module.
@@ -35,6 +30,9 @@ Changelog
     - Added new items to ``SemanticInfo`` structure (``.isClosed``, ``.summaryRecordSysNumber``, ``.parsedSummaryRecordSysNumber``).
     - Added new query ``ICZQuery``.
     - Fixed #41 - case of deleted record with stub left after deletion.
+    - Implemented #43 - new attributes to SemanticInfo.
+    - Removed ``_remove_hairs()`` function, which is now in stanalone package.
+    - Added dependency to ``remove_hairs`` standalone package.
 
 1.6.0 - 1.6.5
 -------------
