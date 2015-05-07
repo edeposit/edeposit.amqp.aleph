@@ -143,14 +143,15 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
             if status == "90":
                 isClosed = True
 
+        # if multiple PJM statuses are present, join them together
+        status = "\n".join([x for x in parsed["PJMa"]])
+
         # detect link to 'new' record, if the old one was 'closed'
-        for status in parsed["PJMa"]:
-            if status:
-                summaryRecordSysNumber = status
-                parsedSummaryRecordSysNumber = _parse_summaryRecordSysNumber(
-                    summaryRecordSysNumber
-                )
-                break
+        if status.strip():
+            summaryRecordSysNumber = status
+            parsedSummaryRecordSysNumber = _parse_summaryRecordSysNumber(
+                summaryRecordSysNumber
+            )
 
         return SemanticInfo(
             hasAcquisitionFields=hasAcquisitionFields,

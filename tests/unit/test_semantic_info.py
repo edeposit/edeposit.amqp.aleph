@@ -29,6 +29,15 @@ def test_parse_summaryRecordSysNumber():
     assert num == "978-80-87899-15-1"
 
 
+def test_parse_summaryRecordSysNumber_multiple_PJM():
+    num = _parse_summaryRecordSysNumber(
+        "V zamčených záznamech při opravě pole 260 na 264 jsou následně vyžadována pole 336, 337, 338\n"
+        "Souborný záznam viz nkc20150003133"
+    )
+
+    assert num == "nkc20150003133"
+
+
 def test_toSemanticInfo_unix(unix_example):
     semantic_info = SemanticInfo.from_xml(unix_example)
 
