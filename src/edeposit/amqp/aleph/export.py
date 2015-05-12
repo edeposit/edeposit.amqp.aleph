@@ -141,7 +141,7 @@ class PostData:
             #     "30",
             #     "",
             #     "ow"
-            # ]
+            # ],
             "else": [
                 "-----nam-a22------a-4500",
                 "BK",
@@ -175,13 +175,6 @@ class PostData:
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
         self._POST["P1801URL__u"] = epub.internal_url
 
-        # FUTURE:
-        # self._POST[""] = epub.mistoDistribuce
-        # self._POST[""] = epub.distributor
-        # self._POST[""] = epub.datumDistribuce
-        # self._POST[""] = epub.kategorieProRIV  # TODO: wtf?
-        # self._POST[""] = epub.datumProCopyright  # wut
-
         if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])
             epub.autori = epub.autori[:3]
@@ -209,7 +202,7 @@ class PostData:
             raw_isbn = raw_isbn[0]
 
         # blank list -> blank str
-        raw_isbn = "" if raw_isbn == [] else raw_isbn
+        raw_isbn = "" if raw_isbn in ([], tuple()) else raw_isbn
 
         if not raw_isbn and accept_blank:
             return raw_isbn
@@ -310,19 +303,16 @@ def _sendPostDict(post_dict):
     Args:
         post_dict (dict): dictionary from :class:`PostData.get_POST_data()`
 
-    It may look strange, to have standalone function to do this, but it is used
-    in unittests to test that form rejects invalid data, which can tell us,
-    when the webform is broken.
+    Returns:
+        str: Reponse from webform.
     """
     downer = Downloader()
     downer.headers["Referer"] = settings.EDEPOSIT_EXPORT_REFERER
     data = downer.download(settings.ALEPH_EXPORT_URL, post=post_dict)
     rheaders = downer.response_headers
 
-    if "aleph-info" not in rheaders:
-        return data
-
-    if rheaders["aleph-info"].lower().strip().startswith("error"):
+    error_msg = rheaders.get("aleph-info", "").lower().strip()
+    if "aleph-info" in rheaders and error_msg.startswith("error"):
         raise ExportRejectedException(
             "Export request was rejected by import webform: %s" %
             rheaders["aleph-info"]
