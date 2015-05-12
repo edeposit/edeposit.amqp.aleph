@@ -324,27 +324,30 @@ def _sendPostDict(post_dict):
 def _removeSpecialCharacters(epub):
     """
     Remove most of the unnecessary interpunction from epublication, which can
-    break unimark if not user properly.
+    break unimark if not used properly.
     """
     special_chars = "/:;,- "
 
     epub_dict = epub._asdict()
 
     for key in epub_dict.keys():
-        if type(epub_dict[key]) in [str, unicode]:
+        if isinstance(epub_dict[key], basestring):
             epub_dict[key] = epub_dict[key].strip(special_chars)
+
         elif type(epub_dict[key]) in [tuple, list]:
             out = []
             for item in epub_dict[key]:
-                if type(item) == Author:
-                    new_item = item._asdict()
-
-                    for key in new_item.keys():
-                        new_item[key] = new_item[key].strip(special_chars)
-
-                    out.append(Author(**new_item))
-                else:
+                if not isinstance(item, Author):
                     out.append(item)
+                    continue
+
+                new_item = item._asdict()
+
+                for key in new_item.keys():
+                    new_item[key] = new_item[key].strip(special_chars)
+
+                out.append(Author(**new_item))
+
             epub_dict[key] = out
 
     return EPublication(**epub_dict)
