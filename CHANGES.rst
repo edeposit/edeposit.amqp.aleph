@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.7
+-----
+    - Insignificant improvements.
+
 1.8.6
 -----
     - Fixed jstavel/edeposit#339 - problem with multiple PJM subfields.

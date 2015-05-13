@@ -51,7 +51,7 @@ class ExportRejectedException(ExportException):
         super(ExportRejectedException, self).__init__(message)
 
 
-class PostData:
+class PostData(object):
     """
     This class is used to transform data from
     :class:`.EPublication` to dictionary, which is sent as POST request to
@@ -326,7 +326,7 @@ def _removeSpecialCharacters(epub):
     Remove most of the unnecessary interpunction from epublication, which can
     break unimark if not used properly.
     """
-    special_chars = "/:;,- "
+    special_chars = "/:,- "
 
     epub_dict = epub._asdict()
 
