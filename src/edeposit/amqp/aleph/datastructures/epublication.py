@@ -34,6 +34,7 @@ def _first_or_blank_string(items):
 # Structures ==================================================================
 class EPublication(namedtuple("EPublication", ["ISBN",
                                                "invalid_ISBN",
+                                               "id_number",
                                                'nazev',
                                                'podnazev',
                                                'vazba',
@@ -73,6 +74,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         autori (list): list of :class:`Author` objects
         castDil (str): which part of the series of books is this
         podnazev (str): subname of the book
+        id_number  (str): identification number in aleph - starts
         originaly (list): list of (str) ISBN's of original books in case of
                           translations
         nazevCasti (str): name of part of the series
@@ -82,6 +84,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         poradiVydani (str): order of publication
         invalid_ISBN (list): List of INVALID ISBNs for this book.
         zpracovatelZaznamu   (str):  processor/manufacturer of record
+                             with nkc - ``nkc20150003133``.
         nakladatelVydavatel  (str):  publisher's name
         ISBNSouboruPublikaci (list): list of strings with ISBN of the book
                                      series
@@ -109,8 +112,6 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         if "DEL" in parsed.datafields:
             raise DocumentNotFoundException("Document was deleted.")
 
-        zpracovatel = _first_or_blank_string(parsed["040a"])
-
         # convert Persons objects to amqp's Authors namedtuple
         authors = map(
             lambda a: Author(
@@ -126,6 +127,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
         return EPublication(
             ISBN                = parsed.get_ISBNs(),
             invalid_ISBN        = parsed.get_invalid_ISBNs(),
+            id_number           = parsed.controlfields.get("001", None),
             nazev               = parsed.get_name(),
             podnazev            = parsed.get_subname(),
             vazba               = _first_or_blank_string(parsed.get_binding()),
@@ -135,7 +137,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
             nakladatelVydavatel = parsed.get_publisher(),
             datumVydani         = parsed.get_pub_date(),
             poradiVydani        = parsed.get_pub_order(),
-            zpracovatelZaznamu  = zpracovatel,
+            zpracovatelZaznamu  = _first_or_blank_string(parsed["040a"]),
             # mistoDistribuce     = mistoDistribuce,  # FUTURE
             # distributor         = distributor,
             # datumDistribuce     = datumDistribuce,

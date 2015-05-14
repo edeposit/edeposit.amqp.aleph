@@ -1,19 +1,15 @@
 Changelog
 =========
 
+1.8.8
+-----
+    - Implemented parsing of ``.id_number`` to ``EPublication`` structure.
+
 1.8.7
 -----
     - Insignificant improvements.
 
-1.8.6
------
-    - Fixed jstavel/edeposit#339 - problem with multiple PJM subfields.
-
-1.8.5
------
-    - Fixed #50 - problem with checking for czech ISBN.
-
-1.8.0 - 1.8.4
+1.8.0 - 1.8.6
 -------------
     - Removed old robot tests and added alternatives in pytest. More will come.
     - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
@@ -25,6 +21,8 @@ Changelog
     - Fixed small bug in MANIFEST.in.
     - ISBN is now discriminated to valid and INVALID. See ``EPublication.invalid_ISBN``.
     - External URL is now voluntary in export structure.
+    - Fixed #50 - problem with checking for czech ISBN.
+    - Fixed jstavel/edeposit#339 - problem with multiple PJM subfields.
 
 1.7.0 - 1.7.4
 -------------

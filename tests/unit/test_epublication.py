@@ -66,6 +66,7 @@ def test_toEPublication_unix(unix_example):
     assert epub.autori == [author]
     assert epub.originaly == ['Art of UNIX programming']
     assert epub.internal_url == []
+    assert epub.id_number == "cpk20051492461"
 
 
 def test_toEPublication_echa(echa_example):
@@ -102,6 +103,7 @@ def test_toEPublication_echa(echa_example):
         'http://edeposit-test.nkp.cz/producents/nakladatelstvi-delta/epublications/echa-2010-2011/echa-2013-eva-jelinkova-michael-spirit-eds.epub',
         'http://aleph.nkp.cz/F/?func=direct&doc_number=000003059&local_base=CZE-DEP'
     ]
+    assert epub.id_number == "nkc20150003059"
 
 
 def test_toEPublication_pasivni_domy(pasivni_domy_example):
@@ -128,3 +130,4 @@ def test_toEPublication_pasivni_domy(pasivni_domy_example):
         'http://edeposit-test.nkp.cz/producents/nakladatelstvi-gama/epublications/pasivni-domy-2013/pd2013_sbornik.pdf',
         'http://aleph.nkp.cz/F/?func=direct&doc_number=000003035&local_base=CZE-DEP'
     ]
+    assert epub.id_number == "nkc20150003035"
