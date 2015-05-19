@@ -68,7 +68,7 @@ class PostData(object):
         epub (EPublication): structure, which will be converted (see
                              :class:`.EPublication` for details).
 
-    Attributes:
+    Attr:
         _POST (dict):   dictionary with parsed data
         mapping (dict): dictionary with some of mapping, which are applied to
                         :attr:`._POST` dict in post processing
@@ -98,7 +98,7 @@ class PostData(object):
             "P1302ZAK__c": "",    # autor2
             "P1303ZAK__c": "",    # autor3
             # "P10012252_a": "",    # edice
-            "P10022252_v": "",    # Číslo svazku
+            # "P10022252_v": "",    # Číslo svazku
             "P110185640u": "",    # URL
             "P0503010__x": "",    # Formát (poze pro epublikace)
             "P0901210__a": "",    # Místo vydání
@@ -111,6 +111,7 @@ class PostData(object):
             "P1601ISB__a": "",    # ISBN2 - validated (hidden)
             "P1801URL__u": "",    # internal URL
             # "REPEAT": "Y",        # predvyplnit zaznam
+            "P1001330__a": "",    # anotace
         }
 
         self.mapping = {
@@ -170,10 +171,11 @@ class PostData(object):
         self._POST["P0801205__a"] = epub.poradiVydani
         self._POST["P1502IST1_b"] = epub.zpracovatelZaznamu
         self._POST["P0503010__x"] = epub.format
-        self._POST["P110185640u"] = epub.url if epub.url else ""
+        self._POST["P110185640u"] = epub.url or ""
         self._POST["P0901210__a"] = epub.mistoVydani
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
         self._POST["P1801URL__u"] = epub.internal_url
+        self._POST["P1001330__a"] = epub.anotace or ""
 
         if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])
@@ -272,11 +274,22 @@ class PostData(object):
 
         # assert self._POST["P110185640u"] != "", "URL is required!"
 
-        # Formát (poze pro epublikace)
+        # Formát (pouze pro epublikace)
         if self._POST["P0502010__b"] == FormatEnum.ONLINE:
-            self._POST["P0503010__x"] != "", "Format is required!"
+            assert self._POST["P0503010__x"] != "", "Format is required!"
 
         assert self._POST["P0902210__c"] != "", "Nakladatel is required!"
+
+        def to_unicode(inp):
+            try:
+                return unicode(inp)
+            except UnicodeDecodeError:
+                return unicode(inp, "utf-8")
+
+        # check lenght of annotation field - try to convert string to unicode,
+        # to count characters, not combination bytes
+        annotation_length = len(to_unicode(self._POST["P1001330__a"]))
+        assert annotation_length <= 500, "Annotation is too long (> 500)."
 
     def get_POST_data(self):
         """
