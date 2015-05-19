@@ -55,7 +55,8 @@ class EPublication(namedtuple("EPublication", ["ISBN",
                                                'ISBNSouboruPublikaci',
                                                'autori',
                                                'originaly',
-                                               'internal_url'])):
+                                               'internal_url',
+                                               'anotace'])):
     """
     This structure is returned as result of users :class:`.SearchRequest`. It
     will be also used in exporting new data to aleph, but that is not
@@ -65,29 +66,30 @@ class EPublication(namedtuple("EPublication", ["ISBN",
     requests, this structure is filled with data from MARC XML record.
 
     Attributes:
-        url    (str): url specified by publisher (THIS IS NOT INTERNAL URL!)
-        ISBN  (list): List of ISBNs for the book
-        cena   (str): price of the book
-        vazba  (str): bidding of the book
-        nazev  (str): name of the book
-        format (str): format of the book - see :class:`FormatEnum`
-        autori (list): list of :class:`Author` objects
-        castDil (str): which part of the series of books is this
-        podnazev (str): subname of the book
-        id_number  (str): identification number in aleph - starts
-        originaly (list): list of (str) ISBN's of original books in case of
-                          translations
-        nazevCasti (str): name of part of the series
-        datumVydani (str): date of publication
-        mistoVydani (str): city/country origin of the publication
-        internal_url (str): link to edeposit/kramerius system
-        poradiVydani (str): order of publication
+        url    (str): Url specified by publisher (THIS IS NOT INTERNAL URL!).
+        ISBN  (list): List of ISBNs for the book.
+        cena   (str): Price of the book.
+        vazba  (str): Bidding of the book.
+        nazev  (str): Name of the book.
+        format (str): Format of the book - see :class:`FormatEnum`.
+        autori (list): List of :class:`Author` objects.
+        castDil (str): Which part of the series of books is this.
+        anotace (str): Anotation. Max lenght: 500 chars..
+        podnazev (str): Subname of the book.
+        id_number  (str): Identification number in aleph - starts.
+        originaly (list): List of (str) ISBN's of original books in case of
+                          translations.
+        nazevCasti (str): Name of part of the series.
+        datumVydani (str): Date of publication.
+        mistoVydani (str): City/country origin of the publication.
+        internal_url (str): Link to edeposit/kramerius system.
+        poradiVydani (str): Order of publication.
         invalid_ISBN (list): List of INVALID ISBNs for this book.
-        zpracovatelZaznamu   (str):  processor/manufacturer of record
+        zpracovatelZaznamu   (str): Processor/manufacturer of record.
                              with nkc - ``nkc20150003133``.
-        nakladatelVydavatel  (str):  publisher's name
-        ISBNSouboruPublikaci (list): list of strings with ISBN of the book
-                                     series
+        nakladatelVydavatel  (str): Publisher's name.
+        ISBNSouboruPublikaci (list): List of strings with ISBN of the book
+                                     series.
     """
 
     @staticmethod
@@ -148,7 +150,8 @@ class EPublication(namedtuple("EPublication", ["ISBN",
             ISBNSouboruPublikaci= [],
             autori              = authors,
             originaly           = parsed.get_originals(),
-            internal_url        = parsed.get_internal_urls()
+            internal_url        = parsed.get_internal_urls(),
+            anotace             = None, # TODO: read the annotation
         )
 
 
