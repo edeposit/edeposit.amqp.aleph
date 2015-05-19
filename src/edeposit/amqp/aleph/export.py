@@ -200,11 +200,11 @@ class PostData(object):
         self._POST["P1501IST1_a"] = mapping[4]
 
     def _validate_isbn(self, raw_isbn, accept_blank=False):
-        if type(raw_isbn) in [tuple, list] and raw_isbn:
+        if raw_isbn and type(raw_isbn) in [tuple, list]:
             raw_isbn = raw_isbn[0]
 
         # blank list -> blank str
-        raw_isbn = "" if raw_isbn in ([], tuple()) else raw_isbn
+        raw_isbn = raw_isbn or ""
 
         if not raw_isbn and accept_blank:
             return raw_isbn

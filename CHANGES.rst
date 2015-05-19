@@ -1,15 +1,13 @@
 Changelog
 =========
 
-1.8.8
+1.8.9
 -----
-    - Implemented parsing of ``.id_number`` to ``EPublication`` structure.
+    - Added annotation field ``.anotace`` to ``EPublication`` structure.
+    - ``EPublication.anotace`` field is now used in export.
+    - Small improvements of export.py code.
 
-1.8.7
------
-    - Insignificant improvements.
-
-1.8.0 - 1.8.6
+1.8.0 - 1.8.8
 -------------
     - Removed old robot tests and added alternatives in pytest. More will come.
     - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
@@ -23,6 +21,8 @@ Changelog
     - External URL is now voluntary in export structure.
     - Fixed #50 - problem with checking for czech ISBN.
     - Fixed jstavel/edeposit#339 - problem with multiple PJM subfields.
+    - Insignificant improvements.
+    - Implemented parsing of ``.id_number`` to ``EPublication`` structure.
 
 1.7.0 - 1.7.4
 -------------
