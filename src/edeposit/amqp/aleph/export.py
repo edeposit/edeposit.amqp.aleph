@@ -159,6 +159,10 @@ class PostData(object):
         """
         Fill internal property ._POST dictionary with data from EPublication.
         """
+        # mrs. Svobodová requires that annotation exported by us have this
+        # prefix
+        annotation_prefix = "Nakladatelská anotace: " + epub.anotace
+
         self._POST["P0501010__a"] = epub.ISBN
         self._POST["P07012001_a"] = epub.nazev
         self._POST["P07032001_e"] = epub.podnazev
@@ -175,7 +179,7 @@ class PostData(object):
         self._POST["P0901210__a"] = epub.mistoVydani
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
         self._POST["P1801URL__u"] = epub.internal_url
-        self._POST["P1001330__a"] = epub.anotace or ""
+        self._POST["P1001330__a"] = annotation_prefix if epub.anotace else ""
 
         if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.10
+------
+    - Added prefix to ``epub.annotation`` to export. This was required by mrs. Svobodová.
+
 1.8.9
 -----
     - Added annotation field ``.anotace`` to ``EPublication`` structure.
