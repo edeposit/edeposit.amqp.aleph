@@ -35,6 +35,10 @@ from datastructures import FormatEnum
 from datastructures import EPublication
 
 
+# Variables ===================================================================
+ANNOTATION_PREFIX = "Nakladatelská anotace: "
+
+
 # Functions & objects =========================================================
 class ExportException(Exception):
     def __init__(self, message):
@@ -161,7 +165,7 @@ class PostData(object):
         """
         # mrs. Svobodová requires that annotation exported by us have this
         # prefix
-        annotation_prefix = "Nakladatelská anotace: " + epub.anotace
+        prefixed_annotation = ANNOTATION_PREFIX + epub.anotace
 
         self._POST["P0501010__a"] = epub.ISBN
         self._POST["P07012001_a"] = epub.nazev
@@ -179,7 +183,7 @@ class PostData(object):
         self._POST["P0901210__a"] = epub.mistoVydani
         self._POST["P0601010__a"] = epub.ISBNSouboruPublikaci
         self._POST["P1801URL__u"] = epub.internal_url
-        self._POST["P1001330__a"] = annotation_prefix if epub.anotace else ""
+        self._POST["P1001330__a"] = prefixed_annotation if epub.anotace else ""
 
         if len(epub.autori) > 3:
             epub.autori[2] = ", ".join(epub.autori[2:])
@@ -293,6 +297,7 @@ class PostData(object):
         # check lenght of annotation field - try to convert string to unicode,
         # to count characters, not combination bytes
         annotation_length = len(to_unicode(self._POST["P1001330__a"]))
+        annotation_length -= len(to_unicode(ANNOTATION_PREFIX))
         assert annotation_length <= 500, "Annotation is too long (> 500)."
 
     def get_POST_data(self):

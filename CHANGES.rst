@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.8.11
+------
+    - Fixed bug in counting max. allowed lenght of annotation.
+
 1.8.10
 ------
     - Added prefix to ``epub.annotation`` to export. This was required by mrs. Svobodová.
