@@ -47,11 +47,11 @@ def test_toSemanticInfo_unix(unix_example):
 
     # normal records doesn't use semantic info
     assert not semantic_info.hasAcquisitionFields
-    assert not semantic_info.hasISBNAgencyFields
-    assert not semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
+    assert not semantic_info.ISBNAgencyFields
+    assert not semantic_info.descriptiveCatFields
+    assert not semantic_info.descriptiveCatReviewFields
+    assert not semantic_info.subjectCatFields
+    assert not semantic_info.subjectCatReviewFields
     assert not semantic_info.summaryRecordSysNumber
     assert not semantic_info.parsedSummaryRecordSysNumber
     assert not semantic_info.isSummaryRecord
@@ -66,11 +66,11 @@ def test_toSemanticInfo_echa(echa_example):
     assert not semantic_info.isClosed
 
     assert not semantic_info.hasAcquisitionFields
-    assert not semantic_info.hasISBNAgencyFields
-    assert semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
+    assert not semantic_info.ISBNAgencyFields
+    assert semantic_info.descriptiveCatFields == ['jp20150312', 'kola']
+    assert not semantic_info.descriptiveCatReviewFields
+    assert not semantic_info.subjectCatFields
+    assert not semantic_info.subjectCatReviewFields
     assert not semantic_info.summaryRecordSysNumber
     assert not semantic_info.parsedSummaryRecordSysNumber
     assert semantic_info.isSummaryRecord
@@ -85,11 +85,11 @@ def test_toSemanticInfo_pasivni_domy(pasivni_domy_example):
     assert semantic_info.isClosed
 
     assert semantic_info.hasAcquisitionFields
-    assert  semantic_info.hasISBNAgencyFields
-    assert semantic_info.hasDescriptiveCatFields
-    assert not semantic_info.hasDescriptiveCatReviewFields
-    assert not semantic_info.hasSubjectCatFields
-    assert not semantic_info.hasSubjectCatReviewFields
+    assert semantic_info.ISBNAgencyFields == ['ii20150224', 'anje']
+    assert semantic_info.descriptiveCatFields == ['jp20150225', 'kola']
+    assert not semantic_info.descriptiveCatReviewFields
+    assert not semantic_info.subjectCatFields
+    assert not semantic_info.subjectCatReviewFields
     assert semantic_info.summaryRecordSysNumber == "Seriálový záznam viz nkc20150003043"
     assert semantic_info.parsedSummaryRecordSysNumber == "nkc20150003043"
     assert not semantic_info.isSummaryRecord
