@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.9.0
+-----
+    - Structure SemanticInfo redefined as requested in #54.
+    - Fixed bugs in test subsystem, which showed when tested on new machine without envvars used on my PC.
+
 1.8.11
 ------
     - Fixed bug in counting max. allowed lenght of annotation.
