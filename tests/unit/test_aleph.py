@@ -6,7 +6,7 @@
 # Imports =====================================================================
 import pytest
 
-from edeposit.amqp.aleph import aleph
+from aleph import aleph
 
 
 # Tests =======================================================================
