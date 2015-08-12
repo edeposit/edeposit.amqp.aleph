@@ -41,11 +41,11 @@ def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
 
 # Structures ==================================================================
 class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
-                                               "hasISBNAgencyFields",
-                                               "hasDescriptiveCatFields",
-                                               "hasDescriptiveCatReviewFields",
-                                               "hasSubjectCatFields",
-                                               "hasSubjectCatReviewFields",
+                                               "ISBNAgencyFields",
+                                               "descriptiveCatFields",
+                                               "descriptiveCatReviewFields",
+                                               "subjectCatFields",
+                                               "subjectCatReviewFields",
                                                "isClosed",
                                                "isSummaryRecord",
                                                "contentOfFMT",
@@ -62,15 +62,18 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
 
     Attributes:
         hasAcquisitionFields (bool): Was the record aproved by acquisition?
-        hasISBNAgencyFields (bool):  Was the record approved by ISBN agency?
-        hasDescriptiveCatFields (bool): Did the record get thru name
-            description (jmenný popis).
-        hasDescriptiveCatReviewFields (bool): Did the record get thru name
-            revision (jmenná revize).
-        hasSubjectCatFields (bool): Did the record get thru subject
-            description (věcný popis).
-        hasSubjectCatReviewFields (bool): Did the record get thru subject
-            revision (věcná revize).
+        ISBNAgencyFields (list): Was the record approved by ISBN agency?
+                         Contains list of signs if it was.
+        descriptiveCatFields (list): Did the record get thru name description
+                             (jmenný popis). Contains list of signs if it was.
+        descriptiveCatReviewFields (list): Did the record get thru name
+                                   revision (jmenná revize). Contains list of
+                                   signs if it was.
+        subjectCatFields (list): Did the record get thru subject description
+                         (věcný popis). Contains list of signs if it was.
+        subjectCatReviewFields (list): Did the record get thru subject revision
+                               (věcná revize). Contains list of signs if it
+                               was.
         isClosed (bool): Was the record closed? This sometimes happen when bad
             ISBN is given by creator of the record, but different is in the
             book.
@@ -98,11 +101,11 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
             structure: :class:`.SemanticInfo`.
         """
         hasAcquisitionFields = False
-        hasISBNAgencyFields = False
-        hasDescriptiveCatFields = False
-        hasDescriptiveCatReviewFields = False
-        hasSubjectCatFields = False
-        hasSubjectCatReviewFields = False
+        ISBNAgencyFields = []
+        descriptiveCatFields = []
+        descriptiveCatReviewFields = []
+        subjectCatFields = []
+        subjectCatReviewFields = []
         isClosed = False
         summaryRecordSysNumber = ""
         parsedSummaryRecordSysNumber = ""
@@ -123,20 +126,29 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
         if "HLD" in parsed.datafields or "HLD" in parsed.controlfields:
             hasAcquisitionFields = True
 
-        # look for catalogization fields
-        for status in parsed["ISTa"]:
-            status = status.replace(" ", "")  # remove spaces
+        def sign_and_author(sign):
+            """
+            Sign is stored in ISTa, author's name is in ISTb.
 
-            if status.startswith("jp2"):
-                hasDescriptiveCatFields = True
-            elif status.startswith("jr2"):
-                hasDescriptiveCatReviewFields = True
-            elif status.startswith("vp"):
-                hasSubjectCatFields = True
-            elif status.startswith("vr"):
-                hasSubjectCatReviewFields = True
-            elif status.startswith("ii2"):
-                hasISBNAgencyFields = True
+            Sign is MarcSubrecord obj with pointers to other subrecords, so it
+            is possible to pick references to author's name from signs.
+            """
+            return [sign.replace(" ", "")] + sign.other_subfields.get("b", [])
+
+        # look for catalogization fields
+        for orig_sign in parsed["ISTa"]:
+            sign = orig_sign.replace(" ", "")  # remove spaces
+
+            if sign.startswith("jp2"):
+                descriptiveCatFields.extend(sign_and_author(orig_sign))
+            elif sign.startswith("jr2"):
+                descriptiveCatReviewFields.extend(sign_and_author(orig_sign))
+            elif sign.startswith("vp"):
+                subjectCatFields.extend(sign_and_author(orig_sign))
+            elif sign.startswith("vr"):
+                subjectCatReviewFields.extend(sign_and_author(orig_sign))
+            elif sign.startswith("ii2"):
+                ISBNAgencyFields.extend(sign_and_author(orig_sign))
 
         # look whether the record was 'closed' by catalogizators
         for status in parsed["BASa"]:
@@ -155,11 +167,11 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
 
         return SemanticInfo(
             hasAcquisitionFields=hasAcquisitionFields,
-            hasISBNAgencyFields=hasISBNAgencyFields,
-            hasDescriptiveCatFields=hasDescriptiveCatFields,
-            hasDescriptiveCatReviewFields=hasDescriptiveCatReviewFields,
-            hasSubjectCatFields=hasSubjectCatFields,
-            hasSubjectCatReviewFields=hasSubjectCatReviewFields,
+            ISBNAgencyFields=ISBNAgencyFields,
+            descriptiveCatFields=descriptiveCatFields,
+            descriptiveCatReviewFields=descriptiveCatReviewFields,
+            subjectCatFields=subjectCatFields,
+            subjectCatReviewFields=subjectCatReviewFields,
             isClosed=isClosed,
             isSummaryRecord=isSummaryRecord,
             contentOfFMT=contentOfFMT,
