@@ -41,6 +41,7 @@ def _parse_summaryRecordSysNumber(summaryRecordSysNumber):
 
 # Structures ==================================================================
 class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
+                                               "acquisitionFields",
                                                "ISBNAgencyFields",
                                                "descriptiveCatFields",
                                                "descriptiveCatReviewFields",
@@ -62,18 +63,19 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
 
     Attributes:
         hasAcquisitionFields (bool): Was the record aproved by acquisition?
+        acquisitionFields (list): Acquisition fields if it the record was
+            signed.
         ISBNAgencyFields (list): Was the record approved by ISBN agency?
-                         Contains list of signs if it was.
+            Contains list of signs if it the record was signed.
         descriptiveCatFields (list): Did the record get thru name description
-                             (jmenný popis). Contains list of signs if it was.
+            (jmenný popis). Contains list of signs if it the record was signed.
         descriptiveCatReviewFields (list): Did the record get thru name
-                                   revision (jmenná revize). Contains list of
-                                   signs if it was.
+            revision (jmenná revize). Contains list of signs if it the record
+            was signed.
         subjectCatFields (list): Did the record get thru subject description
-                         (věcný popis). Contains list of signs if it was.
+            (věcný popis). Contains list of signs if it the record was signed.
         subjectCatReviewFields (list): Did the record get thru subject revision
-                               (věcná revize). Contains list of signs if it
-                               was.
+            (věcná revize). Contains list of signs if the record was signed.
         isClosed (bool): Was the record closed? This sometimes happen when bad
             ISBN is given by creator of the record, but different is in the
             book.
@@ -101,6 +103,7 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
             structure: :class:`.SemanticInfo`.
         """
         hasAcquisitionFields = False
+        acquisitionFields = []
         ISBNAgencyFields = []
         descriptiveCatFields = []
         descriptiveCatReviewFields = []
@@ -125,6 +128,10 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
 
         if "HLD" in parsed.datafields or "HLD" in parsed.controlfields:
             hasAcquisitionFields = True
+
+            if "STZ" in parsed.datafields:
+                acquisitionFields.extend(parsed["STZa"])
+                acquisitionFields.extend(parsed["STZb"])
 
         def sign_and_author(sign):
             """
@@ -167,6 +174,7 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
 
         return SemanticInfo(
             hasAcquisitionFields=hasAcquisitionFields,
+            acquisitionFields=acquisitionFields,
             ISBNAgencyFields=ISBNAgencyFields,
             descriptiveCatFields=descriptiveCatFields,
             descriptiveCatReviewFields=descriptiveCatReviewFields,

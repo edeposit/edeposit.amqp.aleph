@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.9.1
+-----
+    - Added new property SemanticInfo.acquisitionFields, which holds signs from acq.
+
 1.9.0
 -----
     - Structure SemanticInfo redefined as requested in #54.
