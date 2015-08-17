@@ -47,6 +47,7 @@ def test_toSemanticInfo_unix(unix_example):
 
     # normal records doesn't use semantic info
     assert not semantic_info.hasAcquisitionFields
+    assert not semantic_info.acquisitionFields
     assert not semantic_info.ISBNAgencyFields
     assert not semantic_info.descriptiveCatFields
     assert not semantic_info.descriptiveCatReviewFields
@@ -66,6 +67,7 @@ def test_toSemanticInfo_echa(echa_example):
     assert not semantic_info.isClosed
 
     assert not semantic_info.hasAcquisitionFields
+    assert not semantic_info.acquisitionFields
     assert not semantic_info.ISBNAgencyFields
     assert semantic_info.descriptiveCatFields == ['jp20150312', 'kola']
     assert not semantic_info.descriptiveCatReviewFields
@@ -85,6 +87,7 @@ def test_toSemanticInfo_pasivni_domy(pasivni_domy_example):
     assert semantic_info.isClosed
 
     assert semantic_info.hasAcquisitionFields
+    assert semantic_info.acquisitionFields == ["du20150219", "mazi"]
     assert semantic_info.ISBNAgencyFields == ['ii20150224', 'anje']
     assert semantic_info.descriptiveCatFields == ['jp20150225', 'kola']
     assert not semantic_info.descriptiveCatReviewFields
