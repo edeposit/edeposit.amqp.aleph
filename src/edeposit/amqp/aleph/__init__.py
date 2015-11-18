@@ -168,13 +168,13 @@ class GenericQuery(namedtuple("GenericQuery", ['base',
     This is used mainly if you want to search by your own parameters and don't
     want to use prepared wrappers (:class:`AuthorQuery`/:class:`ISBNQuery`/..).
     """
-    def _getIDs(self):
-        return aleph.getDocumentIDs(
+    def _getXML(self):
+        return aleph.downloadRecords(
             aleph.searchInAleph(
                 self.base,
                 self.phrase,
                 self.considerSimilar,
-                self.field
+                self.field,
             )
         )
 
