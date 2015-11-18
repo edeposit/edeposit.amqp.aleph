@@ -4,10 +4,11 @@
 # Interpreter version: python 2.7
 #
 # Imports =====================================================================
-from edeposit.amqp.aleph import settings
-from edeposit.amqp.aleph import GenericQuery
-from edeposit.amqp.aleph import SearchRequest
-from edeposit.amqp.aleph import reactToAMQPMessage
+from aleph import settings
+from aleph import ISBNQuery
+from aleph import GenericQuery
+from aleph import SearchRequest
+from aleph import reactToAMQPMessage
 
 
 # Tests =======================================================================
@@ -20,6 +21,17 @@ def test_GenericQuery():
                 considerSimilar=True,
                 field="wtl",
             ),
+        ),
+        ""
+    )
+
+    assert result
+
+
+def test_ISBNQuery():
+    result = reactToAMQPMessage(
+        SearchRequest(
+            ISBNQuery(ISBN="80-7169-860-1"),
         ),
         ""
     )
