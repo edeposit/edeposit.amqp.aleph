@@ -119,7 +119,7 @@ from datastructures import *
 
 
 # Queries =====================================================================
-class _QueryTemplate:
+class _QueryTemplate(object):
     """
     This class is here to just save some effort by using common ancestor with
     same .getSearchResult() and .getCountResult() definition.
