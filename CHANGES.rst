@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.9.2
+-----
+    - Fixed #57: Bug in GenericQuery.
+    - Fixed few more bugs in tests.
+    - Removed ``sudo`` requirement from integration tests.
+
 1.9.1
 -----
     - Added new property SemanticInfo.acquisitionFields, which holds signs from acq.
@@ -10,22 +16,8 @@ Changelog
     - Structure SemanticInfo redefined as requested in #54.
     - Fixed bugs in test subsystem, which showed when tested on new machine without envvars used on my PC.
 
-1.8.11
-------
-    - Fixed bug in counting max. allowed lenght of annotation.
-
-1.8.10
-------
-    - Added prefix to ``epub.annotation`` to export. This was required by mrs. Svobodová.
-
-1.8.9
------
-    - Added annotation field ``.anotace`` to ``EPublication`` structure.
-    - ``EPublication.anotace`` field is now used in export.
-    - Small improvements of export.py code.
-
-1.8.0 - 1.8.8
--------------
+1.8.0 - 1.8.11
+--------------
     - Removed old robot tests and added alternatives in pytest. More will come.
     - Added tests of conversion functions for ``EPublication`` and ``SemanticInfo``.
     - Removed ``marcxml.py`` (#45), which was moved into standalone module [marcxml_parser](https://github.com/edeposit/marcxml_parser).
@@ -40,6 +32,11 @@ Changelog
     - Fixed jstavel/edeposit#339 - problem with multiple PJM subfields.
     - Insignificant improvements.
     - Implemented parsing of ``.id_number`` to ``EPublication`` structure.
+    - Added annotation field ``.anotace`` to ``EPublication`` structure.
+    - ``EPublication.anotace`` field is now used in export.
+    - Small improvements of export.py code.
+    - Added prefix to ``epub.annotation`` to export. This was required by mrs. Svobodová.
+    - Fixed bug in counting max. allowed lenght of annotation.
 
 1.7.0 - 1.7.4
 -------------
