@@ -92,8 +92,8 @@ class SemanticInfo(namedtuple("SemanticInfo", ["hasAcquisitionFields",
     @staticmethod
     def from_xml(xml):
         """
-        Pick informations from :class:`.MARCXMLRecord` object and use it to build
-        :class:`.SemanticInfo` structure.
+        Pick informations from :class:`.MARCXMLRecord` object and use it to
+        build :class:`.SemanticInfo` structure.
 
         Args:
             xml (str/MARCXMLRecord): MarcXML which will be converted to
