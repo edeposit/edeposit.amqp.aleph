@@ -1,0 +1,96 @@
+<oai_marc>
+<fixfield id="LDR">-----nas-a22------i-4500</fixfield>
+<fixfield id="FMT">SE</fixfield>
+<varfield id="BAS" i1=" " i2=" ">
+<subfield label="a">01</subfield>
+</varfield>
+<fixfield id="001">cps20150003391</fixfield>
+<fixfield id="003">CZ-PrNK</fixfield>
+<fixfield id="005">20151118083239.0</fixfield>
+<fixfield id="007">ta</fixfield>
+<fixfield id="008">151111c20159999xr-mr-p-q-----0---b0cze--</fixfield>
+<varfield id="040" i1=" " i2=" ">
+<subfield label="a">ABA001</subfield>
+<subfield label="b">cze</subfield>
+<subfield label="e">rda</subfield>
+</varfield>
+<varfield id="072" i1=" " i2="7">
+<subfield label="a">91</subfield>
+<subfield label="x">Geografie jako věda. Výzkum. Cestování</subfield>
+<subfield label="2">Konspekt</subfield>
+<subfield label="9">7</subfield>
+</varfield>
+<varfield id="080" i1=" " i2=" ">
+<subfield label="a">910.4</subfield>
+<subfield label="2">MRF</subfield>
+</varfield>
+<varfield id="080" i1=" " i2=" ">
+<subfield label="a">(051)379.81/.84</subfield>
+<subfield label="2">MRF</subfield>
+</varfield>
+<varfield id="245" i1="0" i2="0">
+<subfield label="a">Cestou necestou :</subfield>
+<subfield label="b">zážitky z cest</subfield>
+</varfield>
+<varfield id="264" i1=" " i2="1">
+<subfield label="a">Zámecká Lhota :</subfield>
+<subfield label="b">Vydavatelství Stáza,</subfield>
+<subfield label="c">2015-</subfield>
+</varfield>
+<varfield id="310" i1=" " i2=" ">
+<subfield label="a">1x měsíčně</subfield>
+</varfield>
+<varfield id="336" i1=" " i2=" ">
+<subfield label="a">text</subfield>
+<subfield label="b">txt</subfield>
+<subfield label="2">rdacontent</subfield>
+</varfield>
+<varfield id="337" i1=" " i2=" ">
+<subfield label="a">počítač</subfield>
+<subfield label="b">c</subfield>
+<subfield label="2">rdamedia</subfield>
+</varfield>
+<varfield id="338" i1=" " i2=" ">
+<subfield label="a">online zdroj</subfield>
+<subfield label="b">cr</subfield>
+<subfield label="2">rdacarrier</subfield>
+</varfield>
+<varfield id="362" i1="0" i2=" ">
+<subfield label="a">Ročník 1, číslo 1 (2015)-</subfield>
+</varfield>
+<varfield id="650" i1="0" i2="7">
+<subfield label="a">cestování</subfield>
+<subfield label="7">ph119114</subfield>
+<subfield label="2">czenas</subfield>
+</varfield>
+<varfield id="655" i1=" " i2="7">
+<subfield label="a">zájmové časopisy</subfield>
+<subfield label="7">fd133885</subfield>
+<subfield label="2">czenas</subfield>
+</varfield>
+<varfield id="856" i1="4" i2=" ">
+<subfield label="u">http://edeposit-test.nkp.cz/@@redirect-to-uuid/e514091c38cf493d8308611d401407f5</subfield>
+<subfield label="4">N</subfield>
+</varfield>
+<varfield id="910" i1=" " i2=" ">
+<subfield label="a">ABA001</subfield>
+<subfield label="r">2015-</subfield>
+</varfield>
+<varfield id="998" i1=" " i2=" ">
+<subfield label="a">http://aleph.nkp.cz/F/?func=direct&amp;doc_number=000003391&amp;local_base=CZE-DEP</subfield>
+</varfield>
+<varfield id="PSE" i1=" " i2=" ">
+<subfield label="x">PV: Roč. 1, č. 1</subfield>
+<subfield label="q">2015</subfield>
+</varfield>
+<varfield id="IST" i1="1" i2=" ">
+<subfield label="a">sk20151111</subfield>
+<subfield label="b">pepe</subfield>
+</varfield>
+<varfield id="URL" i1=" " i2=" ">
+<subfield label="u">http://edeposit-test.nkp.cz/@@redirect-to-uuid/e514091c38cf493d8308611d401407f5</subfield>
+</varfield>
+<varfield id="SKC" i1=" " i2=" ">
+<subfield label="a">2015</subfield>
+</varfield>
+</oai_marc>
