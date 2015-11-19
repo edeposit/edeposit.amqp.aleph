@@ -45,10 +45,6 @@ class EPublication(namedtuple("EPublication", ["ISBN",
                                                'datumVydani',
                                                'poradiVydani',
                                                'zpracovatelZaznamu',
-                                               # 'mistoDistribuce',  # FUTURE
-                                               # 'distributor',
-                                               # 'datumDistribuce',
-                                               # 'datumProCopyright',
                                                'format',
                                                'url',
                                                'mistoVydani',
@@ -58,9 +54,7 @@ class EPublication(namedtuple("EPublication", ["ISBN",
                                                'internal_url',
                                                'anotace'])):
     """
-    This structure is returned as result of users :class:`.SearchRequest`. It
-    will be also used in exporting new data to aleph, but that is not
-    implemented yet.
+    This structure is returned as result of users :class:`.SearchRequest`.
 
     In case of :class:`Search <.SearchRequest>`/:class:`Count <.CountRequest>`
     requests, this structure is filled with data from MARC XML record.
@@ -140,10 +134,6 @@ class EPublication(namedtuple("EPublication", ["ISBN",
             datumVydani         = parsed.get_pub_date(),
             poradiVydani        = parsed.get_pub_order(),
             zpracovatelZaznamu  = _first_or_blank_string(parsed["040a"]),
-            # mistoDistribuce     = mistoDistribuce,  # FUTURE
-            # distributor         = distributor,
-            # datumDistribuce     = datumDistribuce,
-            # datumProCopyright   = "",
             format              = parsed.get_format(),
             url                 = parsed.get_urls(),
             mistoVydani         = parsed.get_pub_place(),
@@ -153,21 +143,3 @@ class EPublication(namedtuple("EPublication", ["ISBN",
             internal_url        = parsed.get_internal_urls(),
             anotace             = None, # TODO: read the annotation
         )
-
-
-# class Producent(namedtuple("Producent", ['title',
-#                                          'phone',
-#                                          'fax',
-#                                          'email',
-#                                          'url',
-#                                          'identificator',
-#                                          'ico'])):
-#     pass
-
-
-# class OriginalFile(namedtuple("OriginalFile", ['url',
-#                                                'format',
-#                                                'file',
-#                                                'isbns'])):
-#     """ type of isbn: ISBN"""
-#     pass
