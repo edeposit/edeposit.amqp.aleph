@@ -18,9 +18,8 @@ from ..aleph import DocumentNotFoundException
 # Structures ==================================================================
 class EPeriodical(namedtuple("EPeriodical", ["url",
                                              "ISSN",
-                                             "invalid_ISBN",
+                                             "invalid_ISSNs",
                                              "nazev",
-                                             "format",
                                              "anotace",
                                              "podnazev",
                                              "id_number",
@@ -37,9 +36,8 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
     Attributes:
         url (str): Url specified by publisher (THIS IS NOT INTERNAL URL!).
         ISSN (list): List of ISSNs for the periodical.
-        invalid_ISSN (list): List of INVALID ISSNs for this book.
+        invalid_ISSNs (list): List of INVALID ISSNs for this book.
         nazev (str): Name of the periodical.
-        format (str): Format of the periodical - see :class:`FormatEnum`.
         anotace (str): Anotation. Max lenght: 500 chars.
         podnazev (str): Subname of the book.
         id_number  (str): Identification number in aleph.
@@ -77,13 +75,12 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
             url=parsed.get_urls(),
             ISSN=parsed.get_ISSNs(),
             nazev=parsed.get_name(),
-            format=parsed.get_format(),
             anotace=None,  # TODO: read the annotation
             podnazev=parsed.get_subname(),
             id_number=parsed.controlfields.get("001", None),
             mistoVydani=parsed.get_pub_place(),
             internal_url=parsed.get_internal_urls(),
-            invalid_ISBN=parsed.get_invalid_ISSNs(),
+            invalid_ISSNs=parsed.get_invalid_ISSNs(),
             nakladatelVydavatel=parsed.get_publisher(),
             ISSNSouboruPublikaci=parsed.get_linking_ISSNs(),
         )
