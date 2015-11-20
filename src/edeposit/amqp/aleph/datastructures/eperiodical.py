@@ -17,15 +17,17 @@ from ..aleph import DocumentNotFoundException
 
 # Structures ==================================================================
 class EPeriodical(namedtuple("EPeriodical", ["url",
-                                             'ISSN',
-                                             'nazev',
-                                             'format',
-                                             'anotace',
-                                             'podnazev',
+                                             "ISSN",
+                                             "invalid_ISBN",
+                                             "nazev",
+                                             "format",
+                                             "anotace",
+                                             "podnazev",
                                              "id_number",
-                                             'mistoVydani',
-                                             'internal_url',
-                                             'nakladatelVydavatel'])):
+                                             "mistoVydani",
+                                             "internal_url",
+                                             "nakladatelVydavatel",
+                                             "ISSNSouboruPublikaci"])):
     """
     This structure is returned as result of users :class:`.SearchRequest`.
 
@@ -35,6 +37,7 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
     Attributes:
         url (str): Url specified by publisher (THIS IS NOT INTERNAL URL!).
         ISSN (list): List of ISSNs for the periodical.
+        invalid_ISSN (list): List of INVALID ISSNs for this book.
         nazev (str): Name of the periodical.
         format (str): Format of the periodical - see :class:`FormatEnum`.
         anotace (str): Anotation. Max lenght: 500 chars.
@@ -43,6 +46,7 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
         mistoVydani (str): City/country origin of the publication.
         internal_url (str): Link to edeposit/kramerius system.
         nakladatelVydavatel (str): Publisher's name.
+        ISSNSouboruPublikaci (list): ISSN links to other things.
     """
 
     @staticmethod
@@ -70,14 +74,16 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
         # i know, that this is not PEP8, but you dont want to see it without
         # proper formating (it looks bad, really bad)
         return EPeriodical(
-            url                 = parsed.get_urls(),
-            ISSN                = parsed.get_ISSNs(),
-            nazev               = parsed.get_name(),
-            format              = parsed.get_format(),
-            anotace             = None, # TODO: read the annotation
-            podnazev            = parsed.get_subname(),
-            id_number           = parsed.controlfields.get("001", None),
-            mistoVydani         = parsed.get_pub_place(),
-            internal_url        = parsed.get_internal_urls(),
-            nakladatelVydavatel = parsed.get_publisher(),
+            url=parsed.get_urls(),
+            ISSN=parsed.get_ISSNs(),
+            nazev=parsed.get_name(),
+            format=parsed.get_format(),
+            anotace=None,  # TODO: read the annotation
+            podnazev=parsed.get_subname(),
+            id_number=parsed.controlfields.get("001", None),
+            mistoVydani=parsed.get_pub_place(),
+            internal_url=parsed.get_internal_urls(),
+            invalid_ISBN=parsed.get_invalid_ISSNs(),
+            nakladatelVydavatel=parsed.get_publisher(),
+            ISSNSouboruPublikaci=parsed.get_linking_ISSNs(),
         )
