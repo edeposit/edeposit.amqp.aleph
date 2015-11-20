@@ -10,6 +10,9 @@ from aleph import GenericQuery
 from aleph import SearchRequest
 from aleph import reactToAMQPMessage
 
+from aleph import EPeriodical
+from aleph import EPeriodicalSemanticInfo
+
 
 # Tests =======================================================================
 def test_GenericQuery():
@@ -18,7 +21,7 @@ def test_GenericQuery():
             GenericQuery(
                 base=settings.ALEPH_DEFAULT_BASE,
                 phrase="Cestou necestou",
-                considerSimilar=True,
+                considerSimilar=False,
                 field="wtl",
             ),
         ),
@@ -26,6 +29,8 @@ def test_GenericQuery():
     )
 
     assert result
+    assert isinstance(result.records[0].parsed_info, EPeriodical)
+    assert isinstance(result.records[0].semantic_info, EPeriodicalSemanticInfo)
 
 
 def test_ISBNQuery():
