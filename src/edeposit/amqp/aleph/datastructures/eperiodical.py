@@ -24,6 +24,7 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
                                              "podnazev",
                                              "id_number",
                                              "mistoVydani",
+                                             "datumVydani",
                                              "internal_url",
                                              "nakladatelVydavatel",
                                              "ISSNSouboruPublikaci"])):
@@ -42,6 +43,7 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
         podnazev (str): Subname of the book.
         id_number  (str): Identification number in aleph.
         mistoVydani (str): City/country origin of the publication.
+        datumVydani (str): Date of publication.
         internal_url (str): Link to edeposit/kramerius system.
         nakladatelVydavatel (str): Publisher's name.
         ISSNSouboruPublikaci (list): ISSN links to other things.
@@ -78,6 +80,7 @@ class EPeriodical(namedtuple("EPeriodical", ["url",
             anotace=None,  # TODO: read the annotation
             podnazev=parsed.get_subname(),
             id_number=parsed.controlfields.get("001", None),
+            datumVydani=parsed.get_pub_date(),
             mistoVydani=parsed.get_pub_place(),
             internal_url=parsed.get_internal_urls(),
             invalid_ISSNs=parsed.get_invalid_ISSNs(),
