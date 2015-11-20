@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.9.3
+-----
+    - Added support of the e-periodics.
+    - Fixed few bugs.
+
 1.9.2
 -----
     - Fixed #57: Bug in GenericQuery.
