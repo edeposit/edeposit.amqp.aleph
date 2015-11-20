@@ -13,8 +13,11 @@ from collections import namedtuple
 
 from marcxml_parser import MARCXMLRecord
 
-from semanticinfo import SemanticInfo
 from epublication import EPublication
+from semanticinfo import SemanticInfo
+
+from eperiodical import EPeriodical
+from eperiodical_semantic_info import EPeriodicalSemanticInfo
 
 
 # Structures ==================================================================
@@ -22,7 +25,7 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                                              'library',
                                              'docNumber',
                                              'xml',
-                                             'epublication',
+                                             'parsed_info',
                                              'semantic_info'])):
     """
     This structure is returned as response to :class:`.SearchRequest` inside
@@ -37,17 +40,19 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                          fetch documents from Aleph if you know this.
         xml (str): MARC XML source returned from Aleph. Quite complicated
                    stuff.
-        epublication (namedtuple, default None): Parsed :attr:`.xml` to
-                     :class:`.EPublication` structure.
+        parsed (namedtuple, default None): Parsed :attr:`.xml` to
+            :class:`.EPublication` structure in case of monographic / multimono
+            publications, or :class:`.EPeriodical` in case of series.
         semantic_info (namedtuple, default None): Export progress informations
-                      from :attr:`.xml` attribute represented as
-                      :class:`.SemanticInfo` structure.
+            from :attr:`.xml` attribute represented as :class:`.SemanticInfo`
+            structure in case of monographic / multimono publications, or
+            :class:`.EPeriodicalSemanticInfo` in case of series.
 
     Note:
-        :attr:`semantic_info` and :attr:`epublication` attributes are parsed
+        :attr:`semantic_info` and :attr:`parsed` attributes are parsed
         automatically from :attr:`xml` if not provided by user.
     """
-    def __new__(cls, base, library, docNumber, xml, epublication=None,
+    def __new__(cls, base, library, docNumber, xml, parsed_info=None,
                 semantic_info=None):
         if xml.strip():
             parsed = xml
@@ -55,17 +60,23 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                 parsed = MARCXMLRecord(str(parsed))
 
             if not semantic_info:
-                semantic_info = SemanticInfo.from_xml(parsed)
+                if parsed.is_continuing:
+                    semantic_info = EPeriodicalSemanticInfo.from_xml(parsed)
+                else:
+                    semantic_info = SemanticInfo.from_xml(parsed)
 
-            if not epublication:
-                epublication = EPublication.from_xml(parsed)
+            if not parsed_info:
+                if parsed.is_continuing:
+                    parsed_info = EPeriodical.from_xml(parsed)
+                else:
+                    parsed_info = EPublication.from_xml(parsed)
 
         return super(AlephRecord, cls).__new__(
             cls,
-            base,
-            library,
-            docNumber,
-            str(xml),
-            epublication,
-            semantic_info
+            base=base,
+            library=library,
+            docNumber=docNumber,
+            xml=str(xml),
+            parsed_info=parsed_info,
+            semantic_info=semantic_info,
         )
