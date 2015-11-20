@@ -49,7 +49,7 @@ setup(
         "httpkie>=1.1.0,<2.0.0",
         "isbn_validator",
         "remove_hairs",
-        "marcxml_parser",
+        "marcxml_parser>=1.1.4",
     ],
     extras_require={
         "test": [
