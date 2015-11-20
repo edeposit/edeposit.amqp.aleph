@@ -86,7 +86,7 @@ def test_toEPublication_echa(echa_example):
     assert epub.castDil == ""
     assert epub.nazevCasti == ""
     assert epub.nakladatelVydavatel == "Institut pro studium literatury"
-    assert epub.datumVydani == "2014?"
+    assert epub.datumVydani == "2014"
     assert epub.poradiVydani == ""
     assert epub.zpracovatelZaznamu == "ABA001"
     assert epub.format == ""

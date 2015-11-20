@@ -46,10 +46,10 @@ setup(
     install_requires=[
         'setuptools',
         "pyDHTMLParser>=2.0.7",
-        "httpkie>=1.1.0,<2.0.0",
+        "httpkie>=1.1.0",
         "isbn_validator",
         "remove_hairs",
-        "marcxml_parser>=1.1.4",
+        "marcxml_parser>=1.1.7",
     ],
     extras_require={
         "test": [
