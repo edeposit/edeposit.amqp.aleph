@@ -1,3 +1,4 @@
+<record>
 <oai_marc>
 <fixfield id="LDR">-----nas-a22------i-4500</fixfield>
 <fixfield id="FMT">SE</fixfield>
@@ -94,3 +95,4 @@
 <subfield label="a">2015</subfield>
 </varfield>
 </oai_marc>
+</record>
