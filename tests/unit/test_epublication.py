@@ -38,6 +38,11 @@ def pasivni_domy_example():
     return read_file("pasivni_domy.xml")
 
 
+@pytest.fixture
+def kviti_example():
+    return read_file("kviti.xml")
+
+
 # Tests =======================================================================
 def test_toEPublication_unix(unix_example):
     epub = EPublication.from_xml(unix_example)
@@ -131,3 +136,9 @@ def test_toEPublication_pasivni_domy(pasivni_domy_example):
         'http://aleph.nkp.cz/F/?func=direct&doc_number=000003035&local_base=CZE-DEP'
     ]
     assert epub.id_number == "nkc20150003035"
+
+
+def test_toEPublication_kviti(kviti_example):
+    epub = EPublication.from_xml(kviti_example)
+
+    assert epub.ISBN == ['978-80-260-9149-3']
