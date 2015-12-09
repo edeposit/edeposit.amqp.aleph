@@ -60,13 +60,13 @@ class AlephRecord(namedtuple("AlephRecord", ['base',
                 parsed = MARCXMLRecord(str(parsed))
 
             if not semantic_info:
-                if parsed.is_continuing:
+                if parsed.is_continuing():
                     semantic_info = EPeriodicalSemanticInfo.from_xml(parsed)
                 else:
                     semantic_info = SemanticInfo.from_xml(parsed)
 
             if not parsed_info:
-                if parsed.is_continuing:
+                if parsed.is_continuing():
                     parsed_info = EPeriodical.from_xml(parsed)
                 else:
                     parsed_info = EPublication.from_xml(parsed)

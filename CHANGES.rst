@@ -1,25 +1,23 @@
 Changelog
 =========
 
+1.9.4
+-----
+    - Fixed bug in parsing of the AlephRecord.
+
 1.9.3
 -----
     - Added support of the e-periodics.
     - Fixed few bugs.
 
-1.9.2
------
+1.9.0 - 1.9.2
+-------------
+    - Structure SemanticInfo redefined as requested in #54.
+    - Fixed bugs in test subsystem, which showed when tested on new machine without envvars used on my PC.
+    - Added new property SemanticInfo.acquisitionFields, which holds signs from acq.
     - Fixed #57: Bug in GenericQuery.
     - Fixed few more bugs in tests.
     - Removed ``sudo`` requirement from integration tests.
-
-1.9.1
------
-    - Added new property SemanticInfo.acquisitionFields, which holds signs from acq.
-
-1.9.0
------
-    - Structure SemanticInfo redefined as requested in #54.
-    - Fixed bugs in test subsystem, which showed when tested on new machine without envvars used on my PC.
 
 1.8.0 - 1.8.11
 --------------
