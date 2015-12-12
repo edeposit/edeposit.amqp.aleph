@@ -28,10 +28,10 @@ setup(
 
     classifiers=[
         "Programming Language :: Python :: 2.7",
-        "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+        "License :: OSI Approved :: MIT License",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    license='GPL2+',
+    license='MIT',
 
     packages=find_packages('src'),
     package_dir={'': 'src'},
