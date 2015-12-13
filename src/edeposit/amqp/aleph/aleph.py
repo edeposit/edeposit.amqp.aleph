@@ -639,6 +639,29 @@ def getISBNsXML(isbn, base=ALEPH_DEFAULT_BASE):
     )
 
 
+def getISSNsXML(issn, base=ALEPH_DEFAULT_BASE):
+    """
+    Download full XML record for given `issn` in `base`.
+
+    Args:
+        issn (str): ISSN of the books you want to get.
+        base (str): Base on which will be search performed. Default
+                    :attr:`aleph.settings.ALEPH_DEFAULT_BASE`.
+
+    Returns:
+        list: List of strings with full **OAI** XML representation of the \
+              record.
+    """
+    return downloadRecords(
+        searchInAleph(
+            base,
+            issn,
+            False,
+            "ssn"
+        )
+    )
+
+
 def getAuthorsBooksXML(author, base=ALEPH_DEFAULT_BASE):
     """
     Download full XML record for given `author` in `base`.

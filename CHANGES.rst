@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.9.5
+-----
+    - Added ``aleph.getISSNsXML()``.
+
 1.9.4
 -----
     - Fixed bug in parsing of the AlephRecord.
