@@ -4,6 +4,7 @@ Changelog
 1.9.5
 -----
     - Added ``aleph.getISSNsXML()``.
+    - Lincese changed to MIT.
 
 1.9.4
 -----
